@@ -127,6 +127,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
 
                 if(columnIndex == isActiveColumnIndex) {
                     final int _id = cursor.getInt(_idColumnIndex);
+                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
                     Switch isActiveSwitch = (Switch) view;
                     isActiveSwitch.setChecked(cursor.getInt(isActiveColumnIndex) > 0);
                     isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -140,7 +141,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                                     null);
                             if(updateCount > 0) {
                                 //TODO test if getRootView is right
-                                Snackbar.make(fragmentView, isChecked ? "Filtering enabled" : "Filtereing disabled", Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(fragmentView, (isChecked ? "Filtering enabled for " : "Filtereing disabled for ") + phoneNumber, Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     });

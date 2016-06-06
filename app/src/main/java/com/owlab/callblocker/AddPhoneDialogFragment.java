@@ -82,16 +82,19 @@ public class AddPhoneDialogFragment extends DialogFragment{
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                         Log.d(TAG, ">>>>> beforeTextChanged called");
+                        super.beforeTextChanged(s, start, count, after);
                     }
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
                         Log.d(TAG, ">>>>> onTextChanged called");
+                        super.onTextChanged(s, start, before, count);
                     }
 
                     @Override
                     public void afterTextChanged(Editable s) {
                         Log.d(TAG, ">>>>> afterTextChanged called");
+                        super.afterTextChanged(s);
                     }
                 });
 

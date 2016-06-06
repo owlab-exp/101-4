@@ -74,7 +74,7 @@ public class DeletePhoneDialogFragment extends DialogFragment {
                         Uri deleteUri = ContentUris.withAppendedId(CallBlockerContentProvider.CONTENT_URI, _id);
                         int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(deleteUri, null, null);
                         if(deleteCount > 0)
-                        Snackbar.make(getTargetFragment().getView(), "Successfully deleted", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getTargetFragment().getView(), phoneNumber + " is deleted", Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
