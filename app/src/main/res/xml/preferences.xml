@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="pref_key_ring_and_notification_settings"
+        android:title="RING AND NOTIFICATIOLN">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_quiet_ringer"
+            android:summary=""
+            android:title="Suppress Ringing" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_suppress_statusbar_notification"
+            android:summary=""
+            android:title="Suppress status bar notification" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_suppress_headsup_notification"
+            android:summary=""
+            android:title="Suppress heads-up notification" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_dismiss_immediately"
+            android:summary="Dismiss calls immediately when filtered"
+            android:title="Dismiss immediately" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="HISTORY"
+        android:key="pref_key_history_settings">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="pref_call_history"
+            android:summary="Set aside filtered call history"
+            android:title="Call history" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:enabled="false"
+            android:key="pref_sms_history"
+            android:summary="Set aside filtered sms history"
+            android:title="SMS history" />
+    </PreferenceCategory>
+</PreferenceScreen>
