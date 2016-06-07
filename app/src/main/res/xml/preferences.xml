@@ -1,43 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:key="pref_key_ring_and_notification_settings"
-        android:title="RING AND NOTIFICATIOLN">
+        android:key="pref_notification_setting"
+        android:title="NOTIFICATION SETTING">
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="pref_quiet_ringer"
-            android:summary=""
-            android:title="Suppress Ringing" />
+            android:key="pref_key_blocking_notification_on"
+            android:title="Statusbar notification icon"
+            android:summary="Show notification icon when blocking on"/>
+        </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_key_blocking_setting"
+        android:title="CALL BLOCKING SETTINGS">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_key_suppress_ringer"
+            android:summary="Suppress ringing for blocked numbers"
+            android:title="Suppress ringing" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="pref_suppress_statusbar_notification"
-            android:summary=""
-            android:title="Suppress status bar notification" />
+            android:key="pref_key_suppress_statusbar_call_notification"
+            android:summary="Remove status bar notification icon for blocked numbers"
+            android:title="Suppress status bar call notification" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="pref_suppress_headsup_notification"
+            android:key="pref_key_dismiss_calls_immediately"
+            android:summary="Dismiss calls from blocked numbers"
+            android:title="Dismiss calls immediately" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_key_suppress_headsup_notification"
             android:summary=""
             android:title="Suppress heads-up notification" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="pref_dismiss_immediately"
-            android:summary="Dismiss calls immediately when filtered"
-            android:title="Dismiss immediately" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="HISTORY"
-        android:key="pref_key_history_settings">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:enabled="false"
-            android:key="pref_call_history"
-            android:summary="Set aside filtered call history"
-            android:title="Call history" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:enabled="false"
-            android:key="pref_sms_history"
-            android:summary="Set aside filtered sms history"
-            android:title="SMS history" />
+    <!--
+<PreferenceCategory
+    android:title="HISTORY SETTING"
+    android:key="pref_key_history_settings">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:enabled="false"
+        android:key="pref_key_delete_call_history"
+        android:summary="Delete call history of blocked numbers"
+        android:title="Delete call history" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:enabled="false"
+        android:key="pref_aside_call_history"
+        android:summary="Put aside blocked call history"
+        android:title="Keep call history on this app" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:enabled="false"
+        android:key="pref_aside_sms_history"
+        android:summary="Put aside blocked sms history"
+        android:title="SMS history" />
     </PreferenceCategory>
+        -->
 </PreferenceScreen>

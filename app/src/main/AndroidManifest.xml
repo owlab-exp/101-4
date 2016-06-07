@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.owlab.callblocker">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,6 +22,14 @@
         <provider
             android:name=".content.CallBlockerContentProvider"
             android:authorities="com.owlab.callblocker.contentprovider"/>
+        <receiver
+            android:name=".receiver.BootCompletedIntentReceiver"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
+
 
 </manifest>
