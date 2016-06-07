@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -89,16 +90,22 @@ public class CallBlockerContentProvider extends ContentProvider {
 
         long rowId = 0L;
 
-        switch(sURIMatcher.match(uri)) {
-            case FILTERED_ITEMS:
-                rowId = db.insert(CallBlockerTbl.Schema.TABLE_NAME, null, contentValues);
-                break;
-            default:
-                //TODO make default
+        try {
+            switch(sURIMatcher.match(uri)) {
+                case FILTERED_ITEMS:
+                    rowId = db.insertOrThrow(CallBlockerTbl.Schema.TABLE_NAME, null, contentValues);
+                    break;
+                default:
+                    //TODO make default
+            }
+        } catch(SQLiteConstraintException e) {
+            Log.e(TAG, ">>>>> Exception occurred: " + e.getMessage());
+            //If db.insert then the DATABASE will return -1, so ...
+            rowId = -1;
         }
 
         //TODO what is this?
-        getContext().getContentResolver().notifyChange(uri, null);
+        if(rowId > 0) getContext().getContentResolver().notifyChange(uri, null);
 
         return Uri.parse(CallBlockerTbl.Schema.TABLE_NAME + "/" + rowId);
     }

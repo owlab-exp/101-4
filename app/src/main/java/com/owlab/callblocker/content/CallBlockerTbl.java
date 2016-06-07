@@ -28,7 +28,7 @@ public class CallBlockerTbl {
     static final String SQL_CREATE_TABLE =
             "CREATE TABLE " + Schema.TABLE_NAME + " (" +
                     Schema._ID + " INTEGER PRIMARY KEY" + SEP_COMMA +
-                    Schema.COLUMN_NAME_PHONE_NUMBER + TYPE_TEXT + SEP_COMMA +
+                    Schema.COLUMN_NAME_PHONE_NUMBER + TYPE_TEXT + " NOT NULL UNIQUE" + SEP_COMMA +
                     Schema.COLUMN_NAME_DESCRIPTION + TYPE_TEXT + SEP_COMMA +
                     Schema.COLUMN_NAME_IS_ACTIVE + TYPE_INTEGER + " DEFAULT 1" + SEP_COMMA +
                     Schema.COLUMN_NAME_CREATED_AT +  TYPE_CURRENT_TIMESTAMP +

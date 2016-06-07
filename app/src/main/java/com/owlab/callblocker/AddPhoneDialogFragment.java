@@ -8,13 +8,13 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.owlab.callblocker.content.CallBlockerContentProvider;
 import com.owlab.callblocker.content.CallBlockerTbl;
@@ -105,16 +105,22 @@ public class AddPhoneDialogFragment extends DialogFragment{
                         EditText phoneNumberText = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_phone_number);
                         EditText descriptionText = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_description);
                         if(phoneNumberText.getText().toString().trim().isEmpty()) {
-                            Toast.makeText(getActivity(), "Phone number can not be empty", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(getView(), "Empty phone number", Snackbar.LENGTH_SHORT).show();
                         } else {
                             alertDialog.dismiss();
                             //mAddItemDialogListener.onAddItemDialogAddClick(AddItemDialogFragment.this);
                             ContentValues values = new ContentValues();
-                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, phoneNumberText.getText().toString().replaceAll("[^\\d]", ""));
+                            String compactPhoneNumber = phoneNumberText.getText().toString().replaceAll("[^\\d]", "");
+                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, compactPhoneNumber);
                             values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, descriptionText.getText().toString());
                             Uri newUri = getTargetFragment().getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
                             Log.d(TAG, ">>> newUri: " + newUri.toString());
-                            Toast.makeText(getTargetFragment().getActivity(), "Successfully added and activated", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, ">>> newUri.getLastPathSegment: " + newUri.getLastPathSegment());
+                            if(Long.parseLong(newUri.getLastPathSegment()) > 0)
+                                Snackbar.make(getTargetFragment().getView(), compactPhoneNumber + " added", Snackbar.LENGTH_SHORT).show();
+                            else
+                                Snackbar.make(getTargetFragment().getView(), "Add failed, duplicate?", Snackbar.LENGTH_SHORT).show();
+
                         }
                     }
                 });
