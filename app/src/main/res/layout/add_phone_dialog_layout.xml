@@ -11,7 +11,7 @@
     <EditText
         android:id="@+id/add_phone_dialog_phone_number"
         android:inputType="phone"
-        android:maxLength="14"
+        android:maxLength="20"
         android:hint="Phone number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

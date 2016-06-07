@@ -133,6 +133,7 @@ public class CallBlockerContentProvider extends ContentProvider {
         switch(sURIMatcher.match(uri)) {
             case FILTERED_ITEMS:
                 rowsUpdated = db.update(CallBlockerTbl.Schema.TABLE_NAME, contentValues, selection, selectionArgs);
+                break;
         }
 
         if(rowsUpdated > 0) getContext().getContentResolver().notifyChange(uri, null);

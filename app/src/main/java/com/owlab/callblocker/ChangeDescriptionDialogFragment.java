@@ -77,9 +77,10 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
                         ContentValues values = new ContentValues();
                         values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, descriptionText.getText().toString());
                         int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerContentProvider.CONTENT_URI, values, CallBlockerTbl.Schema._ID + "=" + _id, null);
-                        if(updateCount > 0)
-                        //Toast.makeText(getTargetFragment().getActivity(), "successfully changed", Toast.LENGTH_SHORT).show();
+                        if(updateCount > 0) {
                             Snackbar.make(getTargetFragment().getView(), "Description changed", Snackbar.LENGTH_SHORT).show();
+                            getTargetFragment().getActivity().getContentResolver().notifyChange(CallBlockerContentProvider.CONTENT_URI, null);
+                        }
                     }
                 })
                 .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {

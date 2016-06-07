@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,23 +78,23 @@ public class AddPhoneDialogFragment extends DialogFragment{
                 final AlertDialog alertDialog = (AlertDialog)dialog;
                 EditText phoneNumberEditText = (EditText) alertDialog.findViewById(R.id.add_phone_dialog_phone_number);
                 phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                        Log.d(TAG, ">>>>> beforeTextChanged called");
-                        super.beforeTextChanged(s, start, count, after);
-                    }
+                    //@Override
+                    //public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    //    Log.d(TAG, ">>>>> beforeTextChanged called");
+                    //    super.beforeTextChanged(s, start, count, after);
+                    //}
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        Log.d(TAG, ">>>>> onTextChanged called");
-                        super.onTextChanged(s, start, before, count);
-                    }
+                    //@Override
+                    //public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //    Log.d(TAG, ">>>>> onTextChanged called");
+                    //    super.onTextChanged(s, start, before, count);
+                    //}
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        Log.d(TAG, ">>>>> afterTextChanged called");
-                        super.afterTextChanged(s);
-                    }
+                    //@Override
+                    //public void afterTextChanged(Editable s) {
+                    //    Log.d(TAG, ">>>>> afterTextChanged called");
+                    //    super.afterTextChanged(s);
+                    //}
                 });
 
                 Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);

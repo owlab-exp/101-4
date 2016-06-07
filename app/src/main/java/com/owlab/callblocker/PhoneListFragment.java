@@ -98,8 +98,11 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     isActiveColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE);
 
                 if(columnIndex == phoneNumberColumnIndex) {
+                    Log.d(TAG, ">>>>> phone number formatting...");
                     TextView phoneNumberTextView = (TextView) view;
+                    //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
                     phoneNumberTextView.setText(Utils.formatPhoneNumber(cursor.getString(phoneNumberColumnIndex)));
+                    //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
                     return true;
                 }
 
