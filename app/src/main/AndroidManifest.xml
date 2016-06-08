@@ -6,7 +6,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_call_blocker_48"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -16,20 +16,24 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name=".content.CallBlockerContentProvider"
-            android:authorities="com.owlab.callblocker.contentprovider"/>
-        <receiver
-            android:name=".receiver.BootCompletedIntentReceiver"
-            >
+            android:authorities="com.owlab.callblocker.contentprovider" />
+
+        <receiver android:name=".receiver.BootCompletedIntentReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-    </application>
 
+        <service
+            android:name=".service.CallBlockerIntentService"
+            android:exported="false" />
+    </application>
 
 </manifest>

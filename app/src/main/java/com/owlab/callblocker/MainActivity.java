@@ -1,12 +1,19 @@
 package com.owlab.callblocker;
 
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+
+import com.owlab.callblocker.service.CallBlockerIntentService;
 
 /**
  * Top most setting element is "SERVICE ON/OFF"
@@ -24,6 +31,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getFragmentManager().beginTransaction().add(R.id.fragment_container, new PhoneListFragment()).commit();
+
+
+        //TODO delete
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        for(String key: sharedPreferences.getAll().keySet()) {
+            Log.d(TAG, ">>>>> key: " + key);
+        }
     }
 
     private Menu menu;
@@ -33,7 +47,26 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
-        return true;
+
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
+        Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
+
+        mainOnOffSwitch.setChecked(sharedPreferences.getBoolean(Constant.PREF_KEY_SERVICE_ON, false));
+        mainOnOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if(checked) {
+                    CallBlockerIntentService.startService(MainActivity.this);
+                } else {
+                    CallBlockerIntentService.stopService(MainActivity.this);
+                }
+                sharedPreferences.edit().putBoolean(Constant.PREF_KEY_SERVICE_ON, checked).commit();
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -45,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         switch (id) {
-            case R.id.action_settings:
+            case R.id.menuitem_settings:
                 SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("SETTINGS_FRAGMENT");
                 if(settingsFragment == null || !settingsFragment.isVisible()) {
                     getFragmentManager().beginTransaction()
@@ -73,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (menu != null) {
-            menu.findItem(R.id.action_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-            menu.findItem(R.id.action_settings).setVisible(false);
+            menu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+            menu.findItem(R.id.menuitem_settings).setVisible(false);
         }
     }
 
@@ -85,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(menu != null) {
-            menu.findItem(R.id.action_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.VISIBLE);
-            menu.findItem(R.id.action_settings).setVisible(true);
+            menu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.VISIBLE);
+            menu.findItem(R.id.menuitem_settings).setVisible(true);
         }
     }
 }

@@ -2,12 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         android:key="pref_notification_setting"
-        android:title="NOTIFICATION SETTING">
+        android:title="APP NOTIFICATION SETTING">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_key_blocking_notification_on"
-            android:title="Statusbar notification icon"
-            android:summary="Show notification icon when blocking on"/>
+            android:title="Show statusbar icon"
+            android:summary="Show status notification icon when blocking is on"/>
         </PreferenceCategory>
     <PreferenceCategory
         android:key="pref_key_blocking_setting"
