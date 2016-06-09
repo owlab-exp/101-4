@@ -23,7 +23,7 @@ public class BootCompletedIntentReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if(sharedPreferences.getBoolean(Constant.PREF_KEY_SERVICE_ON, false)) {
             //TODO start the call blocker service, if it is ON
-            CallBlockerIntentService.startService(context);
+            CallBlockerIntentService.startActionStatusbarNotificationOn(context);
         }
     }
 }

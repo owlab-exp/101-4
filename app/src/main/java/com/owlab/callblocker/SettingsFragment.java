@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 
@@ -16,13 +17,16 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // set contents
         addPreferencesFromResource(R.xml.preferences);
+
+
 
         CheckBoxPreference blockingNotificationOn = (CheckBoxPreference) getPreferenceManager().findPreference("pref_key_blocking_notification_on");
         blockingNotificationOn.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Log.d(TAG, ">>>>> " + preference.getKey() + " changed to " + newValue.toString());
+                    Log.d(TAG, ">>>>> " + preference.getKey() + " changed to " + newValue.toString());
                 return true;
             }
         });

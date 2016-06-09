@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
         getFragmentManager().beginTransaction().add(R.id.fragment_container, new PhoneListFragment()).commit();
 
+        // set default setting values, if not initialized
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         //TODO delete
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -58,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if(checked) {
-                    CallBlockerIntentService.startService(MainActivity.this);
+                    CallBlockerIntentService.startActionBlockingOn(MainActivity.this);
                 } else {
-                    CallBlockerIntentService.stopService(MainActivity.this);
+                    CallBlockerIntentService.stopActionBlockingOff(MainActivity.this);
                 }
                 sharedPreferences.edit().putBoolean(Constant.PREF_KEY_SERVICE_ON, checked).commit();
             }
