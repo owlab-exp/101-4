@@ -6,14 +6,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
-
-import com.owlab.callblocker.service.CallBlockerIntentService;
 
 /**
  * Top most setting element is "SERVICE ON/OFF"
@@ -26,20 +22,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Initialize app
+        FUNS.initializeApp(this);
+
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getFragmentManager().beginTransaction().add(R.id.fragment_container, new PhoneListFragment()).commit();
-
-        // set default setting values, if not initialized
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        //TODO delete
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        for(String key: sharedPreferences.getAll().keySet()) {
-            Log.d(TAG, ">>>>> key: " + key);
-        }
     }
 
     private Menu menu;
@@ -55,18 +47,8 @@ public class MainActivity extends AppCompatActivity {
         MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
         Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
 
-        mainOnOffSwitch.setChecked(sharedPreferences.getBoolean(Constant.PREF_KEY_SERVICE_ON, false));
-        mainOnOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if(checked) {
-                    CallBlockerIntentService.startActionBlockingOn(MainActivity.this);
-                } else {
-                    CallBlockerIntentService.stopActionBlockingOff(MainActivity.this);
-                }
-                sharedPreferences.edit().putBoolean(Constant.PREF_KEY_SERVICE_ON, checked).commit();
-            }
-        });
+        mainOnOffSwitch.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false));
+        mainOnOffSwitch.setOnCheckedChangeListener(new FUNS.BlockingSwitchChangeListener(this));
 
         return super.onCreateOptionsMenu(menu);
     }

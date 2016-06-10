@@ -2,10 +2,7 @@ package com.owlab.callblocker;
 
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -18,27 +15,21 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // set contents
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.settings);
 
 
 
-        CheckBoxPreference blockingNotificationOn = (CheckBoxPreference) getPreferenceManager().findPreference("pref_key_blocking_notification_on");
-        blockingNotificationOn.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    Log.d(TAG, ">>>>> " + preference.getKey() + " changed to " + newValue.toString());
-                return true;
-            }
-        });
+        CheckBoxPreference showNotificationIcon = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_show_notification_icon));
+        showNotificationIcon.setOnPreferenceChangeListener(new FUNS.ShowBlockingNotificationIconPrefChangeListener());
 
-        //CheckBoxPreference suppressRinger = (CheckBoxPreference) getPreferenceManager().findPreference("pref_key_suppress_ringer");
-        //suppressRinger.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-        //    @Override
-        //    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        //        Log.d(TAG, ">>>>> " + preference.getKey() + " changed to " + newValue.toString());
-        //        return true;
-        //    }
-        //});
+        CheckBoxPreference suppressRingingPref = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_suppress_ringing));
+        suppressRingingPref.setOnPreferenceChangeListener(new FUNS.SuppressRingingPrefChangeListener());
+
+        CheckBoxPreference suppressCallNotificationPref = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_suppress_call_notification));
+        suppressCallNotificationPref.setOnPreferenceChangeListener(new FUNS.SuppressCallNotificationPrefChangeListener());
+
+        CheckBoxPreference dismissCallPref = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_dismiss_call));
+        dismissCallPref.setOnPreferenceChangeListener(new FUNS.DismissCallPrefChangeListener());
     }
 
     @Override

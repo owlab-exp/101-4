@@ -5,11 +5,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.owlab.callblocker.Constant;
+import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 
@@ -23,14 +24,14 @@ import com.owlab.callblocker.R;
 public class CallBlockerIntentService extends IntentService {
     public static final String TAG = CallBlockerIntentService.class.getSimpleName();
 
-    private static final String ACTION_BLOCKING_ON = "com.owlab.callblocker.service.action.START_BLOCKING_ON";
-    private static final String ACTION_BLOCKING_OFF = "com.owlab.callblocker.service.action.STOP_BLOCKING_OFF";
+    private static final String ACTION_BLOCKING_ON = "com.owlab.callblocker.service.action.BLOCKING_ON";
+    private static final String ACTION_BLOCKING_OFF = "com.owlab.callblocker.service.action.BLOCKING_OFF";
 
     private static final String ACTION_STATUSBAR_NOTIFICATION_ON  = "com.owlab.callblocker.service.action.STATUSBAR_NOTIFICATION_ON";
     private static final String ACTION_STATUSBAR_NOTIFICATION_OFF = "com.owlab.callblocker.service.action.STATUSBAR_NOTIFICATION_OFF";
 
-    private static final String ACTION_QUIET_RINGER_ON  = "com.owlab.callblocker.service.action.QUIET_RINGER_ON";
-    private static final String ACTION_QUIET_RINGER_OFF = "com.owlab.callblocker.service.action.QUIET_RINGER_OFF";
+    private static final String ACTION_SUPPRESS_RINGING_ON  = "com.owlab.callblocker.service.action.SUPPRESS_RINGING_ON";
+    private static final String ACTION_SUPPRESS_RINGING_OFF = "com.owlab.callblocker.service.action.SUPPRESS_RINGING_OFF";
 
     private static final String ACTION_SUPPRESS_CALL_NOTIFICATION_ON  = "com.owlab.callblocker.service.action.SUPPRESS_CALL_NOTIFICATION_ON";
     private static final String ACTION_SUPPRESS_CALL_NOTIFICATION_OFF = "com.owlab.callblocker.service.action.SUPPRESS_CALL_NOTIFICATION_OFF";
@@ -41,8 +42,8 @@ public class CallBlockerIntentService extends IntentService {
     private static final String ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_ON  = "com.owlab.callblocker.service.action.SUPPRESS_HEADS_UP_NOTIFICATION_ON";
     private static final String ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_OFF = "com.owlab.callblocker.service.action.SUPPRESS_HEADS_UP_NOTIFICATION_OFF";
 
-    private static boolean isStarted = false;
-    private static boolean statusbarNotificationOn = false;
+    //private static boolean isStarted = false;
+    //private static boolean statusbarNotificationOn = false;
 
     public CallBlockerIntentService() {
         super(TAG);
@@ -54,7 +55,7 @@ public class CallBlockerIntentService extends IntentService {
         context.startService(intent);
     }
 
-    public static void stopActionBlockingOff(Context context) {
+    public static void startActionBlockingOff(Context context) {
         Intent intent = new Intent(context, CallBlockerIntentService.class);
         intent.setAction(ACTION_BLOCKING_OFF);
         context.startService(intent);
@@ -79,14 +80,14 @@ public class CallBlockerIntentService extends IntentService {
         if (intent == null) return;
 
         if (intent.getAction().equals(ACTION_BLOCKING_ON)) {
-            handleActionStartEating();
+            handleActionBlockingOn();
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_ON)) {
             handleActionStatusbarNotificationOn();
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_OFF)) {
             handleActionStatusbarNotificationOff();
-        } else if (intent.getAction().equals(ACTION_QUIET_RINGER_ON)) {
+        } else if (intent.getAction().equals(ACTION_SUPPRESS_RINGING_ON)) {
             handleActionQuietRingerOn();
-        } else if (intent.getAction().equals(ACTION_QUIET_RINGER_OFF)) {
+        } else if (intent.getAction().equals(ACTION_SUPPRESS_RINGING_OFF)) {
             handleActionQuietRingerOff();
         } else if (intent.getAction().equals(ACTION_SUPPRESS_CALL_NOTIFICATION_ON)) {
             handleActionSuppressCallNotificationOn();
@@ -101,42 +102,62 @@ public class CallBlockerIntentService extends IntentService {
         } else if (intent.getAction().equals(ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_OFF)) {
             handleActionSuppressHeadsUpNotificationOff();
         } else if (intent.getAction().equals(ACTION_BLOCKING_OFF)) {
-            handleActionStopEating();
+            handleActionBlockingOff();
         }
     }
 
-    private void handleActionStartEating() {
+    private void handleActionBlockingOn() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        // show blocking notification
+        handleActionStatusbarNotificationOn();
 
+        // register broadcast receiver,
     }
 
-    private void handleActionStopEating() {
+    private void handleActionBlockingOff() {
+        handleActionStatusbarNotificationOff();
 
     }
 
     private void handleActionStatusbarNotificationOn() {
-        //If the notification is already on then return
+        //Log.d(TAG, ">>>>> handleActionStatusbarNotificationOn called");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //If the notification is disabled then return
-        if (statusbarNotificationOn || !PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("pref_key_blocking_notification_on", false))
+        if (!sharedPreferences.getBoolean(getString(R.string.settings_key_show_notification_icon), false)) {
+            Log.d(TAG, ">>>>> show notification icon disabled");
             return;
+        }
 
-        //Otherwise enable notification
+        //If the notification is already on then return
+        if(sharedPreferences.getBoolean(getString(R.string.status_key_show_notification_icon), false)) {
+            return;
+        }
+
+        //Otherwise show notification icon
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_call_blocker_48)
                 .setContentTitle("CallBlocker")
                 .setOngoing(true)
                 .setContentIntent(PendingIntent.getActivity(getApplication(), 0, new Intent(getApplication(), MainActivity.class), 0));
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(Constant.STATUSBAR_NOTIFICATION_ID, notificationBuilder.build());
-        statusbarNotificationOn = true;
+        notificationManager.notify(CONS.STATUSBAR_NOTIFICATION_ID, notificationBuilder.build());
+
+        //Write status
+        sharedPreferences.edit().putBoolean(getString(R.string.status_key_show_notification_icon), true).commit();
     }
 
     private void handleActionStatusbarNotificationOff() {
         //If the notification is not turned on, return
-        if (!statusbarNotificationOn) return;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        if(!sharedPreferences.getBoolean(getString(R.string.status_key_show_notification_icon), false)) {
+            return;
+        }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(Constant.STATUSBAR_NOTIFICATION_ID);
-        statusbarNotificationOn = false;
+        notificationManager.cancel(CONS.STATUSBAR_NOTIFICATION_ID);
+
+        //write status
+        sharedPreferences.edit().putBoolean(getString(R.string.status_key_show_notification_icon), false).commit();
     }
 
     private void handleActionQuietRingerOn() {}
@@ -148,78 +169,4 @@ public class CallBlockerIntentService extends IntentService {
     private void handleActionSuppressHeadsUpNotificationOn() {}
     private void handleActionSuppressHeadsUpNotificationOff() {}
 
-    @Override
-    public void onDestroy() {
-        //Log.d(TAG, ">>>>> destroy called");
-    }
-    //// IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    //private static final String ACTION_FOO = "com.owlab.callblocker.service.action.FOO";
-    //private static final String ACTION_BAZ = "com.owlab.callblocker.service.action.BAZ";
-
-    //private static final String EXTRA_PARAM1 = "com.owlab.callblocker.service.extra.PARAM1";
-    //private static final String EXTRA_PARAM2 = "com.owlab.callblocker.service.extra.PARAM2";
-
-    //public CallBlockerIntentService() {
-    //    super("CallBlockerIntentService");
-    //}
-
-    ///**
-    // * Starts this service to perform action Foo with the given parameters. If
-    // * the service is already performing a task this action will be queued.
-    // *
-    // * @see IntentService
-    // */
-    //public static void startActionFoo(Context context, String param1, String param2) {
-    //    Intent intent = new Intent(context, CallBlockerIntentService.class);
-    //    intent.setAction(ACTION_FOO);
-    //    intent.putExtra(EXTRA_PARAM1, param1);
-    //    intent.putExtra(EXTRA_PARAM2, param2);
-    //    context.startService(intent);
-    //}
-
-    ///**
-    // * Starts this service to perform action Baz with the given parameters. If
-    // * the service is already performing a task this action will be queued.
-    // *
-    // * @see IntentService
-    // */
-    //public static void startActionBaz(Context context, String param1, String param2) {
-    //    Intent intent = new Intent(context, CallBlockerIntentService.class);
-    //    intent.setAction(ACTION_BAZ);
-    //    intent.putExtra(EXTRA_PARAM1, param1);
-    //    intent.putExtra(EXTRA_PARAM2, param2);
-    //    context.startService(intent);
-    //}
-
-    //@Override
-    //protected void onHandleIntent(Intent intent) {
-    //    if (intent != null) {
-    //        final String action = intent.getAction();
-    //        if (ACTION_FOO.equals(action)) {
-    //            final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-    //            final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-    //            handleActionFoo(param1, param2);
-    //        } else if (ACTION_BAZ.equals(action)) {
-    //            final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-    //            final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-    //            handleActionBaz(param1, param2);
-    //        }
-    //    }
-    //}
-
-    ///**
-    // * Handle action Foo in the provided background thread with the provided
-    // * parameters.
-    // */
-    //private void handleActionFoo(String param1, String param2) {
-    //    throw new UnsupportedOperationException("Not yet implemented");
-    //}
-
-    ///**
-    // * Handle action Baz in the provided background thread with the provided
-    // * parameters.
-    // */
-    //private void handleActionBaz(String param1, String param2) {
-    //    throw new UnsupportedOperationException("Not yet implemented");
-    //}
 }

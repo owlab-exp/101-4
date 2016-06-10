@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.owlab.callblocker.Constant;
+import com.owlab.callblocker.R;
 import com.owlab.callblocker.service.CallBlockerIntentService;
 
 /**
@@ -21,9 +21,9 @@ public class BootCompletedIntentReceiver extends BroadcastReceiver {
         //}
         Log.d(TAG, ">>>>> boot completed intent received");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if(sharedPreferences.getBoolean(Constant.PREF_KEY_SERVICE_ON, false)) {
+        if(sharedPreferences.getBoolean(context.getString(R.string.pref_key_blocking_on), false)) {
             //TODO start the call blocker service, if it is ON
-            CallBlockerIntentService.startActionStatusbarNotificationOn(context);
+            CallBlockerIntentService.startActionBlockingOn(context);
         }
     }
 }

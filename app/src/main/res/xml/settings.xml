@@ -5,42 +5,42 @@
         android:title="APP NOTIFICATION SETTING">
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="pref_key_blocking_notification_on"
+            android:key="@string/settings_key_show_notification_icon"
             android:title="Show statusbar icon"
             android:summary="Show status notification icon when blocking is on"/>
         </PreferenceCategory>
     <PreferenceCategory
-        android:key="pref_key_blocking_setting"
+        android:key="settings_key_blocking_setting"
         android:title="CALL BLOCKING SETTINGS">
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="pref_key_suppress_ringer"
+            android:key="@string/settings_key_suppress_ringing"
             android:summary="Suppress ringing for blocked numbers"
             android:title="Suppress ringing" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="pref_key_suppress_statusbar_call_notification"
+            android:key="@string/settings_key_suppress_call_notification"
             android:summary="Remove status bar notification icon for blocked numbers"
             android:title="Suppress status bar call notification" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="pref_key_dismiss_calls_immediately"
+            android:key="@string/settings_key_dismiss_call"
             android:summary="Dismiss calls from blocked numbers"
             android:title="Dismiss calls immediately" />
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="pref_key_suppress_headsup_notification"
+            android:key="@string/settings_key_suppress_headsup_notification"
             android:summary=""
             android:title="Suppress heads-up notification" />
     </PreferenceCategory>
     <!--
 <PreferenceCategory
     android:title="HISTORY SETTING"
-    android:key="pref_key_history_settings">
+    android:key="settings_key_history_settings">
     <CheckBoxPreference
         android:defaultValue="false"
         android:enabled="false"
-        android:key="pref_key_delete_call_history"
+        android:key="settings_key_delete_call_history"
         android:summary="Delete call history of blocked numbers"
         android:title="Delete call history" />
     <CheckBoxPreference
