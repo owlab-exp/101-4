@@ -108,15 +108,47 @@ public class CallBlockerIntentService extends IntentService {
 
     private void handleActionBlockingOn() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        // show blocking notification
-        handleActionStatusbarNotificationOn();
 
-        // register broadcast receiver,
+        if(sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
+            //already registered!
+            return;
+        }
+        //// register broadcast receiver,
+        //IntentFilter intentFilter = new IntentFilter();
+        //intentFilter.addAction("android.intent.action.PHONE_STATE");
+        ////PHONE_STATE is not ordered broadcast, therefore has no priority
+        ////intentFilter.setPriority(....);
+        //PhoneStateReceiver phoneStateReceiver = new PhoneStateReceiver();
+        //registerReceiver(phoneStateReceiver, intentFilter);
+
+        // Save state
+        //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
+        sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), true).commit();
+        //}
+
+        // at last show blocking notification icon
+        handleActionStatusbarNotificationOn();
     }
 
     private void handleActionBlockingOff() {
-        handleActionStatusbarNotificationOff();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
+        if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
+            //not registered!
+            return;
+        }
+
+        //// unregister broadcast receiver, but incorrect code!!! -> declare in the manifest file
+        //PhoneStateReceiver phoneStateReceiver = new PhoneStateReceiver();
+        //unregisterReceiver(phoneStateReceiver);
+
+        // Save state
+        //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
+        sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), false).commit();
+        //}
+
+        // at last off the blocking notification icon
+        handleActionStatusbarNotificationOff();
     }
 
     private void handleActionStatusbarNotificationOn() {
@@ -129,7 +161,7 @@ public class CallBlockerIntentService extends IntentService {
         }
 
         //If the notification is already on then return
-        if(sharedPreferences.getBoolean(getString(R.string.status_key_show_notification_icon), false)) {
+        if(sharedPreferences.getBoolean(getString(R.string.status_key_notification_icon_shown), false)) {
             return;
         }
 
@@ -143,13 +175,13 @@ public class CallBlockerIntentService extends IntentService {
         notificationManager.notify(CONS.STATUSBAR_NOTIFICATION_ID, notificationBuilder.build());
 
         //Write status
-        sharedPreferences.edit().putBoolean(getString(R.string.status_key_show_notification_icon), true).commit();
+        sharedPreferences.edit().putBoolean(getString(R.string.status_key_notification_icon_shown), true).commit();
     }
 
     private void handleActionStatusbarNotificationOff() {
         //If the notification is not turned on, return
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        if(!sharedPreferences.getBoolean(getString(R.string.status_key_show_notification_icon), false)) {
+        if(!sharedPreferences.getBoolean(getString(R.string.status_key_notification_icon_shown), false)) {
             return;
         }
 
@@ -157,7 +189,7 @@ public class CallBlockerIntentService extends IntentService {
         notificationManager.cancel(CONS.STATUSBAR_NOTIFICATION_ID);
 
         //write status
-        sharedPreferences.edit().putBoolean(getString(R.string.status_key_show_notification_icon), false).commit();
+        sharedPreferences.edit().putBoolean(getString(R.string.status_key_notification_icon_shown), false).commit();
     }
 
     private void handleActionQuietRingerOn() {}

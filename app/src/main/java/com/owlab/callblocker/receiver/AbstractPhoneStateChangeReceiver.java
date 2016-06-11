@@ -3,16 +3,16 @@ package com.owlab.callblocker.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.telecom.Log;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import java.util.Date;
 
 /**
  * Created by ernest on 5/29/16.
  */
-public abstract class AbstractPhoneCallReceiver extends BroadcastReceiver {
-    private static final String TAG = AbstractPhoneCallReceiver.class.getSimpleName();
+public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver {
+    private static final String TAG = AbstractPhoneStateChangeReceiver.class.getSimpleName();
 
     private static int lastState = TelephonyManager.CALL_STATE_IDLE;
     private static Date startTime;
@@ -50,8 +50,8 @@ public abstract class AbstractPhoneCallReceiver extends BroadcastReceiver {
         }
     }
 
-    //Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
-    //Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
+    // Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
+    // Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
     // http://stackoverflow.com/questions/15563921/how-to-detect-incoming-calls-in-an-android-device
     private void onCallStateChanged(Context context, int state, String phoneNumber) {
         if(state == lastState) {
