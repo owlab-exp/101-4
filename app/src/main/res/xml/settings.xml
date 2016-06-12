@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
     <PreferenceCategory
-        android:key="pref_notification_setting"
+        android:key="settings_category_app_notification_setting"
         android:title="APP NOTIFICATION SETTING">
+    -->
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/settings_key_show_notification_icon"
-            android:title="Show statusbar icon"
-            android:summary="Show statusbar notification icon when blocking is on"/>
-        </PreferenceCategory>
+            android:key="@string/settings_key_show_app_notification_icon"
+            android:summary="Show statusbar notification icon when blocking is on"
+            android:title="Show statusbar icon" />
+        <!--
+    </PreferenceCategory>
+    -->
     <PreferenceCategory
-        android:key="settings_key_blocking_setting"
+        android:key="settings_category_call_blocking_setting"
         android:title="CALL BLOCKING SETTINGS">
         <CheckBoxPreference
             android:defaultValue="false"
@@ -36,6 +40,15 @@
             android:summary=""
             android:title="Suppress heads-up notification" />
             -->
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="settings_category_sms_blocking_setting"
+        android:title="SMS BLOCKING SETTINGS">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/settings_key_suppress_sms_notification"
+            android:summary="Suppress SMS notification for blocked numbers"
+            android:title="Suppress notification" />
     </PreferenceCategory>
     <!--
 <PreferenceCategory

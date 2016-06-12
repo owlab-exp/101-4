@@ -174,7 +174,7 @@ public class CallBlockerIntentService extends IntentService {
         //Log.d(TAG, ">>>>> handleActionStatusbarNotificationOn called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //If the notification is disabled then return
-        if (!sharedPreferences.getBoolean(getString(R.string.settings_key_show_notification_icon), false)) {
+        if (!sharedPreferences.getBoolean(getString(R.string.settings_key_show_app_notification_icon), false)) {
             Log.d(TAG, ">>>>> show notification icon disabled");
             return;
         }
