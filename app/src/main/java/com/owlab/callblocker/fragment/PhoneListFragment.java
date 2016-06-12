@@ -1,4 +1,4 @@
-package com.owlab.callblocker;
+package com.owlab.callblocker.fragment;
 
 import android.app.DialogFragment;
 import android.app.ListFragment;
@@ -20,6 +20,8 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.owlab.callblocker.R;
+import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
 import com.owlab.callblocker.content.CallBlockerTbl;
 
@@ -145,7 +147,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                                     null);
                             if(updateCount > 0) {
                                 //TODO test if getRootView is right
-                                Snackbar.make(fragmentView, (isChecked ? "Filtering enabled for " : "Filtereing disabled for ") + phoneNumber, Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(fragmentView, "Blocking " + (isChecked ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     });

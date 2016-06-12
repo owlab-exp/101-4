@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -49,15 +50,17 @@ public class CallBlockerIntentService extends IntentService {
         super(TAG);
     }
 
-    public static void startActionBlockingOn(Context context) {
+    public static void startActionBlockingOn(Context context, ResultReceiver resultReceiver) {
         Intent intent = new Intent(context, CallBlockerIntentService.class);
         intent.setAction(ACTION_BLOCKING_ON);
+        intent.putExtra("receiver", resultReceiver);
         context.startService(intent);
     }
 
-    public static void startActionBlockingOff(Context context) {
+    public static void startActionBlockingOff(Context context, ResultReceiver resultReceiver) {
         Intent intent = new Intent(context, CallBlockerIntentService.class);
         intent.setAction(ACTION_BLOCKING_OFF);
+        intent.putExtra("receiver", resultReceiver);
         context.startService(intent);
     }
 
@@ -80,7 +83,7 @@ public class CallBlockerIntentService extends IntentService {
         if (intent == null) return;
 
         if (intent.getAction().equals(ACTION_BLOCKING_ON)) {
-            handleActionBlockingOn();
+            handleActionBlockingOn((ResultReceiver) intent.getParcelableExtra("receiver"));
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_ON)) {
             handleActionStatusbarNotificationOn();
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_OFF)) {
@@ -102,17 +105,24 @@ public class CallBlockerIntentService extends IntentService {
         } else if (intent.getAction().equals(ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_OFF)) {
             handleActionSuppressHeadsUpNotificationOff();
         } else if (intent.getAction().equals(ACTION_BLOCKING_OFF)) {
-            handleActionBlockingOff();
+            handleActionBlockingOff((ResultReceiver)intent.getParcelableExtra("receiver"));
         }
     }
 
-    private void handleActionBlockingOn() {
+    private void handleActionBlockingOn(ResultReceiver resultReceiver) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        if(sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-            //already registered!
+        // If the blocking is already on
+        if(sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+            resultReceiver.send(CONS.RESULT_FAIL, null);
             return;
         }
+
+        sharedPreferences.edit().putBoolean(getString(R.string.pref_key_blocking_on), true).commit();
+        //if(sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
+        //    //already registered!
+        //    return;
+        //}
         //// register broadcast receiver,
         //IntentFilter intentFilter = new IntentFilter();
         //intentFilter.addAction("android.intent.action.PHONE_STATE");
@@ -123,20 +133,28 @@ public class CallBlockerIntentService extends IntentService {
 
         // Save state
         //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-        sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), true).commit();
+        //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), true).commit();
         //}
 
         // at last show blocking notification icon
         handleActionStatusbarNotificationOn();
+        resultReceiver.send(CONS.RESULT_SUCCESS, null);
     }
 
-    private void handleActionBlockingOff() {
+    private void handleActionBlockingOff(ResultReceiver resultReceiver) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-            //not registered!
+        // If the blocking is already off
+        if(!sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+            resultReceiver.send(CONS.RESULT_FAIL, null);
             return;
         }
+
+        sharedPreferences.edit().putBoolean(getString(R.string.pref_key_blocking_on), false).commit();
+        //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
+        //    //not registered!
+        //    return;
+        //}
 
         //// unregister broadcast receiver, but incorrect code!!! -> declare in the manifest file
         //PhoneStateReceiver phoneStateReceiver = new PhoneStateReceiver();
@@ -144,11 +162,12 @@ public class CallBlockerIntentService extends IntentService {
 
         // Save state
         //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-        sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), false).commit();
+        //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), false).commit();
         //}
 
         // at last off the blocking notification icon
         handleActionStatusbarNotificationOff();
+        resultReceiver.send(CONS.RESULT_SUCCESS, null);
     }
 
     private void handleActionStatusbarNotificationOn() {
@@ -162,6 +181,11 @@ public class CallBlockerIntentService extends IntentService {
 
         //If the notification is already on then return
         if(sharedPreferences.getBoolean(getString(R.string.status_key_notification_icon_shown), false)) {
+            return;
+        }
+
+        //If the blocking is not on state, then do not show
+        if(!sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
             return;
         }
 

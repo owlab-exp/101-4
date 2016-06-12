@@ -11,6 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 
+import com.owlab.callblocker.fragment.PhoneListFragment;
+import com.owlab.callblocker.fragment.SettingsFragment;
+
 /**
  * Top most setting element is "SERVICE ON/OFF"
  * - If service off then no filtering activity occurs and no notification icon of this app enabled
@@ -81,6 +84,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        //delegate
+        FUNS.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    public void setMainOnOffSwitch(boolean checked) {
+        MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
+        Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
+
+        mainOnOffSwitch.setChecked(checked);
     }
 
     public void changeActionBar(String title) {

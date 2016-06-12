@@ -1,4 +1,4 @@
-package com.owlab.callblocker;
+package com.owlab.callblocker.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.owlab.callblocker.R;
+import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
 
 /**

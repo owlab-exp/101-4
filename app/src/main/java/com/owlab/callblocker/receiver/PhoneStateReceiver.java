@@ -41,7 +41,7 @@ public class PhoneStateReceiver extends AbstractPhoneStateChangeReceiver {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isBlockingOn = sharedPreferences.getBoolean(context.getString(R.string.pref_key_blocking_on), false);
-        if(!isBlockingOn) {
+        if (!isBlockingOn) {
             Log.d(TAG, ">>>>> preference - blocking - off, do nothing");
             return;
         }
@@ -65,46 +65,17 @@ public class PhoneStateReceiver extends AbstractPhoneStateChangeReceiver {
         //    );
         //}
 
-        if(cursor != null && cursor.getCount() > 0) {
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) > 0;
             cursor.close();
 
-            if(isActive) {
-                ////Subject to getting be quiet
-                //AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                ////int amMode = am.getMode();
-                //if (am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
-                //    mLastRingerMode = am.getRingerMode();
-                //    am.setRingerMode(AudioManager.RINGER_MODE_SILENT); //Silent and not vibrate
-                //    mIsRingerChanged = true;
-                //    Toast.makeText(context, "change ringer mode to silent", Toast.LENGTH_SHORT).show();
-                //} else {
-                //    Toast.makeText(context, "current ringer mode is silent", Toast.LENGTH_SHORT).show();
-                //}
-                //TODO how to avoid the headup notification?
-                //Following is useless for non-ordered broadcast
-                //this.abortBroadcast();
-                TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                try {
-                    Method getTelephonyMethod = telephonyManager.getClass().getDeclaredMethod("getITelephony");
-                    getTelephonyMethod.setAccessible(true);
-                    Object iTelephony = getTelephonyMethod.invoke(telephonyManager);
-                    Method silenceRingerMethod = iTelephony.getClass().getDeclaredMethod("silenceRinger");
-                    Method endCallMethod = iTelephony.getClass().getDeclaredMethod("endCall");
-                    if(suppressRingingOn) {
-                        silenceRingerMethod.invoke(iTelephony);
-                    }
-                    if(dismissCallOn) {
-                        endCallMethod.invoke(iTelephony);
-                    }
-
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+            if (isActive) {
+                if(suppressRingingOn) {
+                    suppressRinging(context);
+                }
+                if(dismissCallOn) {
+                    dismissCall(context);
                 }
             } else {
                 Toast.makeText(context, "the incoming number (" + purePhoneNumber + ") is inactive filtering subject", Toast.LENGTH_SHORT).show();
@@ -112,6 +83,50 @@ public class PhoneStateReceiver extends AbstractPhoneStateChangeReceiver {
         } else {
             Toast.makeText(context, "the incoming number (" + purePhoneNumber + ") is not subject to be filtered", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void suppressRinging(Context context) {
+        //Subject to getting be quiet
+        AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        //int amMode = am.getMode();
+        if (am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
+            mLastRingerMode = am.getRingerMode();
+            am.setRingerMode(AudioManager.RINGER_MODE_SILENT); //Silent and not vibrate
+            mIsRingerChanged = true;
+            Toast.makeText(context, "change ringer mode to silent", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "current ringer mode is silent", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void dismissCall(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        try {
+            Method getTelephonyMethod = telephonyManager.getClass().getDeclaredMethod("getITelephony");
+            getTelephonyMethod.setAccessible(true);
+            Object iTelephony = getTelephonyMethod.invoke(telephonyManager);
+            //Method silenceRingerMethod = iTelephony.getClass().getDeclaredMethod("silenceRinger");
+            Method endCallMethod = iTelephony.getClass().getDeclaredMethod("endCall");
+            //if(suppressRingingOn) {
+            //    Log.d(TAG, ">>>>> suppress ringing...");
+            //    //Not work
+            //    silenceRingerMethod.invoke(iTelephony);
+            //}
+            //if(dismissCallOn) {
+            Log.d(TAG, ">>>>> dismiss call...");
+            //Need CALL_PHONE permission
+            endCallMethod.invoke(iTelephony);
+            //}
+
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -124,7 +139,7 @@ public class PhoneStateReceiver extends AbstractPhoneStateChangeReceiver {
     protected void onIncomingCallEnded(Context context, String phoneNumber, Date start, Date end) {
         Log.d(TAG, ">>>>> Call ended: " + phoneNumber + ", from " + start.toString() + " to " + end.toString());
 
-        if(mIsRingerChanged) {
+        if (mIsRingerChanged) {
             AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             am.setRingerMode(mLastRingerMode);
             mIsRingerChanged = false;
@@ -136,7 +151,7 @@ public class PhoneStateReceiver extends AbstractPhoneStateChangeReceiver {
     protected void onIncomingCallMissed(Context context, String phoneNumber, Date start) {
         Log.d(TAG, ">>>>> Call missed: " + phoneNumber + " at " + start.toString());
 
-        if(mIsRingerChanged) {
+        if (mIsRingerChanged) {
             AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             am.setRingerMode(mLastRingerMode);
             mIsRingerChanged = false;
