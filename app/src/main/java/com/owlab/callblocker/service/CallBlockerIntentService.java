@@ -131,7 +131,7 @@ public class CallBlockerIntentService extends IntentService {
         //intentFilter.addAction("android.intent.action.PHONE_STATE");
         ////PHONE_STATE is not ordered broadcast, therefore has no priority
         ////intentFilter.setPriority(....);
-        //PhoneCallFilter phoneStateReceiver = new PhoneCallFilter();
+        //PhoneStateChangeReceiver phoneStateReceiver = new PhoneStateChangeReceiver();
         //registerReceiver(phoneStateReceiver, intentFilter);
 
         // Save state
@@ -168,7 +168,7 @@ public class CallBlockerIntentService extends IntentService {
         //}
 
         //// unregister broadcast receiver, but incorrect code!!! -> declare in the manifest file
-        //PhoneCallFilter phoneStateReceiver = new PhoneCallFilter();
+        //PhoneStateChangeReceiver phoneStateReceiver = new PhoneStateChangeReceiver();
         //unregisterReceiver(phoneStateReceiver);
 
         // Save state
@@ -176,11 +176,10 @@ public class CallBlockerIntentService extends IntentService {
         //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), false).commit();
         //}
 
-        //Unregister call log deleter
-        //getBaseContext().getContentResolver().unregisterContentObserver(new CallLogObserver(new Handler(), getBaseContext()));
-        if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false)) {
-            stopService(new Intent(this, CallLogCleansingService.class));
-        }
+        ////Unregister call log deleter
+        //if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false)) {
+        //    stopService(new Intent(this, CallLogCleansingService.class));
+        //}
 
         // at last off the blocking notification icon
         handleActionStatusbarNotificationOff();

@@ -1,6 +1,7 @@
 package com.owlab.callblocker.contentobserver;
 
 import android.Manifest;
+import android.app.Service;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
@@ -14,18 +15,28 @@ import android.util.Log;
 /**
  * Created by ernest on 6/13/16.
  */
-public class CallLogObserver extends ContentObserver {
-    private static final String TAG = CallLogObserver.class.getSimpleName();
+public class CallLogDeleter extends ContentObserver {
+    private static final String TAG = CallLogDeleter.class.getSimpleName();
 
     private static int numOfInstance = 0;
 
     //private String phoneNumber;
     private Context context;
+    private Service holder;
     private long startTime;
 
-    public CallLogObserver(Handler handler, Context context) {
+    public CallLogDeleter(Handler handler, Context context) {
         super(handler);
         this.context = context;
+        this.startTime = System.currentTimeMillis();
+        Log.d(TAG, ">>>>> instantiated, numOfInstance: " + ++numOfInstance);
+    }
+
+    public CallLogDeleter(Handler handler, Context context, Service holder) {
+        super(handler);
+        this.context = context;
+        this.holder = holder;
+
         this.startTime = System.currentTimeMillis();
         Log.d(TAG, ">>>>> instantiated, numOfInstance: " + ++numOfInstance);
     }
@@ -45,7 +56,7 @@ public class CallLogObserver extends ContentObserver {
         Log.d(TAG, ">>>>> call log changed");
         super.onChange(selfChange);
 
-        //doDeleteIfNeeded();
+        //
     }
 
     @Override
@@ -53,7 +64,10 @@ public class CallLogObserver extends ContentObserver {
         super.onChange(selfChange);
         Log.d(TAG, ">>>>> call log changed,  parameter = (" + selfChange + ", " + uri.toString() + ")");
 
-        if(!selfChange) doDeleteIfNeeded();
+        //if(!selfChange) doDeleteIfNeeded();
+        doDeleteIfNeeded();
+        //Stop the holding service
+        holder.stopSelf();
     }
 
     private void doDeleteIfNeeded() {
