@@ -2,9 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.owlab.callblocker">
 
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Quiet Ringer -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- Dismiss Call -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!-- Delete Call Log -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
 
     <application
         android:allowBackup="true"

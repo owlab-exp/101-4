@@ -136,6 +136,14 @@ public class CallBlockerIntentService extends IntentService {
         //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), true).commit();
         //}
 
+        //if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false) &&
+        //        ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
+        //        ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+        //        ) {
+        //    //Register call log deleter
+        //    getBaseContext().getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, new CallLogObserver(new Handler(), getBaseContext()));
+        //}
+
         // at last show blocking notification icon
         handleActionStatusbarNotificationOn();
         resultReceiver.send(CONS.RESULT_SUCCESS, null);
@@ -164,6 +172,9 @@ public class CallBlockerIntentService extends IntentService {
         //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
         //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), false).commit();
         //}
+
+        //Unregister call log deleter
+        //getBaseContext().getContentResolver().unregisterContentObserver(new CallLogObserver(new Handler(), getBaseContext()));
 
         // at last off the blocking notification icon
         handleActionStatusbarNotificationOff();

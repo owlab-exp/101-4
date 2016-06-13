@@ -8,7 +8,7 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/settings_key_show_app_notification_icon"
-            android:summary="Show statusbar notification icon when blocking is on"
+            android:summary="Show app notification icon in the status bar while blocking is on"
             android:title="Show statusbar icon" />
         <!--
     </PreferenceCategory>
@@ -19,7 +19,7 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/settings_key_suppress_ringing"
-            android:summary="Suppress ringing for blocked numbers"
+            android:summary="Suppress ringing for the blocked numbers"
             android:title="Suppress ringing" />
         <!--
         <CheckBoxPreference
@@ -31,8 +31,13 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/settings_key_dismiss_call"
-            android:summary="Dismiss calls from blocked numbers"
-            android:title="Dismiss calls immediately" />
+            android:summary="Dismiss calls immediately from the blocked numbers"
+            android:title="Dismiss calls" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/settings_key_delete_call_log"
+            android:summary="Delete call log of the blocked numbers"
+            android:title="Delete call log" />
         <!--
         <CheckBoxPreference
             android:defaultValue="false"

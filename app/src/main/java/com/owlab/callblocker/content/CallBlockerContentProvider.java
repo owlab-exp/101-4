@@ -54,7 +54,7 @@ public class CallBlockerContentProvider extends ContentProvider {
 
         switch(sURIMatcher.match(uri)) {
             case FILTERED_ITEMS:
-                Log.d(TAG, ">>>>> case : FILTERED_ITEMS");
+                //Log.d(TAG, ">>>>> case : FILTERED_ITEMS");
                 if (TextUtils.isEmpty(sortOrder)) sortOrder = CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT + " DESC";
                 break;
             default:
@@ -65,7 +65,7 @@ public class CallBlockerContentProvider extends ContentProvider {
         SQLiteDatabase db = mCallBlockerDbHelper.getReadableDatabase();
         Cursor cursor = db.query(CallBlockerTbl.Schema.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), CONTENT_URI);
-        Log.d(TAG, ">>>>> cursor.getCount(): " + cursor.getCount());
+        //Log.d(TAG, ">>>>> cursor.getCount(): " + cursor.getCount());
         return cursor;
     }
 

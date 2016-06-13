@@ -64,12 +64,13 @@ public class FUNS {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
                 boolean suppressRiningOn = sharedPreferences.getBoolean(activity.getString(R.string.settings_key_suppress_ringing), false);
                 boolean dismissCallOn = sharedPreferences.getBoolean(activity.getString(R.string.settings_key_dismiss_call), false);
+                boolean deleteCallLogOn = sharedPreferences.getBoolean(activity.getString(R.string.settings_key_delete_call_log), false);
 
                 boolean needExplanation = false;
 
                 List<String> requiredPermissionList = new ArrayList<>();
 
-                if(!suppressRiningOn && !dismissCallOn) {
+                if (!suppressRiningOn && !dismissCallOn && !deleteCallLogOn) {
                     //TODO actually blocking does nothing in this case
                 }
 
@@ -87,13 +88,27 @@ public class FUNS {
                     requiredPermissionList.add(Manifest.permission.CALL_PHONE);
                 }
 
+                if (deleteCallLogOn && !(PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED)) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_CALL_LOG)) {
+                        needExplanation = true;
+                    }
+                    requiredPermissionList.add(Manifest.permission.READ_CALL_LOG);
+                }
+
+                if (deleteCallLogOn && !(PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED)) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_CALL_LOG)) {
+                        needExplanation = true;
+                    }
+                    requiredPermissionList.add(Manifest.permission.WRITE_CALL_LOG);
+                }
+
                 if (requiredPermissionList.size() == 0) {
                     //turn blocking on here
                     CallBlockerIntentService.startActionBlockingOn(activity, new ResultReceiver(new Handler()) {
                         @Override
                         protected void onReceiveResult(int resultCode, Bundle result) {
                             Log.d(TAG, ">>>>> reuslt received");
-                            Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS? " started":" not started"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? " started" : " not started"), Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -122,7 +137,7 @@ public class FUNS {
                 CallBlockerIntentService.startActionBlockingOff(activity, new ResultReceiver(new Handler()) {
                     @Override
                     protected void onReceiveResult(int resultCode, Bundle result) {
-                        Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? " stopped": "not stopped"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? " stopped" : "not stopped"), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -156,9 +171,9 @@ public class FUNS {
             Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
-            if(checked) {
+            if (checked) {
                 //Show notification icon if not
-               CallBlockerIntentService.startActionStatusbarNotificationOn(context);
+                CallBlockerIntentService.startActionStatusbarNotificationOn(context);
             } else {
                 //Remove notification icon if shown
                 CallBlockerIntentService.startActionStatusbarNotificationOff(context);
@@ -185,8 +200,8 @@ public class FUNS {
             Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
-            if(checked) {
-                if(PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            if (checked) {
+                if (PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                     //returning true means changing the checkbox finally
                     return true;
                 } else {
@@ -211,18 +226,17 @@ public class FUNS {
 
     /**
      *
+     public static class SuppressCallNotificationPrefChangeListener implements Preference.OnPreferenceChangeListener {
+     private static final String TAG = SuppressCallNotificationPrefChangeListener.class.getSimpleName();
+
+     @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+     Log.d(TAG, ">>> changed to " + newValue.toString());
+
+     //returning true means changing the checkbox finally
+     return true;
+     }
+     }
      */
-    public static class SuppressCallNotificationPrefChangeListener implements Preference.OnPreferenceChangeListener {
-        private static final String TAG = SuppressCallNotificationPrefChangeListener.class.getSimpleName();
-
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
-
-            //returning true means changing the checkbox finally
-            return true;
-        }
-    }
 
     /**
      *
@@ -241,8 +255,8 @@ public class FUNS {
             Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
-            if(checked) {
-                if(PermissionChecker.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            if (checked) {
+                if (PermissionChecker.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                     //returning true means changing the checkbox finally
                     return true;
                 } else {
@@ -268,12 +282,81 @@ public class FUNS {
     /**
      *
      */
+    public static class DeleteCallLogPrefChangeListener implements Preference.OnPreferenceChangeListener {
+        private static final String TAG = DeleteCallLogPrefChangeListener.class.getSimpleName();
+
+        private Activity activity;
+
+        public DeleteCallLogPrefChangeListener(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            Log.d(TAG, ">>> changed to " + newValue.toString());
+
+            boolean checked = (Boolean) newValue;
+            if (checked) {
+                boolean permissionReadCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+                boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+                //returning true means changing the checkbox finally
+
+                boolean needExplanation = false;
+
+                List<String> neededPermissionList = new ArrayList<>();
+
+                if (!permissionReadCallLogGranted) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_CALL_LOG)) {
+                        needExplanation = true;
+                    }
+                    neededPermissionList.add(Manifest.permission.READ_CALL_LOG);
+                }
+
+                if (!permissionWriteCallLogGranted) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_CALL_LOG)) {
+                        needExplanation = true;
+                    }
+                    neededPermissionList.add(Manifest.permission.WRITE_CALL_LOG);
+                }
+
+                if(neededPermissionList.size() == 0) {
+                    return true;
+                }
+
+                final String[] neededPermissions = new String[neededPermissionList.size()];
+                neededPermissionList.toArray(neededPermissions);
+
+                if(needExplanation) {
+                    showMessageWithOKCancel(activity, "This app needs the permissions in the following dialog. Denying may cause not to function as intended.", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int which) {
+                                    ActivityCompat.requestPermissions(activity, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG);
+                                }
+                            },
+                            null);
+                } else {
+                    ActivityCompat.requestPermissions(activity, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG);
+                }
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    /**
+     *
+     */
     public static void onRequestPermissionsResult(final Activity activity, int requestCode, String[] permissions, int[] grantResults) {
         Log.d(TAG, ">>>>> called");
 
         //Because request of multiple permissions may not result in the same number of permissions granted!
         boolean permissionReadPhoneStateGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCallPhoneGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionReadCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         switch (requestCode) {
             //case CONS.REQUEST_CODE_ASK_PERMISSION_READ_PHONE_STATE:
@@ -291,46 +374,62 @@ public class FUNS {
 
                 //    Toast.makeText(activity, permission + " " + (isGranted ? "granted": "denied"), Toast.LENGTH_SHORT).show();
                 //}
+                boolean canStart = true;
+
+                if(sharedPreferences.getBoolean(activity.getString(R.string.settings_key_suppress_ringing), false) && !permissionReadPhoneStateGranted) {
+                    canStart = false;
+                }
+                if(sharedPreferences.getBoolean(activity.getString(R.string.settings_key_dismiss_call), false) && !permissionCallPhoneGranted) {
+                    canStart = false;
+                }
+                if(sharedPreferences.getBoolean(activity.getString(R.string.settings_key_delete_call_log), false) && !(permissionReadCallLogGranted && permissionWriteCallLogGranted)) {
+                    canStart = false;
+                }
 
                 MainActivity mainActivity = (MainActivity) activity;
-                if(!permissionReadPhoneStateGranted && !permissionCallPhoneGranted) {
+                if (!canStart) {
                     //do nothing
                     //and change the main onOff switch
                     mainActivity.setMainOnOffSwitch(false);
-                    Toast.makeText(mainActivity, "Can not start blocking", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mainActivity, "Can not ON because of lack of permissions", Toast.LENGTH_SHORT).show();
                 } else {
                     //otherwise start action - blcoking on
                     CallBlockerIntentService.startActionBlockingOn(activity, new ResultReceiver(new Handler()) {
                         @Override
                         protected void onReceiveResult(int resultCode, Bundle reuslt) {
                             Log.d(TAG, ">>>>> result received");
-                            Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS? " started":" not started"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? " ON" : " OFF"), Toast.LENGTH_SHORT).show();
                         }
                     });
                     mainActivity.setMainOnOffSwitch(true);
-                    Toast.makeText(mainActivity, "Blocking on", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mainActivity, "Blocking ON", Toast.LENGTH_SHORT).show();
                 }
 
                 break;
 
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_RINGING:
-                if(permissionReadPhoneStateGranted) {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                if (permissionReadPhoneStateGranted) {
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_suppress_ringing), true).commit();
                 } else {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_suppress_ringing), false).commit();
                 }
 
                 break;
 
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_DISMISS_CALL:
-                if(permissionCallPhoneGranted) {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                if (permissionCallPhoneGranted) {
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_dismiss_call), true).commit();
                 } else {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_dismiss_call), false).commit();
+                }
+
+                break;
+
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG:
+                if (permissionReadCallLogGranted && permissionWriteCallLogGranted) {
+                    sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_delete_call_log), true).commit();
+                } else {
+                    sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_delete_call_log), false).commit();
                 }
 
                 break;

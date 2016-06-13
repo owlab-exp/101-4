@@ -30,8 +30,9 @@ public class PhoneCallFilter extends AbstractPhoneStateChangeReceiver {
         Log.d(TAG, ">>>>> instantiated");
     }
 
-    private static final String[] mProjection = {CallBlockerTbl.Schema._ID, CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE};
-    private static final String mSelectionClause = CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER + " = ?";
+    //private static final String[] mProjection = {CallBlockerTbl.Schema._ID, CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE};
+    private static final String[] mProjection = {CallBlockerTbl.Schema._ID, CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER};
+    private static final String mSelectionClause = CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER + " = ?" + " AND " + CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE + " = " + 1;
     //TODO select only active ones
     private static final String[] mSelectionArgs = {""};
 
@@ -47,7 +48,7 @@ public class PhoneCallFilter extends AbstractPhoneStateChangeReceiver {
         }
 
         boolean suppressRingingOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_ringing), false);
-        boolean suppressCallNotificationOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_call_notification), false);
+        //boolean suppressCallNotificationOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_call_notification), false);
         boolean dismissCallOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_dismiss_call), false);
 
         // Determine if the incoming number is registered and active in the blocking db
@@ -55,8 +56,7 @@ public class PhoneCallFilter extends AbstractPhoneStateChangeReceiver {
         String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
         mSelectionArgs[0] = purePhoneNumber;
         Cursor cursor = context.getContentResolver().query(CallBlockerContentProvider.CONTENT_URI, mProjection, mSelectionClause, mSelectionArgs, null);
-        //TODO delete the below debug
-        Log.d(TAG, ">>>>> cursor: " + (cursor != null ? cursor.getCount() : 0));
+        //Log.d(TAG, ">>>>> cursor: " + (cursor != null ? cursor.getCount() : 0));
         //while(cursor.moveToNext()) {
         //    Log.d(TAG, ">>>> found row: (" +
         //            cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER)) + ", " +
@@ -66,20 +66,20 @@ public class PhoneCallFilter extends AbstractPhoneStateChangeReceiver {
         //}
 
         if (cursor != null && cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) > 0;
-            cursor.close();
+            //cursor.moveToFirst();
+            //boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) > 0;
+            //cursor.close();
 
-            if (isActive) {
+            //if (isActive) {
                 if(suppressRingingOn) {
                     suppressRinging(context);
                 }
                 if(dismissCallOn) {
                     dismissCall(context);
                 }
-            } else {
-                Toast.makeText(context, "the incoming number (" + purePhoneNumber + ") is inactive filtering subject", Toast.LENGTH_SHORT).show();
-            }
+            //} else {
+            //    Toast.makeText(context, "the incoming number (" + purePhoneNumber + ") is inactive filtering subject", Toast.LENGTH_SHORT).show();
+            //}
         } else {
             Toast.makeText(context, "the incoming number (" + purePhoneNumber + ") is not subject to be filtered", Toast.LENGTH_SHORT).show();
         }
