@@ -40,8 +40,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         CheckBoxPreference dismissCallPref = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_dismiss_call));
         dismissCallPref.setOnPreferenceChangeListener(new FUNS.DismissCallPrefChangeListener(getActivity()));
 
-        CheckBoxPreference suppressSMSNotificationPref = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_suppress_sms_notification));
-        suppressSMSNotificationPref.setOnPreferenceChangeListener(new FUNS.SuppressSMSNotificationPrefChangeListener(getActivity()));
     }
 
     @Override

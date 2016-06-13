@@ -9,7 +9,5 @@
     <string name="settings_key_dismiss_call">settings_key_dismiss_call</string>
     <string name="settings_key_suppress_headsup_notification">settings_key_suppress_headsup_notification</string>
 
-    <string name="settings_key_suppress_sms_notification">settings_sms_notification</string>
-
     <string name="status_key_notification_icon_shown">status_key_show_notification_icon</string>
 </resources>

@@ -20,13 +20,13 @@ import java.util.Date;
 /**
  * Created by ernest on 5/27/16.
  */
-public class PhoneStateReceiver extends AbstractPhoneStateChangeReceiver {
-    private static final String TAG = PhoneStateReceiver.class.getSimpleName();
+public class PhoneCallFilter extends AbstractPhoneStateChangeReceiver {
+    private static final String TAG = PhoneCallFilter.class.getSimpleName();
 
     private static boolean mIsRingerChanged = false;
     private static int mLastRingerMode = 0;
 
-    public PhoneStateReceiver() {
+    public PhoneCallFilter() {
         Log.d(TAG, ">>>>> instantiated");
     }
 

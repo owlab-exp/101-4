@@ -64,11 +64,14 @@ public class FUNS {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
                 boolean suppressRiningOn = sharedPreferences.getBoolean(activity.getString(R.string.settings_key_suppress_ringing), false);
                 boolean dismissCallOn = sharedPreferences.getBoolean(activity.getString(R.string.settings_key_dismiss_call), false);
-                boolean suppressSMSNotificationOn = sharedPreferences.getBoolean(activity.getString(R.string.settings_key_suppress_sms_notification), false);
 
                 boolean needExplanation = false;
 
                 List<String> requiredPermissionList = new ArrayList<>();
+
+                if(!suppressRiningOn && !dismissCallOn) {
+                    //TODO actually blocking does nothing in this case
+                }
 
                 if (suppressRiningOn && !(PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)) {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)) {
@@ -82,13 +85,6 @@ public class FUNS {
                         needExplanation = true;
                     }
                     requiredPermissionList.add(Manifest.permission.CALL_PHONE);
-                }
-
-                if (suppressSMSNotificationOn && !(PermissionChecker.checkSelfPermission(activity, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED)) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.RECEIVE_SMS)) {
-                        needExplanation = true;
-                    }
-                    requiredPermissionList.add(Manifest.permission.RECEIVE_SMS);
                 }
 
                 if (requiredPermissionList.size() == 0) {
@@ -272,49 +268,12 @@ public class FUNS {
     /**
      *
      */
-    public static class SuppressSMSNotificationPrefChangeListener implements Preference.OnPreferenceChangeListener {
-        private static final String TAG = SuppressSMSNotificationPrefChangeListener.class.getSimpleName();
-
-        private Activity activity;
-
-        public SuppressSMSNotificationPrefChangeListener(Activity activity) {
-            this.activity = activity;
-        }
-
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
-
-            boolean checked = (Boolean) newValue;
-            if(checked) {
-                if(PermissionChecker.checkSelfPermission(activity, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED) {
-                    //returning true means changing the checkbox finally
-                    return true;
-                } else {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.RECEIVE_SMS)) {
-                        showMessageWithOKCancel(activity, "This app needs the permission in the following dialog. Denying may cause not to function as intended.", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int which) {
-                                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECEIVE_SMS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_SMS_NOTIFICATION);
-                                    }
-                                },
-                                null);
-                    } else {
-                        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECEIVE_SMS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_SMS_NOTIFICATION);
-                    }
-                    return false;
-                }
-            } else {
-                return true;
-            }
-        }
-    }
-
-    /**
-     *
-     */
     public static void onRequestPermissionsResult(final Activity activity, int requestCode, String[] permissions, int[] grantResults) {
         Log.d(TAG, ">>>>> called");
+
+        //Because request of multiple permissions may not result in the same number of permissions granted!
+        boolean permissionReadPhoneStateGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionCallPhoneGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
 
         switch (requestCode) {
             //case CONS.REQUEST_CODE_ASK_PERMISSION_READ_PHONE_STATE:
@@ -333,13 +292,8 @@ public class FUNS {
                 //    Toast.makeText(activity, permission + " " + (isGranted ? "granted": "denied"), Toast.LENGTH_SHORT).show();
                 //}
 
-                //Because request of multiple permissions may not result in the same number of permissions granted!
-                boolean permissionReadPhoneStateGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
-                boolean permissionCallPhoneGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
-                boolean permissionReceiveSMSGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED;
-
                 MainActivity mainActivity = (MainActivity) activity;
-                if(!permissionReadPhoneStateGranted && !permissionCallPhoneGranted && !permissionReceiveSMSGranted) {
+                if(!permissionReadPhoneStateGranted && !permissionCallPhoneGranted) {
                     //do nothing
                     //and change the main onOff switch
                     mainActivity.setMainOnOffSwitch(false);
@@ -360,7 +314,7 @@ public class FUNS {
                 break;
 
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_RINGING:
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(permissionReadPhoneStateGranted) {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_suppress_ringing), true).commit();
                 } else {
@@ -371,23 +325,12 @@ public class FUNS {
                 break;
 
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_DISMISS_CALL:
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(permissionCallPhoneGranted) {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_dismiss_call), true).commit();
                 } else {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_dismiss_call), false).commit();
-                }
-
-                break;
-
-            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_SMS_NOTIFICATION:
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                    sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_suppress_sms_notification), true).commit();
-                } else {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                    sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_suppress_sms_notification), false).commit();
                 }
 
                 break;

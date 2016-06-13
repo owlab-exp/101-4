@@ -6,9 +6,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.RECEIVE_MMS"/>
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_call_blocker_48"
@@ -36,15 +33,9 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.PhoneStateReceiver">
+        <receiver android:name=".receiver.PhoneCallFilter">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE"/>
-            </intent-filter>
-        </receiver>
-
-        <receiver android:name=".receiver.SMSReceiver">
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
 

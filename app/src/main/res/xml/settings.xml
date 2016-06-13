@@ -17,7 +17,7 @@
         android:key="settings_category_call_blocking_setting"
         android:title="CALL BLOCKING SETTINGS">
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/settings_key_suppress_ringing"
             android:summary="Suppress ringing for blocked numbers"
             android:title="Suppress ringing" />
@@ -40,15 +40,6 @@
             android:summary=""
             android:title="Suppress heads-up notification" />
             -->
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:key="settings_category_sms_blocking_setting"
-        android:title="SMS BLOCKING SETTINGS">
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="@string/settings_key_suppress_sms_notification"
-            android:summary="Suppress SMS notification for blocked numbers"
-            android:title="Suppress notification" />
     </PreferenceCategory>
     <!--
 <PreferenceCategory

@@ -128,7 +128,7 @@ public class CallBlockerIntentService extends IntentService {
         //intentFilter.addAction("android.intent.action.PHONE_STATE");
         ////PHONE_STATE is not ordered broadcast, therefore has no priority
         ////intentFilter.setPriority(....);
-        //PhoneStateReceiver phoneStateReceiver = new PhoneStateReceiver();
+        //PhoneCallFilter phoneStateReceiver = new PhoneCallFilter();
         //registerReceiver(phoneStateReceiver, intentFilter);
 
         // Save state
@@ -157,7 +157,7 @@ public class CallBlockerIntentService extends IntentService {
         //}
 
         //// unregister broadcast receiver, but incorrect code!!! -> declare in the manifest file
-        //PhoneStateReceiver phoneStateReceiver = new PhoneStateReceiver();
+        //PhoneCallFilter phoneStateReceiver = new PhoneCallFilter();
         //unregisterReceiver(phoneStateReceiver);
 
         // Save state
