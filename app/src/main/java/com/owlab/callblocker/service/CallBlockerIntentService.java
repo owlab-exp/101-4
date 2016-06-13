@@ -1,13 +1,16 @@
 package com.owlab.callblocker.service;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -136,13 +139,13 @@ public class CallBlockerIntentService extends IntentService {
         //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), true).commit();
         //}
 
-        //if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false) &&
-        //        ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-        //        ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED
-        //        ) {
-        //    //Register call log deleter
-        //    getBaseContext().getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, new CallLogObserver(new Handler(), getBaseContext()));
-        //}
+        if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false) &&
+                ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                ) {
+            //Register call log deleter
+            startService(new Intent(this, CallLogCleansingService.class));
+        }
 
         // at last show blocking notification icon
         handleActionStatusbarNotificationOn();
@@ -175,6 +178,9 @@ public class CallBlockerIntentService extends IntentService {
 
         //Unregister call log deleter
         //getBaseContext().getContentResolver().unregisterContentObserver(new CallLogObserver(new Handler(), getBaseContext()));
+        if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false)) {
+            stopService(new Intent(this, CallLogCleansingService.class));
+        }
 
         // at last off the blocking notification icon
         handleActionStatusbarNotificationOff();

@@ -50,6 +50,9 @@
         <service
             android:name=".service.CallBlockerIntentService"
             android:exported="false" />
+        <service
+            android:name=".service.CallLogCleansingService"
+            android:exported="false" />
     </application>
 
 </manifest>

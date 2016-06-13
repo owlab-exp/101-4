@@ -50,10 +50,10 @@ public class CallLogObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange, Uri uri) {
-        Log.d(TAG, ">>>>> call log changed with uri");
         super.onChange(selfChange);
+        Log.d(TAG, ">>>>> call log changed,  parameter = (" + selfChange + ", " + uri.toString() + ")");
 
-        doDeleteIfNeeded();
+        if(!selfChange) doDeleteIfNeeded();
     }
 
     private void doDeleteIfNeeded() {
@@ -67,15 +67,20 @@ public class CallLogObserver extends ContentObserver {
             }
 
             //Default sort order is DATE DESC
-            Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? ", phoneNumbers, "");
+            Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? " + " AND " + CallLog.Calls.DATE + " >= " + startTime, phoneNumbers, "");
+            Log.d(TAG, ">>>>> " + cursor.getCount() + " calls found in log");
+
+            int deleteCount = 0;
 
             if(cursor.moveToFirst()) {
                 do {
                     int idToDelete = cursor.getInt(cursor.getColumnIndexOrThrow(CallLog.Calls._ID));
-                    int deleteCount = context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, CallLog.Calls._ID + " = ? " + " AND " + CallLog.Calls.DATE + " >= " + startTime, new String[]{String.valueOf(idToDelete)});
-                    Log.d(TAG, "deleted: " + deleteCount + " call log(s)");
+                    deleteCount += context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, CallLog.Calls._ID + " = ? ", new String[]{String.valueOf(idToDelete)});
                 } while(cursor.moveToNext());
             }
+            cursor.close();
+
+            Log.d(TAG, ">>>>> " + deleteCount + " call log(s) deleted");
 
         } catch(Exception e) {
             Log.e(TAG, ">>>>> Error while deleting call log: " + e.getMessage());
