@@ -20,7 +20,7 @@ public class CallLogDeleter extends ContentObserver {
 
     private static int numOfInstance = 0;
 
-    //private String phoneNumber;
+    private String phoneNumber;
     private Context context;
     private Service holder;
     private long startTime;
@@ -32,18 +32,15 @@ public class CallLogDeleter extends ContentObserver {
         Log.d(TAG, ">>>>> instantiated, numOfInstance: " + ++numOfInstance);
     }
 
-    public CallLogDeleter(Handler handler, Context context, Service holder) {
+    public CallLogDeleter(Handler handler, Context context, Service holder, String phoneNumber, long startTime) {
         super(handler);
         this.context = context;
         this.holder = holder;
 
-        this.startTime = System.currentTimeMillis();
+        this.phoneNumber = phoneNumber;
+        this.startTime = startTime;
         Log.d(TAG, ">>>>> instantiated, numOfInstance: " + ++numOfInstance);
     }
-
-    //public void setPhoneNumber(String phoneNumber) {
-    //    this.phoneNumber = phoneNumber;
-    //}
 
     @Override
     public boolean deliverSelfNotifications() {
@@ -72,7 +69,7 @@ public class CallLogDeleter extends ContentObserver {
 
     private void doDeleteIfNeeded() {
         try {
-            String[] phoneNumbers = {"777"};
+            String[] phoneNumbers = {phoneNumber};
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED ||
                     ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) != PackageManager.PERMISSION_GRANTED
                     ) {
@@ -82,11 +79,12 @@ public class CallLogDeleter extends ContentObserver {
 
             //Default sort order is DATE DESC
             Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? " + " AND " + CallLog.Calls.DATE + " >= " + startTime, phoneNumbers, "");
+            //Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? ", phoneNumbers, "");
             Log.d(TAG, ">>>>> " + cursor.getCount() + " calls found in log");
 
             int deleteCount = 0;
 
-            if(cursor.moveToFirst()) {
+            if(cursor.getCount() > 0 && cursor.moveToFirst()) {
                 do {
                     int idToDelete = cursor.getInt(cursor.getColumnIndexOrThrow(CallLog.Calls._ID));
                     deleteCount += context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, CallLog.Calls._ID + " = ? ", new String[]{String.valueOf(idToDelete)});

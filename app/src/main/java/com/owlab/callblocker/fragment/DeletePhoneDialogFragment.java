@@ -66,6 +66,7 @@ public class DeletePhoneDialogFragment extends DialogFragment {
         deleteFilteredItemDialog = builder
                 //.setView(diagView)
                 //.setParentView(input)
+                .setIcon(R.drawable.ic_warning_48)
                 .setTitle("You are deleting!")
                 .setMessage(phoneNumber + "\n" + description)
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {

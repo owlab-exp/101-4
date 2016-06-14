@@ -1,10 +1,14 @@
 package com.owlab.callblocker.receiver;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,6 +16,7 @@ import android.widget.Toast;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
 import com.owlab.callblocker.content.CallBlockerTbl;
+import com.owlab.callblocker.service.CallLogDeleteService;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -51,6 +56,10 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         //boolean suppressCallNotificationOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_call_notification), false);
         boolean dismissCallOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_dismiss_call), false);
 
+        boolean deleteCallLogOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_delete_call_log), false)
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+
         // Determine if the incoming number is registered and active in the blocking db
         // TODO: is this needed? if the passed phone number is a pure form already, then this will not be needed
         String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
@@ -71,12 +80,20 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
             //cursor.close();
 
             //if (isActive) {
-                if(suppressRingingOn) {
-                    suppressRinging(context);
-                }
-                if(dismissCallOn) {
-                    dismissCall(context);
-                }
+            if(deleteCallLogOn) {
+                Log.d(TAG, ">>>>> starting delete service");
+                Intent intent = new Intent(context, CallLogDeleteService.class);
+                intent.putExtra("phoneNumber", phoneNumber);
+                intent.putExtra("startTime", start.getTime() - (2*1000));
+                context.startService(intent);
+            }
+            if (suppressRingingOn) {
+                suppressRinging(context);
+            }
+            if (dismissCallOn) {
+                dismissCall(context);
+            }
+
             //} else {
             //    Toast.makeText(context, "the incoming number (" + purePhoneNumber + ") is inactive filtering subject", Toast.LENGTH_SHORT).show();
             //}

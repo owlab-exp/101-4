@@ -99,28 +99,4 @@ public class MainActivity extends AppCompatActivity {
 
         mainOnOffSwitch.setChecked(checked);
     }
-
-    //public void changeActionBarContent(String title) {
-    //    if (getSupportActionBar() != null) {
-    //        getSupportActionBar().setTitle(title);
-    //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    //    }
-
-    //    if (menu != null) {
-    //        menu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-    //        menu.findItem(R.id.menuitem_settings).setVisible(false);
-    //    }
-    //}
-
-    //public void restoreActionBar() {
-    //    if (getSupportActionBar() != null) {
-    //        getSupportActionBar().setTitle(R.string.app_name);
-    //        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-    //    }
-
-    //    if(menu != null) {
-    //        menu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.VISIBLE);
-    //        menu.findItem(R.id.menuitem_settings).setVisible(true);
-    //    }
-    //}
 }

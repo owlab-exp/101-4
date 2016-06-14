@@ -75,14 +75,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             MainActivity mainActivity = (MainActivity)parentContext;
             //mainActivity.changeActionBarContent("Settings");
             android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-            mainActionBar.setTitle("Settings");
-            mainActionBar.setDisplayHomeAsUpEnabled(true);
+            if(mainActionBar != null) {
+                mainActionBar.setTitle("Settings");
+                mainActionBar.setDisplayHomeAsUpEnabled(true);
 
-            Menu mainMenu = mainActivity.getMenu();
-            if(mainMenu != null) {
-                //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-                //mainMenu.findItem(R.id.menuitem_settings).setVisible(false);
-                mainMenu.findItem(R.id.menuitem_settings).setEnabled(false);
+                Menu mainMenu = mainActivity.getMenu();
+                if (mainMenu != null) {
+                    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+                    //mainMenu.findItem(R.id.menuitem_settings).setVisible(false);
+                    mainMenu.findItem(R.id.menuitem_settings).setEnabled(false);
+                }
             }
 
         }
@@ -97,14 +99,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             MainActivity mainActivity = (MainActivity) parentContext;
             //mainActivity.restoreActionBar();
             android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-            mainActionBar.setTitle(R.string.app_name);
-            mainActionBar.setDisplayHomeAsUpEnabled(false);
+            if(mainActionBar != null) {
+                mainActionBar.setTitle(R.string.app_name);
+                mainActionBar.setDisplayHomeAsUpEnabled(false);
 
-            Menu mainMenu = mainActivity.getMenu();
-            if(mainMenu != null) {
-                //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-                //mainMenu.findItem(R.id.menuitem_settings).setVisible(true);
-                mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
+                Menu mainMenu = mainActivity.getMenu();
+                if (mainMenu != null) {
+                    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+                    //mainMenu.findItem(R.id.menuitem_settings).setVisible(true);
+                    mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
+                }
             }
         }
     }

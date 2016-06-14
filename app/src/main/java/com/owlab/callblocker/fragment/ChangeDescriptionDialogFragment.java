@@ -69,6 +69,7 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
         updateDescriptionDialog = builder
                 .setView(diagView)
                 //.setParentView(input)
+                .setIcon(R.drawable.ic_edit_48)
                 .setTitle("Change description")
                 .setMessage(Utils.formatPhoneNumber(phoneNumber))
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {

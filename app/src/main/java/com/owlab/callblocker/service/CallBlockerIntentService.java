@@ -1,16 +1,13 @@
 package com.owlab.callblocker.service;
 
-import android.Manifest;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -27,6 +24,8 @@ import com.owlab.callblocker.R;
  */
 public class CallBlockerIntentService extends IntentService {
     public static final String TAG = CallBlockerIntentService.class.getSimpleName();
+
+    private static final String ACTION_WHEN_BOOT_COMPLETED = "com.owlab.callblocker.service.action.WHEN_BOOT_COMPLETED";
 
     private static final String ACTION_BLOCKING_ON = "com.owlab.callblocker.service.action.BLOCKING_ON";
     private static final String ACTION_BLOCKING_OFF = "com.owlab.callblocker.service.action.BLOCKING_OFF";
@@ -51,6 +50,13 @@ public class CallBlockerIntentService extends IntentService {
 
     public CallBlockerIntentService() {
         super(TAG);
+    }
+
+    public static void startActionWhenBootBootCompleted(Context context, ResultReceiver resultReceiver) {
+        Intent intent = new Intent(context, CallBlockerIntentService.class);
+        intent.setAction(ACTION_WHEN_BOOT_COMPLETED);
+        intent.putExtra("receiver", resultReceiver);
+        context.startService(intent);
     }
 
     public static void startActionBlockingOn(Context context, ResultReceiver resultReceiver) {
@@ -85,10 +91,12 @@ public class CallBlockerIntentService extends IntentService {
 
         if (intent == null) return;
 
-        if (intent.getAction().equals(ACTION_BLOCKING_ON)) {
+        if(intent.getAction().equals(ACTION_WHEN_BOOT_COMPLETED)) {
+            handleActionWhenBootCompleted((ResultReceiver) intent.getParcelableExtra("receiver"));
+        } else if (intent.getAction().equals(ACTION_BLOCKING_ON)) {
             handleActionBlockingOn((ResultReceiver) intent.getParcelableExtra("receiver"));
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_ON)) {
-            handleActionStatusbarNotificationOn();
+            handleActionStatusbarNotificationOn(true);
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_OFF)) {
             handleActionStatusbarNotificationOff();
         } else if (intent.getAction().equals(ACTION_SUPPRESS_RINGING_ON)) {
@@ -112,6 +120,16 @@ public class CallBlockerIntentService extends IntentService {
         }
     }
 
+    private void handleActionWhenBootCompleted(ResultReceiver resultReceiver) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        // If the blocking is already on
+        if(sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+            handleActionStatusbarNotificationOn(false);
+            resultReceiver.send(CONS.RESULT_SUCCESS, null);
+        }
+    }
+
     private void handleActionBlockingOn(ResultReceiver resultReceiver) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
@@ -122,33 +140,7 @@ public class CallBlockerIntentService extends IntentService {
         }
 
         sharedPreferences.edit().putBoolean(getString(R.string.pref_key_blocking_on), true).commit();
-        //if(sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-        //    //already registered!
-        //    return;
-        //}
-        //// register broadcast receiver,
-        //IntentFilter intentFilter = new IntentFilter();
-        //intentFilter.addAction("android.intent.action.PHONE_STATE");
-        ////PHONE_STATE is not ordered broadcast, therefore has no priority
-        ////intentFilter.setPriority(....);
-        //PhoneStateChangeReceiver phoneStateReceiver = new PhoneStateChangeReceiver();
-        //registerReceiver(phoneStateReceiver, intentFilter);
-
-        // Save state
-        //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-        //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), true).commit();
-        //}
-
-        if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false) &&
-                ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED
-                ) {
-            //Register call log deleter
-            startService(new Intent(this, CallLogCleansingService.class));
-        }
-
-        // at last show blocking notification icon
-        handleActionStatusbarNotificationOn();
+        handleActionStatusbarNotificationOn(true);
         resultReceiver.send(CONS.RESULT_SUCCESS, null);
     }
 
@@ -162,31 +154,12 @@ public class CallBlockerIntentService extends IntentService {
         }
 
         sharedPreferences.edit().putBoolean(getString(R.string.pref_key_blocking_on), false).commit();
-        //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-        //    //not registered!
-        //    return;
-        //}
-
-        //// unregister broadcast receiver, but incorrect code!!! -> declare in the manifest file
-        //PhoneStateChangeReceiver phoneStateReceiver = new PhoneStateChangeReceiver();
-        //unregisterReceiver(phoneStateReceiver);
-
-        // Save state
-        //if(!sharedPreferences.getBoolean(getString(R.string.status_key_phone_state_receiver_registered), false)) {
-        //sharedPreferences.edit().putBoolean(getString(R.string.status_key_phone_state_receiver_registered), false).commit();
-        //}
-
-        ////Unregister call log deleter
-        //if(sharedPreferences.getBoolean(getString(R.string.settings_key_delete_call_log), false)) {
-        //    stopService(new Intent(this, CallLogCleansingService.class));
-        //}
-
         // at last off the blocking notification icon
         handleActionStatusbarNotificationOff();
         resultReceiver.send(CONS.RESULT_SUCCESS, null);
     }
 
-    private void handleActionStatusbarNotificationOn() {
+    private void handleActionStatusbarNotificationOn(boolean checkStatus) {
         //Log.d(TAG, ">>>>> handleActionStatusbarNotificationOn called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         //If the notification is disabled then return
@@ -196,7 +169,7 @@ public class CallBlockerIntentService extends IntentService {
         }
 
         //If the notification is already on then return
-        if(sharedPreferences.getBoolean(getString(R.string.status_key_notification_icon_shown), false)) {
+        if(checkStatus && sharedPreferences.getBoolean(getString(R.string.status_key_notification_icon_shown), false)) {
             return;
         }
 
