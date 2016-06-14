@@ -102,6 +102,20 @@ public class FUNS {
                     requiredPermissionList.add(Manifest.permission.WRITE_CALL_LOG);
                 }
 
+                //if (deleteCallLogOn && !(PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
+                //    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_CONTACTS)) {
+                //        needExplanation = true;
+                //    }
+                //    requiredPermissionList.add(Manifest.permission.WRITE_CONTACTS);
+                //}
+
+                //if (deleteCallLogOn && !(PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED)) {
+                //    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_CONTACTS)) {
+                //        needExplanation = true;
+                //    }
+                //    requiredPermissionList.add(Manifest.permission.READ_CONTACTS);
+                //}
+
                 if (requiredPermissionList.size() == 0) {
                     //turn blocking on here
                     CallBlockerIntentService.startActionBlockingOn(activity, new ResultReceiver(new Handler()) {
@@ -299,6 +313,8 @@ public class FUNS {
             if (checked) {
                 boolean permissionReadCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
                 boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+                //boolean permissionReadContactsGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+                //boolean permissionWriteContactsGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
                 //returning true means changing the checkbox finally
 
                 boolean needExplanation = false;
@@ -319,6 +335,20 @@ public class FUNS {
                     neededPermissionList.add(Manifest.permission.WRITE_CALL_LOG);
                 }
 
+                //if (!permissionReadContactsGranted) {
+                //    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_CONTACTS)) {
+                //        needExplanation = true;
+                //    }
+                //    neededPermissionList.add(Manifest.permission.READ_CONTACTS);
+                //}
+
+                //if (!permissionWriteContactsGranted) {
+                //    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_CONTACTS)) {
+                //        needExplanation = true;
+                //    }
+                //    neededPermissionList.add(Manifest.permission.WRITE_CONTACTS);
+                //}
+
                 if(neededPermissionList.size() == 0) {
                     return true;
                 }
@@ -327,7 +357,7 @@ public class FUNS {
                 neededPermissionList.toArray(neededPermissions);
 
                 if(needExplanation) {
-                    showMessageWithOKCancel(activity, "This app needs the permissions in the following dialog. Denying may cause not to function as intended.", new DialogInterface.OnClickListener() {
+                    showMessageWithOKCancel(activity, "This app needs permissions in the following dialog. Denying may cause not to function as intended.", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int which) {
                                     ActivityCompat.requestPermissions(activity, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG);
@@ -355,6 +385,8 @@ public class FUNS {
         boolean permissionCallPhoneGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
         boolean permissionReadCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
         boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+        //boolean permissionReadContactsGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        //boolean permissionWriteContactsGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
@@ -382,7 +414,9 @@ public class FUNS {
                 if(sharedPreferences.getBoolean(activity.getString(R.string.settings_key_dismiss_call), false) && !permissionCallPhoneGranted) {
                     canStart = false;
                 }
-                if(sharedPreferences.getBoolean(activity.getString(R.string.settings_key_delete_call_log), false) && !(permissionReadCallLogGranted && permissionWriteCallLogGranted)) {
+                if(sharedPreferences.getBoolean(activity.getString(R.string.settings_key_delete_call_log), false) &&
+                        //!(permissionReadCallLogGranted && permissionWriteCallLogGranted && permissionReadContactsGranted && permissionWriteContactsGranted)) {
+                    !(permissionReadCallLogGranted && permissionWriteCallLogGranted)) {
                     canStart = false;
                 }
 
@@ -427,6 +461,7 @@ public class FUNS {
 
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG:
                 if (permissionReadCallLogGranted && permissionWriteCallLogGranted) {
+                //    if (permissionReadCallLogGranted && permissionWriteCallLogGranted && permissionReadContactsGranted && permissionWriteContactsGranted) {
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_delete_call_log), true).commit();
                 } else {
                     sharedPreferences.edit().putBoolean(activity.getString(R.string.settings_key_delete_call_log), false).commit();
