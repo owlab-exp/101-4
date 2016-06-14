@@ -182,7 +182,8 @@ public class CallBlockerIntentService extends IntentService {
         //Otherwise show notification icon
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_call_blocker_48)
-                .setContentTitle("CallBlocker")
+                .setContentTitle("Call Quieter")
+                .setContentText("Call Quieter is running")
                 .setOngoing(true)
                 .setContentIntent(PendingIntent.getActivity(getApplication(), 0, new Intent(getApplication(), MainActivity.class), 0));
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
