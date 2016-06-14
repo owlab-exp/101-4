@@ -4,13 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.service.CallBlockerIntentService;
 
@@ -27,12 +23,7 @@ public class BootCompletedIntentReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if(sharedPreferences.getBoolean(context.getString(R.string.pref_key_blocking_on), false)) {
             //TODO start the call blocker service, if it is ON
-            CallBlockerIntentService.startActionWhenBootBootCompleted(context, new ResultReceiver(null) {
-                @Override
-                protected void onReceiveResult(int resultCode, Bundle result) {
-                    Toast.makeText(context, "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? "started":"could not start"), Toast.LENGTH_SHORT).show();
-                }
-            });
+            CallBlockerIntentService.startActionWhenBootBootCompleted(context);
         }
     }
 }

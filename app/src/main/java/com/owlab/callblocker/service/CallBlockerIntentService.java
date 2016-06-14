@@ -52,10 +52,9 @@ public class CallBlockerIntentService extends IntentService {
         super(TAG);
     }
 
-    public static void startActionWhenBootBootCompleted(Context context, ResultReceiver resultReceiver) {
+    public static void startActionWhenBootBootCompleted(Context context) {
         Intent intent = new Intent(context, CallBlockerIntentService.class);
         intent.setAction(ACTION_WHEN_BOOT_COMPLETED);
-        intent.putExtra("receiver", resultReceiver);
         context.startService(intent);
     }
 
@@ -92,7 +91,7 @@ public class CallBlockerIntentService extends IntentService {
         if (intent == null) return;
 
         if(intent.getAction().equals(ACTION_WHEN_BOOT_COMPLETED)) {
-            handleActionWhenBootCompleted((ResultReceiver) intent.getParcelableExtra("receiver"));
+            handleActionWhenBootCompleted();
         } else if (intent.getAction().equals(ACTION_BLOCKING_ON)) {
             handleActionBlockingOn((ResultReceiver) intent.getParcelableExtra("receiver"));
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_ON)) {
@@ -120,13 +119,14 @@ public class CallBlockerIntentService extends IntentService {
         }
     }
 
-    private void handleActionWhenBootCompleted(ResultReceiver resultReceiver) {
+    //private void handleActionWhenBootCompleted(ResultReceiver resultReceiver) {
+    private void handleActionWhenBootCompleted() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         // If the blocking is already on
         if(sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
             handleActionStatusbarNotificationOn(false);
-            resultReceiver.send(CONS.RESULT_SUCCESS, null);
+            //resultReceiver.send(CONS.RESULT_SUCCESS, null);
         }
     }
 
@@ -162,6 +162,12 @@ public class CallBlockerIntentService extends IntentService {
     private void handleActionStatusbarNotificationOn(boolean checkStatus) {
         //Log.d(TAG, ">>>>> handleActionStatusbarNotificationOn called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        //If the blocking is not on state, then do not show
+        if(!sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+            return;
+        }
+
         //If the notification is disabled then return
         if (!sharedPreferences.getBoolean(getString(R.string.settings_key_show_app_notification_icon), false)) {
             Log.d(TAG, ">>>>> show notification icon disabled");
@@ -170,12 +176,7 @@ public class CallBlockerIntentService extends IntentService {
 
         //If the notification is already on then return
         if(checkStatus && sharedPreferences.getBoolean(getString(R.string.status_key_notification_icon_shown), false)) {
-            return;
-        }
-
-        //If the blocking is not on state, then do not show
-        if(!sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
-            return;
+              return;
         }
 
         //Otherwise show notification icon
