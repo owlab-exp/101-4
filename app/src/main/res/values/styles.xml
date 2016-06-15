@@ -16,6 +16,7 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <style name="OnOffSwitch" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->
         <item name="colorControlActivated">#88c425</item>
@@ -26,11 +27,31 @@
         <item name="android:colorForeground">@color/grey</item>
         -->
     </style>
-    <style name="AddDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
-    </style>
-    <style name="ChangeDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
-    </style>
-    <style name="DeleteDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
+
+    <style name="AddDialog" parent="@android:style/Theme.DeviceDefault.Dialog"></style>
+
+    <style name="ChangeDialog" parent="@android:style/Theme.DeviceDefault.Dialog"></style>
+
+    <style name="DeleteDialog" parent="@android:style/Theme.DeviceDefault.Dialog"></style>
+
+    <style name="AppTheme.NoActionBar.Translucent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimAmount">0.5</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
 
 </resources>
+<!-- // reserve
+
+
+        <item name="android:background">@android:color/transparent</item>
+
+    <style name="Theme.AppCompat.NoActionBar.Translucent">
+
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.7</item>
+-->

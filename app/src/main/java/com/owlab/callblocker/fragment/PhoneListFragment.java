@@ -5,6 +5,7 @@ import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.owlab.callblocker.AddActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
@@ -55,10 +57,12 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment addPhoneDialogFragment = new AddPhoneDialogFragment();
-                addPhoneDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
-                addPhoneDialogFragment.show(getFragmentManager(), "tag_add_phone_dialog");
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                //DialogFragment addPhoneDialogFragment = new AddPhoneDialogFragment();
+                //addPhoneDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
+                //addPhoneDialogFragment.show(getFragmentManager(), "tag_add_phone_dialog");
+                ////Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                Intent startAddActivityIntent = new Intent(getActivity(), AddActivity.class);
+                getActivity().startActivity(startAddActivityIntent);
             }
         });
 

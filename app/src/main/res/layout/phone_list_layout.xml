@@ -22,16 +22,62 @@
             android:layout_width="match_parent"
             android:layout_height="?android:attr/listPreferredItemHeight"
             android:layout_alignParentBottom="true"
-            android:background="#cdb380"
+            android:background="#e8ddcb"
             >
         </RelativeLayout>
     </RelativeLayout>
 
+    <!--
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_add"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fab_add_from_call_history"
+        app:fabSize="mini"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="top|right|end"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/ic_history_48"
+        android:visibility="visible"
+        app:layout_anchor="@+id/fab_add_from_contacts"
+        app:layout_anchorGravity="top"
+        />
+    <android.support.design.widget.FloatingActionButton
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fab_add_from_contacts"
+        app:fabSize="mini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right|end"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/ic_contacts_64"
+        android:visibility="visible"
+        app:layout_anchor="@+id/fab_add_by_manual"
+        app:layout_anchorGravity="top"
+        />
+    <android.support.design.widget.FloatingActionButton
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fab_add_by_manual"
+        app:fabSize="mini"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_gravity="top|right"
+        android:src="@drawable/ic_write_48"
+        android:visibility="visible"
+        app:layout_anchor="@+id/fab_add"
+        app:layout_anchorGravity="top"
+        />
+        -->
+    <android.support.design.widget.FloatingActionButton
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fab_add"
+        app:fabSize="normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_input_add" />
 </android.support.design.widget.CoordinatorLayout>
+<!-- // reserve
+        android:layout_margin="@dimen/fab_margin"
+-->

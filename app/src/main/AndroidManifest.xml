@@ -31,6 +31,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".AddActivity"
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
+            <intent-filter>
+                <action android:name="android.intent.action.ADD" />
+            </intent-filter>
+        </activity>
+
         <provider
             android:name=".content.CallBlockerContentProvider"
             android:authorities="com.owlab.callblocker.contentprovider" />
@@ -40,10 +48,9 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver android:name=".receiver.PhoneStateChangeReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE"/>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 
@@ -56,3 +63,7 @@
     </application>
 
 </manifest>
+<!-- // reserve
+            android:theme="@style/Theme.AppCompat.NoActionBar.Translucent">
+            android:theme="@style/Theme.AppCompat.Translucent.NoActionBar">
+-->

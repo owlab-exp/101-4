@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--
     <PreferenceCategory
-        android:key="settings_category_app_notification_setting"
-        android:title="APP NOTIFICATION SETTING">
-    -->
+        android:key="settings_category_app_setting"
+        android:title="APP SETTING">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/settings_key_show_app_notification_icon"
-            android:summary="Show app notification icon in the status bar while blocking is on"
+            android:summary="Show app icon in the status bar while blocking is on"
             android:title="Show statusbar icon" />
-        <!--
     </PreferenceCategory>
-    -->
     <PreferenceCategory
         android:key="settings_category_call_blocking_setting"
         android:title="CALL BLOCKING SETTINGS">
@@ -31,7 +27,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/settings_key_dismiss_call"
-            android:summary="Dismiss calls immediately from the blocked numbers"
+            android:summary="Dismiss immediately calls from the blocked numbers"
             android:title="Dismiss calls" />
         <CheckBoxPreference
             android:defaultValue="false"
