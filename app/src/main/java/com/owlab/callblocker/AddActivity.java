@@ -1,8 +1,10 @@
 package com.owlab.callblocker;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -18,6 +20,15 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
+        FloatingActionButton addFromCallLogFab = (FloatingActionButton)findViewById(R.id.fab_add_from_call_history);
+        addFromCallLogFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CALL_LOG);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -79,5 +90,4 @@ public class AddActivity extends AppCompatActivity {
         }
 
     }
-
 }

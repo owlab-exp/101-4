@@ -1,5 +1,6 @@
 package com.owlab.callblocker;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Switch;
 
+import com.owlab.callblocker.fragment.CallLogFragment;
 import com.owlab.callblocker.fragment.PhoneListFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
 
@@ -32,8 +34,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        Intent intent = getIntent();
+        String fragment = intent.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
         //getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
+        if(intent != null && fragment != null && fragment.equals(CONS.FRAGMENT_CALL_LOG)) {
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new CallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
+        } else {
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_PHONE_LIST).commit();
+        }
     }
 
     private Menu menu;
@@ -69,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.menuitem_settings:
-                SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("SETTINGS_FRAGMENT");
+                SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag(CONS.FRAGMENT_SETTINGS);
                 if (settingsFragment == null) {
                     settingsFragment = new SettingsFragment();
 
                 }
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, settingsFragment, "SETTINGS_FRAGMENT")
+                        .replace(R.id.fragment_container, settingsFragment, CONS.FRAGMENT_SETTINGS)
                         .addToBackStack(null)
                         .commit();
                 return true;
