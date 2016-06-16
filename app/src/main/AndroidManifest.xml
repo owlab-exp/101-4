@@ -33,7 +33,8 @@
 
         <activity
             android:name=".AddActivity"
-            android:theme="@style/AppTheme.NoActionBar.Translucent">
+            android:theme="@style/AppTheme.NoActionBar.Translucent.Slide"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.ADD" />
             </intent-filter>

@@ -1,6 +1,5 @@
 package com.owlab.callblocker;
 
-import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -33,12 +32,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getFragmentManager().beginTransaction().add(R.id.fragment_container, new PhoneListFragment()).commit();
+        //getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
     }
 
     private Menu menu;
 
-    public Menu getMenu() {return this.menu;}
+    public Menu getMenu() {
+        return this.menu;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -68,19 +70,17 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.menuitem_settings:
                 SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag("SETTINGS_FRAGMENT");
-                if(settingsFragment == null || !settingsFragment.isVisible()) {
-                    getFragmentManager().beginTransaction()
-                            .addToBackStack("PhoneListFragment")
-                            .replace(R.id.fragment_container, new SettingsFragment(), "SETTINGS_FRAGMENT")
-                            .commit();
-                    return true;
+                if (settingsFragment == null) {
+                    settingsFragment = new SettingsFragment();
+
                 }
-                return false;
-            case android.R.id.home:
-                getFragmentManager().popBackStack("PhoneListFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new PhoneListFragment())
+                        .replace(R.id.fragment_container, settingsFragment, "SETTINGS_FRAGMENT")
+                        .addToBackStack(null)
                         .commit();
+                return true;
+            case android.R.id.home:
+                getFragmentManager().popBackStack();
                 return true;
         }
 

@@ -8,5 +8,6 @@
         android:layout_centerVertical="true"
         android:textOff="OFF"
         android:textOn="ON"
+        android:theme="@style/OnOffSwitch"
         />
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.owlab.callblocker.fragment;
 
+import android.app.ActivityOptions;
 import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
@@ -35,6 +38,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
 
     private SimpleCursorAdapter cursorAdapter;
     private static final int DB_LOADER = 0;
+    private boolean isFabRotated = false;
 
     public PhoneListFragment() {
         Log.d(TAG, ">>>>> instantiated");
@@ -53,22 +57,45 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
         View view = inflater.inflate(R.layout.phone_list_layout, container, false);
 
         //Floating Action Button
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //DialogFragment addPhoneDialogFragment = new AddPhoneDialogFragment();
-                //addPhoneDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
-                //addPhoneDialogFragment.show(getFragmentManager(), "tag_add_phone_dialog");
-                ////Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                //final OvershootInterpolator interpolator = new OvershootInterpolator();
+                //ViewCompat.animate(fab).rotation(45f).withLayer().setDuration(300).setInterpolator(interpolator).start();
+                Animation rotateForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
+                fab.startAnimation(rotateForward);
+                isFabRotated = true;
+
                 Intent startAddActivityIntent = new Intent(getActivity(), AddActivity.class);
-                getActivity().startActivity(startAddActivityIntent);
+                getActivity().startActivity(startAddActivityIntent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
             }
         });
+
+        //Animation fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
+        //fab.startAnimation(fabOpen);
 
         setLoader(view);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(isFabRotated) {
+            final FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_add);
+            Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
+            fab.startAnimation(rotateBackward);
+            //Over coding?
+            isFabRotated = false;
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     private void setLoader(final View fragmentView) {

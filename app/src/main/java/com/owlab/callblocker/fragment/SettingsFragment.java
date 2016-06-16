@@ -23,11 +23,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, ">>>>> onCreate called");
         // set contents
         addPreferencesFromResource(R.xml.settings);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         CheckBoxPreference showNotificationIcon = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_show_app_notification_icon));
         showNotificationIcon.setOnPreferenceChangeListener(new FUNS.ShowBlockingNotificationIconPrefChangeListener(getActivity()));
@@ -86,8 +84,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     mainMenu.findItem(R.id.menuitem_settings).setEnabled(false);
                 }
             }
-
         }
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -111,6 +111,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         }
+
+        //Unregister preferencechangelistener
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

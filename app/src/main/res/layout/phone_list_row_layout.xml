@@ -38,11 +38,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="7dp"
         android:clickable="true"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:id="@+id/phone_number_list_row_delete_icon"
-        android:src="@android:drawable/ic_delete"
+        android:src="@drawable/ic_eraser_28"
         android:contentDescription="Delete" />
 </LinearLayout>
+<!-- //garage
+        android:src="@android:drawable/ic_delete"
+-->

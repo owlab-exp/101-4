@@ -61,13 +61,13 @@ public class CallLogDeleter extends ContentObserver {
         super.onChange(selfChange);
         Log.d(TAG, ">>>>> call log changed,  parameter = (" + selfChange + ", " + uri.toString() + ")");
 
-        //if(!selfChange) doDeleteIfNeeded();
-        doDeleteIfNeeded();
+        //if(!selfChange) doDeleteIfRequired();
+        doDeleteIfRequired();
         //Stop the holding service
         holder.stopSelf();
     }
 
-    private void doDeleteIfNeeded() {
+    private void doDeleteIfRequired() {
         try {
             String[] phoneNumbers = {phoneNumber};
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED ||
