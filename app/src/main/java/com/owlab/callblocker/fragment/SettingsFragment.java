@@ -97,18 +97,19 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         if(parentContext != null && parentContext instanceof MainActivity) {
             MainActivity mainActivity = (MainActivity) parentContext;
-            //mainActivity.restoreActionBar();
             android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
             if(mainActionBar != null) {
                 mainActionBar.setTitle(R.string.app_name);
                 mainActionBar.setDisplayHomeAsUpEnabled(false);
 
-                Menu mainMenu = mainActivity.getMenu();
-                if (mainMenu != null) {
-                    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-                    //mainMenu.findItem(R.id.menuitem_settings).setVisible(true);
-                    mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
-                }
+                //Regenerate menu
+                mainActivity.invalidateOptionsMenu();
+                //Menu mainMenu = mainActivity.getMenu();
+                //if (mainMenu != null) {
+                //    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+                //    //mainMenu.findItem(R.id.menuitem_settings).setVisible(true);
+                //    mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
+                //}
             }
         }
 
