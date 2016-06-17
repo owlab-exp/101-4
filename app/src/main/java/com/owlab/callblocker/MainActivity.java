@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Switch;
 
-import com.owlab.callblocker.fragment.CallLogFragment;
+import com.owlab.callblocker.fragment.AddFromCallLogFragment;
 import com.owlab.callblocker.fragment.PhoneListFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         String fragment = intent.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
         //getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
         if(intent != null && fragment != null && fragment.equals(CONS.FRAGMENT_CALL_LOG)) {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new CallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
         } else {
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_PHONE_LIST).commit();
         }
@@ -100,6 +101,13 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         //delegate
         FUNS.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, ">>>>> back pressed");
+
+        super.onBackPressed();
     }
 
     public void setMainOnOffSwitch(boolean checked) {

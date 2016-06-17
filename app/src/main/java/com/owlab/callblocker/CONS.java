@@ -15,5 +15,6 @@ public final class CONS {
     public static final String FRAGMENT_PHONE_LIST = "PHONE_LIST_FRAGMENT";
     public static final String FRAGMENT_SETTINGS = "SETTINGS_FRAGMENT";
     public static final String FRAGMENT_CALL_LOG = "CALL_LOG_FRAGMENT";
-    public static final String INTENT_KEY_TARGET_FRAGMENT = "target_fragment";
+    public static final String INTENT_KEY_TARGET_FRAGMENT = "TARGET_FRAGMENT";
+    public static final String INTENT_KEY_TRANSITION_SOURCE = "TRANSITION_SOURCE";
 }

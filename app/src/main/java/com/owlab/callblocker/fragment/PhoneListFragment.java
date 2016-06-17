@@ -24,7 +24,8 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.owlab.callblocker.AddActivity;
+import com.owlab.callblocker.AddSourceSelectionActivity;
+import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
@@ -63,11 +64,13 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
             public void onClick(View view) {
                 //final OvershootInterpolator interpolator = new OvershootInterpolator();
                 //ViewCompat.animate(fab).rotation(45f).withLayer().setDuration(300).setInterpolator(interpolator).start();
-                Animation rotateForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
+                Animation rotateForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_disappear);
                 fab.startAnimation(rotateForward);
                 isFabRotated = true;
 
-                Intent startAddActivityIntent = new Intent(getActivity(), AddActivity.class);
+                Intent startAddActivityIntent = new Intent(getActivity(), AddSourceSelectionActivity.class);
+                startAddActivityIntent.putExtra(CONS.INTENT_KEY_TRANSITION_SOURCE, CONS.FRAGMENT_PHONE_LIST);
+
                 getActivity().startActivity(startAddActivityIntent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
             }
         });
@@ -86,7 +89,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
 
         if(isFabRotated) {
             final FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_add);
-            Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
+            Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
             fab.startAnimation(rotateBackward);
             //Over coding?
             isFabRotated = false;

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.CallLogFragment">
+    tools:context=".fragment.AddFromCallLogFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,13 +29,13 @@
 
     <android.support.design.widget.FloatingActionButton
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/fab_check"
+        android:id="@+id/fab_enter"
         app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_double_check_mark_48"
+        android:src="@drawable/fab_import_48"
         app:backgroundTint="@android:color/holo_purple"
         />
 </android.support.design.widget.CoordinatorLayout>

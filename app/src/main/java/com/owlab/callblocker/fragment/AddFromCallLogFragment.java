@@ -2,25 +2,28 @@ package com.owlab.callblocker.fragment;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.owlab.callblocker.R;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-//public class CallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-public class CallLogFragment extends ListFragment {
-    private static final String TAG = CallLogFragment.class.getSimpleName();
+//public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddFromCallLogFragment extends ListFragment {
+    private static final String TAG = AddFromCallLogFragment.class.getSimpleName();
 
     //private SimpleCursorAdapter cursorAdapter;
     //private static final int DB_LOADER = 0;
     //private boolean isFabRotated = false;
 
-    public CallLogFragment() {
+    public AddFromCallLogFragment() {
         Log.d(TAG, ">>>>> instantiated");
     }
 
@@ -34,7 +37,7 @@ public class CallLogFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, ">>>>> onCreateView called");
-        View view = inflater.inflate(R.layout.call_history_layout, container, false);
+        View view = inflater.inflate(R.layout.add_from_call_log_layout, container, false);
 
         ////Floating Action Button
         //final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_check);
@@ -45,7 +48,7 @@ public class CallLogFragment extends ListFragment {
         //        fab.startAnimation(rotateForward);
         //        isFabRotated = true;
 
-        //        //Intent startAddActivityIntent = new Intent(getActivity(), AddActivity.class);
+        //        //Intent startAddActivityIntent = new Intent(getActivity(), AddSourceSelectionActivity.class);
         //        //getActivity().startActivity(startAddActivityIntent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
         //    }
         //});
@@ -63,7 +66,10 @@ public class CallLogFragment extends ListFragment {
         super.onResume();
 
         //if(isFabRotated) {
-        //    final FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_add);
+        final FloatingActionButton enterFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_enter);
+        Animation rotateForwardOnSeen = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
+        enterFab.startAnimation(rotateForwardOnSeen);
+
         //    Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
         //    fab.startAnimation(rotateBackward);
         //    //Over coding?
@@ -74,6 +80,10 @@ public class CallLogFragment extends ListFragment {
     @Override
     public void onPause() {
         super.onPause();
+
+        final FloatingActionButton enterFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_enter);
+        Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
+        enterFab.startAnimation(rotateBackward);
     }
 
     /**
@@ -134,7 +144,7 @@ public class CallLogFragment extends ListFragment {
                             argument.putString("phoneNumber", phoneNumber);
                             argument.putString("description", description);
                             changeDescriptionDialogFragment.setArguments(argument);
-                            changeDescriptionDialogFragment.setTargetFragment(CallLogFragment.this, 0);
+                            changeDescriptionDialogFragment.setTargetFragment(AddFromCallLogFragment.this, 0);
                             changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
                         }
                     });
@@ -178,7 +188,7 @@ public class CallLogFragment extends ListFragment {
                             argument.putString("phoneNumber", phoneNumber);
                             argument.putString("description", description);
                             deletePhoneDialogFragment.setArguments(argument);
-                            deletePhoneDialogFragment.setTargetFragment(CallLogFragment.this, 0);
+                            deletePhoneDialogFragment.setTargetFragment(AddFromCallLogFragment.this, 0);
                             deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");
                         }
                     });
