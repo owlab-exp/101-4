@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Switch;
 
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
+import com.owlab.callblocker.fragment.AddFromContactsFragment;
 import com.owlab.callblocker.fragment.PhoneListFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
 
@@ -121,12 +122,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CONS.REQUEST_CODE_ADD_SOURCE_SELECTION) {
             if(resultCode == RESULT_OK) {
-                Log.d(TAG, ">>>>> result ok received");
+                Log.d(TAG, ">>>>> result ok received from add source selection activity");
                 String targetFragment = data.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
+                Log.d(TAG, ">>>>> target fragment: " + targetFragment);
                 if(CONS.FRAGMENT_CALL_LOG.equals(targetFragment)) {
                     getFragmentManager().beginTransaction()
                             .addToBackStack(null)
                             .replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
+                } else if(CONS.FRAGMENT_CONTACTS.equals(targetFragment)) {
+                    getFragmentManager().beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commit();
                 }
             } else if(resultCode == RESULT_CANCELED) {
                 Log.d(TAG, ">>>>> result canceled received");

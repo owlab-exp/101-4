@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_from_contacts_row_view"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight">
+
+    <!-- //
+    Default icon might be replaced with from contacts, if possible.
+    The icon will be flipped with check mark icon when checked (clicked) for addition to the blocked list
+    Also when more than equal one is flipped, then the IMPORT icon will be enabled!
+    -->
+    <ImageView
+        android:id="@+id/add_from_contacts_row_contact_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="7dp"
+        android:clickable="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_contact_48"
+        android:adjustViewBounds="true"
+        android:contentDescription="Caller" />
+    <!--//
+    phone number, and contact name if possible
+    -->
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/add_from_contacts_row_contact_info"
+        android:maxLength="14"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="7dp"
+        android:gravity="center_vertical"
+        android:textAppearance="?android:attr/textAppearanceListItem" />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/add_from_contacts_row_contact_detail"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="7dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+</LinearLayout>
+<!-- //garage
+        android:src="@android:drawable/ic_delete"
+-->

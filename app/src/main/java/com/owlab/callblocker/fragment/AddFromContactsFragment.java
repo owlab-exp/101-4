@@ -1,12 +1,14 @@
 package com.owlab.callblocker.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,30 +16,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
+import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.Utils;
-
-import java.text.SimpleDateFormat;
 
 /**
  */
-public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-//public class AddFromCallLogFragment extends ListFragment {
-    private static final String TAG = AddFromCallLogFragment.class.getSimpleName();
+public class AddFromContactsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
+    private static final String TAG = AddFromContactsFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
-    private static final int CALL_LOG_LOADER = 0;
+    private static final int CONTACTS_LOADER = 0;
     //private boolean isFabRotated = false;
 
     FloatingActionButton enterFab;
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
-    public AddFromCallLogFragment() {
+    //Provider columns
+    @SuppressLint("InlineApi")
+    private static final String[] FROM_COLUMNS = {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
+    };
+
+    //List row items for the provider columns
+    private static final int[] TO_IDS = {
+            R.id.add_from_contacts_row_contact_info
+            //, R.id.add_from_contacts_row_contact_detail
+    };
+
+    public AddFromContactsFragment() {
         Log.d(TAG, ">>>>> instantiated");
     }
 
@@ -53,7 +62,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, ">>>>> onCreateView called");
-        View view = inflater.inflate(R.layout.add_from_call_log_layout, container, false);
+        View view = inflater.inflate(R.layout.add_from_contacts_layout, container, false);
 
         enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
         ////Floating Action Button
@@ -73,7 +82,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         ////Animation fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         ////fab.startAnimation(fabOpen);
 
-        setLoader(view);
+        setupLoader(view);
 
         return view;
     }
@@ -93,25 +102,10 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
-    private void setLoader(final View fragmentView) {
-        final String[] columns = {
-                CallLog.Calls._ID
-                , CallLog.Calls.NUMBER
-                , CallLog.Calls.TYPE
-                , CallLog.Calls.DATE
-                , CallLog.Calls.DURATION
-               // , CallLog.Calls.NEW
-               // , CallLog.Calls.COUNTRY_ISO
-        };
-        final int[] rowItems = new int[]{
-                R.id.add_from_call_log_row_caller_icon
-                , R.id.add_from_call_log_row_caller_info
-                , R.id.add_from_call_log_row_caller_type
-                , R.id.add_from_call_log_row_call_detail
-                , R.id.add_from_call_log_row_call_detail
-        };
+    private void setupLoader(final View fragmentView) {
 
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, columns, rowItems, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_contacts_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        /*
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             private int idColumnIndex = -1;
             private int numberColumnIndex = -1;
@@ -134,10 +128,6 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     dateColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DATE);
                 if(durationColumnIndex == -1)
                     durationColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION);
-                //if(newColumnIndex == -1)
-                //    newColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.NEW);
-                //if(countryISOColumnIndex == -1)
-                //    countryISOColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.COUNTRY_ISO);
 
                 if(columnIndex == idColumnIndex) {
 
@@ -193,80 +183,14 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     return true;
                 }
 
-                /**
-                if(columnIndex == descriptionColumnIndex) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String description = cursor.getString(descriptionColumnIndex);
-                    TextView descriptionTextView = (TextView) view;
-                    descriptionTextView.setText(description);
-                    descriptionTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View descriptionView) {
-                            ChangeDescriptionDialogFragment changeDescriptionDialogFragment = new ChangeDescriptionDialogFragment();
-                            Bundle argument = new Bundle();
-                            argument.putInt("_id", _id);
-                            argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", description);
-                            changeDescriptionDialogFragment.setArguments(argument);
-                            changeDescriptionDialogFragment.setTargetFragment(AddFromCallLogFragment.this, 0);
-                            changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
-                        }
-                    });
-                    return true;
-                }
-
-                if(columnIndex == isActiveColumnIndex) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    Switch isActiveSwitch = (Switch) view;
-                    isActiveSwitch.setChecked(cursor.getInt(isActiveColumnIndex) > 0);
-                    isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE, isChecked ? 1:0);
-                            int updateCount = getActivity().getContentResolver().update(
-                                    CallBlockerContentProvider.CONTENT_URI,
-                                    contentValues, CallBlockerTbl.Schema._ID + " = " + _id,
-                                    null);
-                            if(updateCount > 0) {
-                                //TODO test if getRootView is right
-                                Snackbar.make(fragmentView, "Blocking " + (isChecked ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    return true;
-                }
-
-                if(view.getId() == R.id.phone_number_list_row_delete_icon) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String description = cursor.getString(descriptionColumnIndex);
-                    ImageView deleteIconView = (ImageView) view;
-                    deleteIconView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            DialogFragment deletePhoneDialogFragment = new DeletePhoneDialogFragment();
-                            Bundle argument = new Bundle();
-                            argument.putInt("_id", _id);
-                            argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", description);
-                            deletePhoneDialogFragment.setArguments(argument);
-                            deletePhoneDialogFragment.setTargetFragment(AddFromCallLogFragment.this, 0);
-                            deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");
-                        }
-                    });
-                    return true;
-                }
-
-                */
                 return false;
             }
         });
+        */
 
         setListAdapter(cursorAdapter);
-        getLoaderManager().initLoader(CALL_LOG_LOADER, null, this);
+        //getListView().setOnItemClickListener(this);
+        getLoaderManager().initLoader(CONTACTS_LOADER, null, this);
     }
 
     @Override
@@ -275,8 +199,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
         CursorLoader cursorLoader = null;
         switch(loaderId) {
-            case CALL_LOG_LOADER:
-                cursorLoader = new CursorLoader(getActivity(), CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
+            case CONTACTS_LOADER:
+                cursorLoader = new CursorLoader(getActivity(), ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
@@ -292,5 +216,10 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         cursorAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
+        Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
     }
 }

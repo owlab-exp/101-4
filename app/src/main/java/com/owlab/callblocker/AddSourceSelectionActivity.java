@@ -92,6 +92,36 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                 }
             }
         });
+
+        addFromContactsFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CONTACTS);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CONTACTS)) {
+                        FUNS.showMessageWithOKCancel(
+                                AddSourceSelectionActivity.this,
+                                "This feature need the following permission. Denying may cause not to function as intended.",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int which) {
+                                        //Request permission
+                                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS);
+                                    }
+                                }
+                                , null);
+                    } else {
+                        //Request permission
+                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -165,6 +195,20 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
                 } else {
                     Toast.makeText(this, "Can not open call log by lack of permission.", Toast.LENGTH_SHORT).show();
+                    //Snackbar.make(findViewById(android.R.id.content), "Can not open the call by lack of permission.", Snackbar.LENGTH_SHORT).show();
+                }
+                break;
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS:
+                if(readContactsPermissionGranted) {
+                    //open read & import call log fragment
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CONTACTS);
+                    //startActivity(intent);
+                    setResult(RESULT_OK, intent);
+                    finish();
+
+                } else {
+                    Toast.makeText(this, "Can not open contacts by lack of permission.", Toast.LENGTH_SHORT).show();
                     //Snackbar.make(findViewById(android.R.id.content), "Can not open the call by lack of permission.", Snackbar.LENGTH_SHORT).show();
                 }
                 break;
