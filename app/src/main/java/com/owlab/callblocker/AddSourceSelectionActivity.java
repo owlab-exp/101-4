@@ -64,17 +64,16 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         addFromCallLogFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO firstly check READ_CONTACTS permission
-                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                    transitionTarget = CONS.FRAGMENT_CALL_LOG;
+                //if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, transitionTarget);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_PHONE_LIST);
                     setResult(RESULT_OK, intent);
                     finish();
                     //startActivity(intent);
                     //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(AddSourceSelectionActivity.this).toBundle());
                 } else {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CONTACTS)) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CALL_LOG)) {
                         FUNS.showMessageWithOKCancel(
                                 AddSourceSelectionActivity.this,
                                 "This feature need the following permission. Denying may cause not to function as intended.",
@@ -82,13 +81,13 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int which) {
                                         //Request permission
-                                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS_CALL_LOG);
+                                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CALL_LOG}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG);
                                     }
                                 }
                                 , null);
                     } else {
                         //Request permission
-                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS_CALL_LOG);
+                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CALL_LOG}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG);
                     }
                 }
             }
@@ -152,15 +151,14 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        boolean readContactsPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        boolean readContactsPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
 
         switch(requestCode) {
-            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS_CALL_LOG:
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG:
                 if(readContactsPermissionGranted) {
                     //open read & import call log fragment
-                    transitionTarget = CONS.FRAGMENT_CALL_LOG;
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, transitionTarget);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CALL_LOG);
                     //startActivity(intent);
                     setResult(RESULT_OK, intent);
                     finish();
