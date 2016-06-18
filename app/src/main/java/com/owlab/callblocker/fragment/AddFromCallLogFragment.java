@@ -179,9 +179,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     String dateStr = cursor.getString(dateColumnIndex);
 
                     long dateLong = Long.valueOf(dateStr);
-                    //Date date = new Date(dateLong);
                     SimpleDateFormat dateFormat = new SimpleDateFormat();
-                    //dateFormat.format(dateLong);
+                    //TODO if today, then do simpler format
 
                     TextView detailTextView = (TextView) view;
                     detailTextView.append(dateFormat.format(dateLong));

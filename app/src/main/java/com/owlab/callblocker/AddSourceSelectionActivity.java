@@ -69,7 +69,9 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                     transitionTarget = CONS.FRAGMENT_CALL_LOG;
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, transitionTarget);
-                    startActivity(intent);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    //startActivity(intent);
                     //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(AddSourceSelectionActivity.this).toBundle());
                 } else {
                     if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CONTACTS)) {
@@ -159,8 +161,10 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                     transitionTarget = CONS.FRAGMENT_CALL_LOG;
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, transitionTarget);
-                    startActivity(intent);
-                    //overridePendingTransition(0, 0);
+                    //startActivity(intent);
+                    setResult(RESULT_OK, intent);
+                    finish();
+
                 } else {
                     Toast.makeText(this, "Can not open call log by lack of permission.", Toast.LENGTH_SHORT).show();
                     //Snackbar.make(findViewById(android.R.id.content), "Can not open the call by lack of permission.", Snackbar.LENGTH_SHORT).show();

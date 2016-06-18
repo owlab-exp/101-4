@@ -36,14 +36,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        Intent intent = getIntent();
-        String fragment = intent.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
-        //getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
-        if(intent != null && fragment != null && fragment.equals(CONS.FRAGMENT_CALL_LOG)) {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
-        } else {
+        //Intent intent = getIntent();
+        //String fragment = intent.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
+        ////getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
+        //if(intent != null && fragment != null && fragment.equals(CONS.FRAGMENT_CALL_LOG)) {
+        //    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
+        //} else {
             getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_PHONE_LIST).commit();
-        }
+        //}
     }
 
     private Menu menu;
@@ -115,5 +115,25 @@ public class MainActivity extends AppCompatActivity {
         Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
 
         mainOnOffSwitch.setChecked(checked);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == CONS.REQUEST_CODE_ADD_SOURCE_SELECTION) {
+            if(resultCode == RESULT_OK) {
+                Log.d(TAG, ">>>>> result ok received");
+                String targetFragment = data.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
+                if(CONS.FRAGMENT_CALL_LOG.equals(targetFragment)) {
+                    getFragmentManager().beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
+                }
+            } else if(resultCode == RESULT_CANCELED) {
+                Log.d(TAG, ">>>>> result canceled received");
+
+            } else if(resultCode == RESULT_FIRST_USER) {
+                //TODO what is this?
+            }
+        }
     }
 }

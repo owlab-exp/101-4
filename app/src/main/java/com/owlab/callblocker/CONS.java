@@ -18,4 +18,5 @@ public final class CONS {
     public static final String FRAGMENT_CALL_LOG = "CALL_LOG_FRAGMENT";
     public static final String INTENT_KEY_TARGET_FRAGMENT = "TARGET_FRAGMENT";
     public static final String INTENT_KEY_TRANSITION_SOURCE = "TRANSITION_SOURCE";
+    public static final int REQUEST_CODE_ADD_SOURCE_SELECTION = 11;
 }

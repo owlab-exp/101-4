@@ -17,9 +17,9 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="7dp"
         android:clickable="true"
-        android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_contact_48"
+        android:adjustViewBounds="true"
         android:contentDescription="Caller" />
     <!--//
     phone number, and contact name if possible
@@ -40,9 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="7dp"
-        android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_call_received_black_18dp"
+        android:adjustViewBounds="true"
         android:contentDescription="Type" />
     <!--//
     type:incoming, outgoing, missed, ...
