@@ -67,7 +67,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                 //if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_PHONE_LIST);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CALL_LOG);
                     setResult(RESULT_OK, intent);
                     finish();
                     //startActivity(intent);
