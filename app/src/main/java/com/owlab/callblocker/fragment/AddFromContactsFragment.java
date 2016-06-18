@@ -5,7 +5,11 @@ import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -17,9 +21,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.owlab.callblocker.R;
+
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 
 /**
  */
@@ -37,13 +46,18 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     //Provider columns
     @SuppressLint("InlineApi")
     private static final String[] FROM_COLUMNS = {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
+            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+            , Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
+            , ContactsContract.CommonDataKinds.Phone.NUMBER
+            , ContactsContract.CommonDataKinds.Phone.TYPE
     };
 
     //List row items for the provider columns
     private static final int[] TO_IDS = {
-            R.id.add_from_contacts_row_contact_info
-            //, R.id.add_from_contacts_row_contact_detail
+            R.id.add_from_contacts_row_contact_icon
+            , R.id.add_from_contacts_row_contact_info
+            , R.id.add_from_contacts_row_contact_detail
+            , R.id.add_from_contacts_row_contact_detail
     };
 
     public AddFromContactsFragment() {
@@ -105,88 +119,71 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     private void setupLoader(final View fragmentView) {
 
         cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_contacts_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
-        /*
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            private int idColumnIndex = -1;
-            private int numberColumnIndex = -1;
-            private int typeColumnIndex = -1;
-            private int dateColumnIndex = -1;
-            private int durationColumnIndex = -1;
-            //private int newColumnIndex = -1;
-            //private int countryISOColumnIndex = -1;
 
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
-                //final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID));
-                if(idColumnIndex == -1)
-                    idColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls._ID);
-                if(numberColumnIndex == -1)
-                    numberColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER);
-                if(typeColumnIndex == -1)
-                    typeColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE);
-                if(dateColumnIndex == -1)
-                    dateColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DATE);
-                if(durationColumnIndex == -1)
-                    durationColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION);
 
-                if(columnIndex == idColumnIndex) {
-
-                    return true;
-                }
-
-                if(columnIndex == numberColumnIndex) {
-                    //Log.d(TAG, ">>>>> phone number formatting...");
-                    TextView callerInfoTextView = (TextView) view;
+                if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)) {
+                    ImageView photoView = (ImageView) view;
                     //If addTextChangedListener needed, make it clear that this call happens only once per the textview
                     //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-                    callerInfoTextView.setText(Utils.formatPhoneNumber(cursor.getString(numberColumnIndex)));
+                    //callerInfoTextView.setText(Utils.formatPhoneNumber(cursor.getString(numberColumnIndex)));
                     //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
-                    return true;
-                }
+                    String photoThumbnailUri = cursor.getString(columnIndex);
+                    Log.d(TAG, ">>>>> PHOTO_THUMBNAIL_URI: " + photoThumbnailUri);
+                    if(photoThumbnailUri != null) {
+                        try {
+                            AssetFileDescriptor afd = getActivity().getContentResolver().openAssetFileDescriptor(Uri.parse(photoThumbnailUri), "r");
+                            FileDescriptor fd = afd.getFileDescriptor();
+                            Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd, null, null);
+                            photoView.setImageBitmap(bitmap);
+                            return true;
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            return false;
+                        }
 
-                if(columnIndex == typeColumnIndex) {
-                    ImageView typeIV = (ImageView) view;
-
-                    String type = cursor.getString(typeColumnIndex);
-                    switch(Integer.parseInt(type)) {
-                        case CallLog.Calls.OUTGOING_TYPE:
-                            //detailTextView.setText("Outgoing call");
-                            typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
-                            break;
-                        case CallLog.Calls.INCOMING_TYPE:
-                            //detailTextView.setText("Incoming call");
-                            typeIV.setImageResource(R.drawable.ic_call_received_black_18dp);
-                            break;
-                        case CallLog.Calls.MISSED_TYPE:
-                            //detailTextView.setText("Missed call");
-                            typeIV.setImageResource(R.drawable.ic_call_missed_black_18dp);
-                            break;
+                    } else {
+                        return true;
                     }
+                }
+
+                if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)) {
+                    TextView detailView = (TextView) view;
+                    String phoneNumber = cursor.getString(columnIndex);
+                    detailView.setText(phoneNumber);
                     return true;
                 }
 
-                if(columnIndex == dateColumnIndex) {
-                    String dateStr = cursor.getString(dateColumnIndex);
-
-                    long dateLong = Long.valueOf(dateStr);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat();
-                    //TODO if today, then do simpler format
-
-                    TextView detailTextView = (TextView) view;
-                    detailTextView.append(dateFormat.format(dateLong));
+                if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.TYPE)) {
+                    TextView detailView = (TextView) view;
+                    int phoneType = cursor.getInt(columnIndex);
+                    detailView.append("\n" + ContactsContract.CommonDataKinds.Phone.getTypeLabel(getResources(), phoneType, ""));
                     return true;
                 }
 
-                if(columnIndex == durationColumnIndex) {
-                    TextView detailTextView = (TextView) view;
-                    detailTextView.append("\n" + cursor.getString(durationColumnIndex) + " sec");
-                    return true;
-                }
+                //if(columnIndex == dateColumnIndex) {
+                //    String dateStr = cursor.getString(dateColumnIndex);
+
+                //    long dateLong = Long.valueOf(dateStr);
+                //    SimpleDateFormat dateFormat = new SimpleDateFormat();
+                //    //TODO if today, then do simpler format
+
+                //    TextView detailTextView = (TextView) view;
+                //    detailTextView.append(dateFormat.format(dateLong));
+                //    return true;
+                //}
+
+                //if(columnIndex == durationColumnIndex) {
+                //    TextView detailTextView = (TextView) view;
+                //    detailTextView.append("\n" + cursor.getString(durationColumnIndex) + " sec");
+                //    return true;
+                //}
 
                 return false;
             }
         });
-        */
 
         setListAdapter(cursorAdapter);
         //getListView().setOnItemClickListener(this);
@@ -200,7 +197,11 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         CursorLoader cursorLoader = null;
         switch(loaderId) {
             case CONTACTS_LOADER:
-                cursorLoader = new CursorLoader(getActivity(), ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+                //cursorLoader = new CursorLoader(getActivity(), ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+                //Only having phone number(s)
+                //cursorLoader = new CursorLoader(getActivity(), ContactsContract.Contacts.CONTENT_URI, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0", null, null);
+                //cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+                cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0", null, null);
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);

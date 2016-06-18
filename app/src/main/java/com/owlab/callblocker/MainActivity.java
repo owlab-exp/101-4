@@ -15,7 +15,7 @@ import android.widget.Switch;
 
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
 import com.owlab.callblocker.fragment.AddFromContactsFragment;
-import com.owlab.callblocker.fragment.AddPhoneDialogFragment;
+import com.owlab.callblocker.fragment.AddByManualDialogFragment;
 import com.owlab.callblocker.fragment.PhoneListFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
 
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                             .replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commit();
                 } else if(CONS.FRAGMENT_ADD_BY_MANUAL.equals(targetFragment)) {
                     Fragment phoneListFragment = getFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);
-                    DialogFragment addByManualDialogFragment = new AddPhoneDialogFragment();
+                    DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
                     addByManualDialogFragment.setTargetFragment(phoneListFragment, 0);
                     addByManualDialogFragment.show(getFragmentManager(), "ADD_BY_MANUAL_DIALOG");
                 }

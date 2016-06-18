@@ -183,7 +183,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     //TODO if today, then do simpler format
 
                     TextView detailTextView = (TextView) view;
-                    detailTextView.append(dateFormat.format(dateLong));
+                    detailTextView.setText(dateFormat.format(dateLong));
                     return true;
                 }
 

@@ -23,8 +23,8 @@ import com.owlab.callblocker.content.CallBlockerTbl;
 /**
  * Created by ernest on 5/15/16.
  */
-public class AddPhoneDialogFragment extends DialogFragment{
-    private static final String TAG = AddPhoneDialogFragment.class.getSimpleName();
+public class AddByManualDialogFragment extends DialogFragment{
+    private static final String TAG = AddByManualDialogFragment.class.getSimpleName();
 
     //public interface AddItemDialogListener {
     //    public void onAddItemDialogAddClick(DialogFragment dialog);
@@ -49,11 +49,11 @@ public class AddPhoneDialogFragment extends DialogFragment{
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Log.d(TAG, ">>> target fragment: " + getTargetFragment() );
 
-        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AlertDialogStyle);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AddDialog);
+        //AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AddDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         //final EditText input = new EditText(getActivity());
-        View diagView = inflater.inflate(R.layout.add_phone_dialog_layout, null);
+        View diagView = inflater.inflate(R.layout.add_by_manual_dialog_layout_new, null);
         AlertDialog addPhoneNumberDialog = builder
                 .setView(diagView)
                 //.setParentView(input)
@@ -78,25 +78,7 @@ public class AddPhoneDialogFragment extends DialogFragment{
             public void onShow(final DialogInterface dialog) {
                 final AlertDialog alertDialog = (AlertDialog)dialog;
                 EditText phoneNumberEditText = (EditText) alertDialog.findViewById(R.id.add_phone_dialog_phone_number);
-                phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher() {
-                    //@Override
-                    //public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    //    Log.d(TAG, ">>>>> beforeTextChanged called");
-                    //    super.beforeTextChanged(s, start, count, after);
-                    //}
-
-                    //@Override
-                    //public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    //    Log.d(TAG, ">>>>> onTextChanged called");
-                    //    super.onTextChanged(s, start, before, count);
-                    //}
-
-                    //@Override
-                    //public void afterTextChanged(Editable s) {
-                    //    Log.d(TAG, ">>>>> afterTextChanged called");
-                    //    super.afterTextChanged(s);
-                    //}
-                });
+                phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
                 Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 positiveButton.setOnClickListener(new View.OnClickListener() {
