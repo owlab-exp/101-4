@@ -61,7 +61,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         miniFabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open);
         miniFabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close);
 
-        addFromCallLogFab.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener fromCallLogOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -91,9 +91,12 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        };
 
-        addFromContactsFab.setOnClickListener(new View.OnClickListener() {
+        addFromCallLogFab.setOnClickListener(fromCallLogOnClickListener);
+        addFromCallLogLabel.setOnClickListener(fromCallLogOnClickListener);
+
+        View.OnClickListener addFromContactsOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -121,7 +124,23 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        };
+
+        addFromContactsFab.setOnClickListener(addFromContactsOnClickListener);
+        addFromContactsLabel.setOnClickListener(addFromContactsOnClickListener);
+
+        View.OnClickListener addByManualOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_ADD_BY_MANUAL);
+                    setResult(RESULT_OK, intent);
+                    finish();
+            }
+        };
+
+        addByManualFab.setOnClickListener(addByManualOnClickListener);
+        addByManualLabel.setOnClickListener(addByManualOnClickListener);
     }
 
     @Override
