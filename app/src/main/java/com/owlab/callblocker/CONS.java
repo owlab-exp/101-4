@@ -9,6 +9,7 @@ public final class CONS {
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_RINGING = 213;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_DISMISS_CALL = 215;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG = 217;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS_CALL_LOG = 219;
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAIL = -1;
     public static final int RESULT_OTHER = -1;

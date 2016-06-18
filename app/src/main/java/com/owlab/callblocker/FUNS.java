@@ -158,7 +158,7 @@ public class FUNS {
         }
     }
 
-    private static void showMessageWithOKCancel(Activity activity, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
+    public static void showMessageWithOKCancel(Activity activity, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
         new AlertDialog.Builder(activity)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)

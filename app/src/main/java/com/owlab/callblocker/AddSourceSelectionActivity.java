@@ -1,14 +1,20 @@
 package com.owlab.callblocker;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AddSourceSelectionActivity extends AppCompatActivity {
     private static final String TAG = AddSourceSelectionActivity.class.getSimpleName();
@@ -58,11 +64,31 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         addFromCallLogFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                transitionTarget = CONS.FRAGMENT_CALL_LOG;
-                Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, transitionTarget);
-                startActivity(intent);
-                //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(AddSourceSelectionActivity.this).toBundle());
+                //TODO firstly check READ_CONTACTS permission
+                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    transitionTarget = CONS.FRAGMENT_CALL_LOG;
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, transitionTarget);
+                    startActivity(intent);
+                    //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(AddSourceSelectionActivity.this).toBundle());
+                } else {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CONTACTS)) {
+                        FUNS.showMessageWithOKCancel(
+                                AddSourceSelectionActivity.this,
+                                "This feature need the following permission. Denying may cause not to function as intended.",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int which) {
+                                        //Request permission
+                                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS_CALL_LOG);
+                                    }
+                                }
+                                , null);
+                    } else {
+                        //Request permission
+                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS_CALL_LOG);
+                    }
+                }
             }
         });
     }
@@ -120,5 +146,28 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         Log.d(TAG, ">>>>> back pressed");
         super.onBackPressed();
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        boolean readContactsPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+
+        switch(requestCode) {
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS_CALL_LOG:
+                if(readContactsPermissionGranted) {
+                    //open read & import call log fragment
+                    transitionTarget = CONS.FRAGMENT_CALL_LOG;
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, transitionTarget);
+                    startActivity(intent);
+                    //overridePendingTransition(0, 0);
+                } else {
+                    Toast.makeText(this, "Can not open call log by lack of permission.", Toast.LENGTH_SHORT).show();
+                    //Snackbar.make(findViewById(android.R.id.content), "Can not open the call by lack of permission.", Snackbar.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                Log.e(TAG, ">>>>> request code unsupported: " + requestCode);
+        }
     }
 }

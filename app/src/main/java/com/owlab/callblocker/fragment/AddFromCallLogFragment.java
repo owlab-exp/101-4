@@ -1,7 +1,12 @@
 package com.owlab.callblocker.fragment;
 
 import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.CallLog;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,19 +14,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.Utils;
+
+import java.text.SimpleDateFormat;
 
 /**
- * A placeholder fragment containing a simple view.
  */
-//public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-public class AddFromCallLogFragment extends ListFragment {
+public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+//public class AddFromCallLogFragment extends ListFragment {
     private static final String TAG = AddFromCallLogFragment.class.getSimpleName();
 
-    //private SimpleCursorAdapter cursorAdapter;
-    //private static final int DB_LOADER = 0;
+    private SimpleCursorAdapter cursorAdapter;
+    private static final int CALL_LOG_LOADER = 0;
     //private boolean isFabRotated = false;
+
+    FloatingActionButton enterFab;
+    Animation rotateForwardAppear;
+    Animation rotateBackwardDisappear;
 
     public AddFromCallLogFragment() {
         Log.d(TAG, ">>>>> instantiated");
@@ -31,6 +45,8 @@ public class AddFromCallLogFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
+        rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
     }
 
     @Override
@@ -39,6 +55,7 @@ public class AddFromCallLogFragment extends ListFragment {
         Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.add_from_call_log_layout, container, false);
 
+        enterFab = (FloatingActionButton) view.findViewById(R.id.fab_enter);
         ////Floating Action Button
         //final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_check);
         //fab.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +73,7 @@ public class AddFromCallLogFragment extends ListFragment {
         ////Animation fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         ////fab.startAnimation(fabOpen);
 
-        //setLoader(view);
+        setLoader(view);
 
         return view;
     }
@@ -66,69 +83,118 @@ public class AddFromCallLogFragment extends ListFragment {
         super.onResume();
 
         //if(isFabRotated) {
-        final FloatingActionButton enterFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_enter);
-        Animation rotateForwardOnSeen = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
-        enterFab.startAnimation(rotateForwardOnSeen);
-
-        //    Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
-        //    fab.startAnimation(rotateBackward);
-        //    //Over coding?
-        //    isFabRotated = false;
-        //}
+        enterFab.startAnimation(rotateForwardAppear);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        final FloatingActionButton enterFab = (FloatingActionButton) getActivity().findViewById(R.id.fab_enter);
-        Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
-        enterFab.startAnimation(rotateBackward);
+        enterFab.startAnimation(rotateBackwardDisappear);
     }
 
-    /**
     private void setLoader(final View fragmentView) {
         final String[] columns = {
-                CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
-                CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION,
-                CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
-                CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
+                CallLog.Calls._ID
+                , CallLog.Calls.NUMBER
+                , CallLog.Calls.TYPE
+                , CallLog.Calls.DATE
+                , CallLog.Calls.DURATION
+               // , CallLog.Calls.NEW
+               // , CallLog.Calls.COUNTRY_ISO
         };
         final int[] rowItems = new int[]{
-                R.id.phone_number_list_row_phone_number,
-                R.id.phone_number_list_row_description,
-                R.id.phone_number_list_row_is_active_switch,
-                R.id.phone_number_list_row_delete_icon
+                R.id.add_from_call_log_row_caller_icon
+                , R.id.add_from_call_log_row_caller_info
+                , R.id.add_from_call_log_row_caller_type
+                , R.id.add_from_call_log_row_call_detail
+                , R.id.add_from_call_log_row_call_detail
         };
 
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.phone_list_row_layout, null, columns, rowItems, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, columns, rowItems, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            private int _idColumnIndex = -1;
-            private int phoneNumberColumnIndex = -1;
-            private int descriptionColumnIndex = -1;
-            private int isActiveColumnIndex = -1;
+            private int idColumnIndex = -1;
+            private int numberColumnIndex = -1;
+            private int typeColumnIndex = -1;
+            private int dateColumnIndex = -1;
+            private int durationColumnIndex = -1;
+            //private int newColumnIndex = -1;
+            //private int countryISOColumnIndex = -1;
+
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
                 //final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID));
-                if(_idColumnIndex == -1)
-                    _idColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID);
-                if(phoneNumberColumnIndex == -1)
-                    phoneNumberColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER);
-                if(descriptionColumnIndex == -1)
-                    descriptionColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION);
-                if(isActiveColumnIndex == -1)
-                    isActiveColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE);
+                if(idColumnIndex == -1)
+                    idColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls._ID);
+                if(numberColumnIndex == -1)
+                    numberColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER);
+                if(typeColumnIndex == -1)
+                    typeColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE);
+                if(dateColumnIndex == -1)
+                    dateColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DATE);
+                if(durationColumnIndex == -1)
+                    durationColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION);
+                //if(newColumnIndex == -1)
+                //    newColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.NEW);
+                //if(countryISOColumnIndex == -1)
+                //    countryISOColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.COUNTRY_ISO);
 
-                if(columnIndex == phoneNumberColumnIndex) {
+                if(columnIndex == idColumnIndex) {
+
+                    return true;
+                }
+
+                if(columnIndex == numberColumnIndex) {
                     //Log.d(TAG, ">>>>> phone number formatting...");
-                    TextView phoneNumberTextView = (TextView) view;
+                    TextView callerInfoTextView = (TextView) view;
                     //If addTextChangedListener needed, make it clear that this call happens only once per the textview
                     //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-                    phoneNumberTextView.setText(Utils.formatPhoneNumber(cursor.getString(phoneNumberColumnIndex)));
+                    callerInfoTextView.setText(Utils.formatPhoneNumber(cursor.getString(numberColumnIndex)));
                     //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
                     return true;
                 }
 
+                if(columnIndex == typeColumnIndex) {
+                    ImageView typeIV = (ImageView) view;
+
+                    String type = cursor.getString(typeColumnIndex);
+                    switch(Integer.parseInt(type)) {
+                        case CallLog.Calls.OUTGOING_TYPE:
+                            //detailTextView.setText("Outgoing call");
+                            typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                            break;
+                        case CallLog.Calls.INCOMING_TYPE:
+                            //detailTextView.setText("Incoming call");
+                            typeIV.setImageResource(R.drawable.ic_call_received_black_18dp);
+                            break;
+                        case CallLog.Calls.MISSED_TYPE:
+                            //detailTextView.setText("Missed call");
+                            typeIV.setImageResource(R.drawable.ic_call_missed_black_18dp);
+                            break;
+                    }
+                    return true;
+                }
+
+                if(columnIndex == dateColumnIndex) {
+                    String dateStr = cursor.getString(dateColumnIndex);
+
+                    long dateLong = Long.valueOf(dateStr);
+                    //Date date = new Date(dateLong);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat();
+                    //dateFormat.format(dateLong);
+
+                    TextView detailTextView = (TextView) view;
+                    detailTextView.append(dateFormat.format(dateLong));
+                    return true;
+                }
+
+                if(columnIndex == durationColumnIndex) {
+                    TextView detailTextView = (TextView) view;
+                    detailTextView.append("\n" + cursor.getString(durationColumnIndex) + " sec");
+                    return true;
+                }
+
+                /**
                 if(columnIndex == descriptionColumnIndex) {
                     final int _id = cursor.getInt(_idColumnIndex);
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
@@ -195,28 +261,26 @@ public class AddFromCallLogFragment extends ListFragment {
                     return true;
                 }
 
+                */
                 return false;
             }
         });
 
         setListAdapter(cursorAdapter);
-        getLoaderManager().initLoader(DB_LOADER, null, this);
+        getLoaderManager().initLoader(CALL_LOG_LOADER, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+        Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
+
         CursorLoader cursorLoader = null;
         switch(loaderId) {
-            case DB_LOADER:
-                String[] projection = {
-                        CallBlockerTbl.Schema._ID,
-                        CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
-                        CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION,
-                        CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
-                        CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
-                };
-                cursorLoader = new CursorLoader(this.getActivity(), CallBlockerContentProvider.CONTENT_URI, projection, null, null, null);
+            case CALL_LOG_LOADER:
+                cursorLoader = new CursorLoader(getActivity(), CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
                 break;
+            default:
+                Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
         }
         return cursorLoader;
     }
@@ -230,5 +294,4 @@ public class AddFromCallLogFragment extends ListFragment {
     public void onLoaderReset(Loader<Cursor> loader) {
         cursorAdapter.swapCursor(null);
     }
-    */
 }
