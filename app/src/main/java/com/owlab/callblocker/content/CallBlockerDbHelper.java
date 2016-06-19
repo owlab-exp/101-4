@@ -1,6 +1,7 @@
 package com.owlab.callblocker.content;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -33,4 +34,34 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
         //onUpgrade(db);
     }
 
+
+    //Several helper methods for other use
+    public boolean hasPhoneNumber(String phoneNumber) {
+        //Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
+        if(phoneNumber == null) {
+            return false;
+        }
+
+        String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+
+        //Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(CallBlockerTbl.Schema.TABLE_NAME,
+                new String[]{CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER},
+                CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER + " = ? ",
+                new String[]{purePhoneNumber},
+                null,
+                null,
+                null);
+
+        boolean result = false;
+        //Log.d(TAG, ">>>>> count: " + cursor.getCount());
+        if(cursor != null && cursor.getCount() > 0) {
+            result = true;
+        }
+
+        db.close();
+
+        return result;
+    }
 }

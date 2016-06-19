@@ -1,10 +1,14 @@
 package com.owlab.callblocker.fragment;
 
+import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.design.widget.FloatingActionButton;
@@ -14,18 +18,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
+import com.owlab.callblocker.content.CallBlockerContentProvider;
+import com.owlab.callblocker.content.CallBlockerDbHelper;
+import com.owlab.callblocker.content.CallBlockerTbl;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  */
-public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 //public class AddFromCallLogFragment extends ListFragment {
     private static final String TAG = AddFromCallLogFragment.class.getSimpleName();
 
@@ -37,6 +49,9 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
+    CallBlockerDbHelper callBlockerDbHelper;
+    Map<String, String> selectedPhoneMap = new HashMap<>();
+
     public AddFromCallLogFragment() {
         Log.d(TAG, ">>>>> instantiated");
     }
@@ -47,6 +62,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
         rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
         rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
+        callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
     }
 
     @Override
@@ -56,24 +72,30 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         View view = inflater.inflate(R.layout.add_from_call_log_layout, container, false);
 
         enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
-        ////Floating Action Button
-        //final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_check);
-        //fab.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        Animation rotateForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
-        //        fab.startAnimation(rotateForward);
-        //        isFabRotated = true;
+        enterFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(selectedPhoneMap.size() > 0) {
+                    for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
+                        ContentValues values = new ContentValues();
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, entry.getValue());
+                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
+                        if(Long.parseLong(newUri.getLastPathSegment()) > 0) {
+                            Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), entry.getKey() + " failed to add, duplicate?", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    selectedPhoneMap.clear();
+                    getFragmentManager().popBackStack(CONS.FRAGMENT_PHONE_LIST, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                } else {
+                    Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-        //        //Intent startAddActivityIntent = new Intent(getActivity(), AddSourceSelectionActivity.class);
-        //        //getActivity().startActivity(startAddActivityIntent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
-        //    }
-        //});
-
-        ////Animation fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
-        ////fab.startAnimation(fabOpen);
-
-        setLoader(view);
+        setupLoader(view);
 
         return view;
     }
@@ -93,7 +115,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
-    private void setLoader(final View fragmentView) {
+    private void setupLoader(final View fragmentView) {
         final String[] columns = {
                 CallLog.Calls._ID
                 , CallLog.Calls.NUMBER
@@ -292,5 +314,32 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         cursorAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        //Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
+        TextView infoView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_info);
+        //String displayName = infoView.getText().toString();
+        //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
+        //String detail = detailView.getText().toString();
+        String info = infoView.getText().toString();
+        String phoneNumber = info.replaceAll("[^\\d]", "");
+        String displayName = "";
+        Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
+
+        if(callBlockerDbHelper.hasPhoneNumber(phoneNumber)) {
+            return;
+        }
+
+        if(selectedPhoneMap.containsKey(phoneNumber)) {
+            selectedPhoneMap.remove(phoneNumber);
+            Log.d(TAG, ">>>>> removed");
+            view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
+        } else {
+            selectedPhoneMap.put(phoneNumber, displayName);
+            Log.d(TAG, ">>>>> added");
+            view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
+        }
     }
 }

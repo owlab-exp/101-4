@@ -4,6 +4,9 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight">
+    <!--
+    android:layout_height="fill_parent">
+    -->
 
     <!-- //
     Default icon might be replaced with from contacts, if possible.

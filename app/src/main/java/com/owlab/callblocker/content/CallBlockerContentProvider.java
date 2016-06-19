@@ -39,8 +39,11 @@ public class CallBlockerContentProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#/created_at", FILTERED_ITEM_CREATED_AT);
     }
 
-    private CallBlockerDbHelper mCallBlockerDbHelper;
+    private CallBlockerDbHelper mCallBlockerDbHelper;// = new CallBlockerDbHelper(getContext());
 
+    public CallBlockerContentProvider() {
+
+    }
 
     @Override
     public boolean onCreate() {
@@ -51,6 +54,7 @@ public class CallBlockerContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        //Log.d(TAG, ">>>>> selection: " + selection);
 
         switch(sURIMatcher.match(uri)) {
             case FILTERED_ITEMS:
@@ -72,7 +76,7 @@ public class CallBlockerContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        Log.d(TAG, ">>>>> getType called, uri: " + uri.toString());
+        //Log.d(TAG, ">>>>> getType called, uri: " + uri.toString());
         String type = null;
         switch(sURIMatcher.match(uri)) {
             case FILTERED_ITEMS:

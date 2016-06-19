@@ -130,11 +130,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, ">>>>> target fragment: " + targetFragment);
                 if(CONS.FRAGMENT_CALL_LOG.equals(targetFragment)) {
                     getFragmentManager().beginTransaction()
-                            .addToBackStack(null)
+                            .addToBackStack(CONS.FRAGMENT_PHONE_LIST)
                             .replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
                 } else if(CONS.FRAGMENT_CONTACTS.equals(targetFragment)) {
                     getFragmentManager().beginTransaction()
-                            .addToBackStack(null)
+                            .addToBackStack(CONS.FRAGMENT_PHONE_LIST)
                             .replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commit();
                 } else if(CONS.FRAGMENT_ADD_BY_MANUAL.equals(targetFragment)) {
                     Fragment phoneListFragment = getFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);

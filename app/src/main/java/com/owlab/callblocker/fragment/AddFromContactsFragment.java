@@ -1,16 +1,15 @@
 package com.owlab.callblocker.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -22,13 +21,19 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.content.CallBlockerContentProvider;
+import com.owlab.callblocker.content.CallBlockerDbHelper;
+import com.owlab.callblocker.content.CallBlockerTbl;
 
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  */
@@ -43,11 +48,17 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
+    CallBlockerDbHelper callBlockerDbHelper; //= new CallBlockerDbHelper(getActivity());
+    Map<String, String> selectedPhoneMap = new HashMap<>();
+
     //Provider columns
     @SuppressLint("InlineApi")
     private static final String[] FROM_COLUMNS = {
-            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
-            , Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
+            //ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+            //ContactsContract.Data.CONTACT_ID
+            ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI
+            //, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
+            , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
             , ContactsContract.CommonDataKinds.Phone.NUMBER
             , ContactsContract.CommonDataKinds.Phone.TYPE
     };
@@ -70,6 +81,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
 
         rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
         rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
+        callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
     }
 
     @Override
@@ -78,23 +90,32 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.add_from_contacts_layout, container, false);
 
+
         enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
-        ////Floating Action Button
-        //final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_check);
-        //fab.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        Animation rotateForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
-        //        fab.startAnimation(rotateForward);
-        //        isFabRotated = true;
-
-        //        //Intent startAddActivityIntent = new Intent(getActivity(), AddSourceSelectionActivity.class);
-        //        //getActivity().startActivity(startAddActivityIntent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
-        //    }
-        //});
-
-        ////Animation fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
-        ////fab.startAnimation(fabOpen);
+        enterFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(selectedPhoneMap.size() > 0) {
+                    for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
+                        ContentValues values = new ContentValues();
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, entry.getValue());
+                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
+                        if(Long.parseLong(newUri.getLastPathSegment()) > 0)
+                            Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity(), entry.getKey() + " failed to add, duplicate?", Toast.LENGTH_SHORT).show();
+                    }
+                    selectedPhoneMap.clear();
+                    //Fragment fragment = getFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);
+                    //getActivity().getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, CONS.FRAGMENT_PHONE_LIST).commit();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.popBackStack(CONS.FRAGMENT_PHONE_LIST, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                } else {
+                    Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         setupLoader(view);
 
@@ -107,6 +128,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
 
         //if(isFabRotated) {
         enterFab.startAnimation(rotateForwardAppear);
+        getListView().setOnItemClickListener(this);
     }
 
     @Override
@@ -116,6 +138,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
+
     private void setupLoader(final View fragmentView) {
 
         cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_contacts_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
@@ -124,27 +147,58 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)) {
+                boolean hideRow = false;
+                String phoneNumberR = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                LinearLayout rowView = (LinearLayout) view.getParent();
+                callBlockerDbHelper.hasPhoneNumber(phoneNumberR);
+                if(callBlockerDbHelper.hasPhoneNumber(phoneNumberR)) {
+                //if(blockedPhoneCursor.getCount() > 0) {
+                    //Log.d(TAG, ">>> found phone number: " + phoneNumberR);
+                    rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
+                    //rowView.setOnClickListener(null);
+                    //rowView.getLayoutParams().height = 0;
+                    hideRow = true;
+                } else {
+                    //This is needed because the layout is reused for other rows
+                    if(selectedPhoneMap.containsKey(phoneNumberR.replaceAll("[^\\d]", ""))) {
+                        rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
+
+                    } else {
+                        rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
+                    }
+                }
+                //blockedPhoneCursor.close();
+
+                //if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)) {
+                //if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.Data.CONTACT_ID)) {
+                if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)) {
                     ImageView photoView = (ImageView) view;
+                    if(hideRow) {
+                        ////Image height should be suppressed
+                        //photoView.getLayoutParams().height = 0;
+                    }
                     //If addTextChangedListener needed, make it clear that this call happens only once per the textview
                     //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
                     //callerInfoTextView.setText(Utils.formatPhoneNumber(cursor.getString(numberColumnIndex)));
                     //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
                     String photoThumbnailUri = cursor.getString(columnIndex);
-                    Log.d(TAG, ">>>>> PHOTO_THUMBNAIL_URI: " + photoThumbnailUri);
+                    //Log.d(TAG, ">>>>> PHOTO_THUMBNAIL_URI: " + photoThumbnailUri);
                     if(photoThumbnailUri != null) {
-                        try {
-                            AssetFileDescriptor afd = getActivity().getContentResolver().openAssetFileDescriptor(Uri.parse(photoThumbnailUri), "r");
-                            FileDescriptor fd = afd.getFileDescriptor();
-                            Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd, null, null);
-                            photoView.setImageBitmap(bitmap);
-                            return true;
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                            return false;
-                        }
-
+                        photoView.setImageURI(Uri.parse(photoThumbnailUri));
+                        //try {
+                        //    AssetFileDescriptor afd = getActivity().getContentResolver().openAssetFileDescriptor(Uri.parse(photoThumbnailUri), "r");
+                        //    FileDescriptor fd = afd.getFileDescriptor();
+                        //    Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd, null, null);
+                        //    photoView.setImageBitmap(bitmap);
+                        //    return true;
+                        //} catch (FileNotFoundException e) {
+                        //    e.printStackTrace();
+                        //    return false;
+                        //}
+                        return true;
                     } else {
+                        photoView.setImageResource(R.drawable.ic_contact_28);
                         return true;
                     }
                 }
@@ -152,6 +206,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                 if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)) {
                     TextView detailView = (TextView) view;
                     String phoneNumber = cursor.getString(columnIndex);
+                    Log.d(TAG, ">>>>> phone number in contact: " + phoneNumber);
                     detailView.setText(phoneNumber);
                     return true;
                 }
@@ -186,7 +241,6 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         });
 
         setListAdapter(cursorAdapter);
-        //getListView().setOnItemClickListener(this);
         getLoaderManager().initLoader(CONTACTS_LOADER, null, this);
     }
 
@@ -197,11 +251,8 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         CursorLoader cursorLoader = null;
         switch(loaderId) {
             case CONTACTS_LOADER:
-                //cursorLoader = new CursorLoader(getActivity(), ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-                //Only having phone number(s)
-                //cursorLoader = new CursorLoader(getActivity(), ContactsContract.Contacts.CONTENT_URI, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0", null, null);
-                //cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-                cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0", null, null);
+
+                cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
@@ -219,8 +270,36 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         cursorAdapter.swapCursor(null);
     }
 
+
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
         Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
+        TextView infoView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_info);
+        String displayName = infoView.getText().toString();
+        TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
+        String detail = detailView.getText().toString();
+        String phoneNumber = detail.split("\n")[0].replaceAll("[^\\d]", "");
+        Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber + ", displayName: " + displayName);
+
+        if(callBlockerDbHelper.hasPhoneNumber(phoneNumber)) {
+            return;
+        }
+
+        if(selectedPhoneMap.containsKey(phoneNumber)) {
+            selectedPhoneMap.remove(phoneNumber);
+            Log.d(TAG, ">>>>> removed");
+            view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
+        } else {
+            selectedPhoneMap.put(phoneNumber, displayName);
+            Log.d(TAG, ">>>>> added");
+            view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
+        }
+
+        ////RotateAnimation rotate = new RotateAnimation(0.0f, -10.0f * 360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        //RotateAnimation rotate = new RotateAnimation(0.0f, 360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        //rotate.setDuration(300);
+        //ImageView contactIcon = (ImageView)view.findViewById(R.id.add_from_contacts_row_contact_icon);
+        //contactIcon.startAnimation(rotate);
+
     }
 }
