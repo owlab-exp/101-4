@@ -158,7 +158,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
-    //Provider columns
+    //Provider FROM_COLUMNS
     @SuppressLint("InlineApi")
     private static final String[] FROM_COLUMNS = {
             //ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
@@ -170,7 +170,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
             , ContactsContract.CommonDataKinds.Phone.TYPE
     };
 
-    //List row items for the provider columns
+    //List row items for the provider FROM_COLUMNS
     private static final int[] TO_IDS = {
             R.id.add_from_contacts_row_contact_icon
             , R.id.add_from_contacts_row_contact_info

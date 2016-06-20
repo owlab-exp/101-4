@@ -103,21 +103,21 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
         super.onPause();
     }
 
-    private void setLoader(final View fragmentView) {
-        final String[] columns = {
-                CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
-                CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME,
-                CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
-                CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
-        };
-        final int[] rowItems = new int[]{
-                R.id.phone_number_list_row_phone_number,
-                R.id.phone_number_list_row_description,
-                R.id.phone_number_list_row_is_active_switch,
-                R.id.phone_number_list_row_delete_icon
-        };
+    final String[] FROM_COLUMNS = {
+            CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
+            CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME,
+            CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
+            CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
+    };
+    final int[] TO_IDS = new int[]{
+            R.id.phone_number_list_row_phone_number,
+            R.id.phone_number_list_row_description,
+            R.id.phone_number_list_row_is_active_switch,
+            R.id.phone_number_list_row_delete_icon
+    };
 
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.phone_list_row_layout, null, columns, rowItems, 0);
+    private void setLoader(final View fragmentView) {
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.phone_list_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             private int _idColumnIndex = -1;
             private int phoneNumberColumnIndex = -1;
@@ -141,7 +141,12 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     //If addTextChangedListener needed, make it clear that this call happens only once per the textview
                     //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
                     //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
-                    phoneNumberTextView.setText(Utils.formatPhoneNumber(cursor.getString(phoneNumberColumnIndex)));
+                    String phoneNumber = cursor.getString(columnIndex);
+                    Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
+                    String phoneNumberFormatted = Utils.formatPhoneNumber(phoneNumber);
+                    Log.d(TAG, ">>>>> phoneNumberFormatted: " + phoneNumberFormatted);
+
+                    phoneNumberTextView.setText(Utils.formatPhoneNumber(phoneNumber));
                     return true;
                 }
 
