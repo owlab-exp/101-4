@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
 import com.owlab.callblocker.content.CallBlockerDbHelper;
 import com.owlab.callblocker.content.CallBlockerTbl;
@@ -53,6 +54,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
     CallBlockerDbHelper callBlockerDbHelper;
     Map<String, String> selectedPhoneMap = new HashMap<>();
+    Map<String, Long> selectedPhoneRowIdMap = new HashMap<>();
 
     public AddFromCallLogFragment() {
         Log.d(TAG, ">>>>> instantiated");
@@ -89,7 +91,9 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                             Toast.makeText(getActivity(), entry.getKey() + " failed to add, duplicate?", Toast.LENGTH_SHORT).show();
                         }
                     }
+                    //Clear buckets
                     selectedPhoneMap.clear();
+                    selectedPhoneRowIdMap.clear();
                     getFragmentManager().popBackStack(CONS.FRAGMENT_PHONE_LIST, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
                     Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
@@ -121,7 +125,6 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     final String[] FROM_COLUMNS = {
             //CallLog.Calls._ID
             CallLog.Calls.NUMBER
-            , CallLog.Calls.NUMBER
             , CallLog.Calls.TYPE
             , CallLog.Calls.DATE
             , CallLog.Calls.DURATION
@@ -129,8 +132,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
             // , CallLog.Calls.COUNTRY_ISO
     };
     final int[] TO_IDS = new int[]{
-            R.id.add_from_call_log_row_caller_icon
-            , R.id.add_from_call_log_row_caller_info
+            //R.id.add_from_call_log_row_caller_icon
+            R.id.add_from_call_log_row_caller_info
             , R.id.add_from_call_log_row_caller_type
             , R.id.add_from_call_log_row_call_detail
             , R.id.add_from_call_log_row_call_detail
@@ -150,6 +153,14 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                 boolean hideListRow = false;
                 String phoneNumberR = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER));
                 LinearLayout rowView = (LinearLayout) view.getParent();
+                //LinearLayout rowView = null;
+                //ViewParent parentView = view.getParent();
+                //if(parentView instanceof LinearLayout) {
+                //    rowView = (LinearLayout) parentView;
+                //} else if(parentView instanceof RelativeLayout) {
+                //    rowView = (LinearLayout) parentView.getParent();
+                //}
+
                 if(callBlockerDbHelper.hasPhoneNumber(phoneNumberR)) {
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
                     hideListRow = true;
@@ -162,62 +173,63 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                 }
 
                 if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER)) {
-                    String phoneNumber = cursor.getString(columnIndex);
-                    if(view instanceof ImageView) {
-                        //icon view
-                        ImageView photoView = (ImageView) view;
-                        if(hideListRow) {
-                            //If this row should be shrinked, then
-                            //photoView.getLayoutParams().height = 0;
-                        }
-                        //TODO get photo if exists
-                        if(!phoneNumber.trim().equals("")) {
-                            //long contactId = -1l;
-                            String photoUriStr = null;
-                            Log.d(TAG, ">>>>> looking for: " + phoneNumber);
-                            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-                            Log.d(TAG, ">>>>> uri: " + uri.toString());
-                            Cursor contactsCursor = contentResolver.query(uri, projection, null, null, null);
-                            if (contactsCursor != null) {
-                                if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
-                                    //contactId = contactsCursor.getLong(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
-                                    photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
-                                    //photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_URI));
-                                }
-                                contactsCursor.close();
-                            }
+                    String phoneNumberFormatted = cursor.getString(columnIndex);
+                    String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
+                    ImageView photoView = (ImageView) view.findViewById(R.id.add_from_call_log_row_caller_icon);
+                    TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_number);
+                    TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_name);
 
-                            //if(contactId != -1l) {
-                            if (photoUriStr != null) {
-                                //Bitmap photo = null;
-                                //try {
-                                //    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getActivity().getContentResolver(), ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId));
-                                //    if (inputStream != null) {
-                                //        photo = BitmapFactory.decodeStream(inputStream);
-                                //        inputStream.close();
-                                //    }
-                                //} catch (IOException e) {
-                                //    e.printStackTrace();
-                                //}
-                                //if (photo != null) {
-                                //    photoView.setImageBitmap(photo);
-                                //    return true;
-                                //}
-                                photoView.setImageURI(Uri.parse(photoUriStr));
-                                return true;
-                            }
-                        }
-
-                        photoView.setImageResource(R.drawable.ic_contact_28);
-                        return true;
-
-                    } else if(view instanceof TextView) {
-                        //info iew
-                        TextView infoTV = (TextView)view;
-                        infoTV.setText(phoneNumber);
-                        //infoTV.setText(Utils.formatPhoneNumber(phoneNumber));
-                        return true;
+                    if(hideListRow) {
+                        //Nothing to do here right now
                     }
+
+                    String displayName = null;
+                    String photoUriStr = null;
+                    if(!phoneNumber.trim().equals("")) {
+                        //long contactId = -1l;
+                        Log.d(TAG, ">>>>> looking for: " + phoneNumber);
+                        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+                        Log.d(TAG, ">>>>> uri: " + uri.toString());
+                        Cursor contactsCursor = contentResolver.query(uri, projection, null, null, null);
+                        if (contactsCursor != null) {
+                            if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
+                                displayName = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                                //contactId = contactsCursor.getLong(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
+                                photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
+                                //photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_URI));
+                            }
+                            contactsCursor.close();
+                        }
+                    }
+
+                        //if(contactId != -1l) {
+                        if (photoUriStr != null) {
+                            //Bitmap photo = null;
+                            //try {
+                            //    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getActivity().getContentResolver(), ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId));
+                            //    if (inputStream != null) {
+                            //        photo = BitmapFactory.decodeStream(inputStream);
+                            //        inputStream.close();
+                            //    }
+                            //} catch (IOException e) {
+                            //    e.printStackTrace();
+                            //}
+                            //if (photo != null) {
+                            //    photoView.setImageBitmap(photo);
+                            //    return true;
+                            //}
+                            photoView.setImageURI(Uri.parse(photoUriStr));
+                        } else {
+                            photoView.setImageResource(R.drawable.ic_contact_28);
+                        }
+
+                    if(displayName != null) {
+                        nameView.setText(displayName);
+                        Log.d(TAG, ">>>>> set nameView: " + displayName);
+                    }
+
+                    numberView.setText(Utils.formatPhoneNumber(phoneNumber));
+                    return true;
                 }
 
                 if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE)) {
@@ -248,16 +260,18 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     SimpleDateFormat dateFormat = new SimpleDateFormat();
                     //TODO if today, then do simpler format
 
-                    TextView detailTextView = (TextView) view;
-                    detailTextView.setText(dateFormat.format(dateLong));
+                    TextView dateView = (TextView) view.findViewById(R.id.add_from_call_log_row_call_date);
+                    dateView.setText(dateFormat.format(dateLong));
                     return true;
                 }
 
                 if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION)) {
-                    TextView detailTextView = (TextView) view;
-                    detailTextView.append("\n" + cursor.getString(columnIndex) + " sec");
+                    String duration = cursor.getString(columnIndex);
+                    TextView durationView = (TextView) view.findViewById(R.id.add_from_call_log_row_call_duration);
+                    durationView.setText(duration + " seconds");
                     return true;
                 }
+
                 return false;
             }
         });
@@ -292,29 +306,46 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        //Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
-        TextView infoView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_info);
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
+        Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
+        TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_number);
+        TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_name);
         //String displayName = infoView.getText().toString();
         //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
         //String detail = detailView.getText().toString();
-        String info = infoView.getText().toString();
-        String phoneNumber = info.replaceAll("[^\\d]", "");
-        String displayName = "";
+        String phoneNumberFormatted = numberView.getText().toString();
+        String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
+        String displayName = nameView.getText().toString();
+
         Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
 
         if(callBlockerDbHelper.hasPhoneNumber(phoneNumber)) {
+            Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(phoneNumber.trim().equals("")) {
+            Toast.makeText(getActivity(), "Phone number is unknown", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if(selectedPhoneMap.containsKey(phoneNumber)) {
-            selectedPhoneMap.remove(phoneNumber);
-            Log.d(TAG, ">>>>> removed");
-            view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
+            if(rowId != selectedPhoneRowIdMap.get(phoneNumber)) {
+                Toast.makeText(getActivity(), phoneNumber + " already in the bucket", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                selectedPhoneMap.remove(phoneNumber);
+                selectedPhoneRowIdMap.remove(phoneNumber);
+                Log.d(TAG, ">>>>> removed");
+                view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
+                Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
+            }
         } else {
             selectedPhoneMap.put(phoneNumber, displayName);
+            selectedPhoneRowIdMap.put(phoneNumber, rowId);
             Log.d(TAG, ">>>>> added");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
+            Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
         }
     }
 }

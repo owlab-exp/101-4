@@ -191,17 +191,17 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                 }
 
                 if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)) {
-                    TextView detailView = (TextView) view;
+                    TextView numberView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_number);
                     String phoneNumber = cursor.getString(columnIndex);
-                    Log.d(TAG, ">>>>> phone number in contact: " + phoneNumber);
-                    detailView.setText(phoneNumber);
+                    //Log.d(TAG, ">>>>> phone number in contact: " + phoneNumber);
+                    numberView.setText(phoneNumber);
                     return true;
                 }
 
                 if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.TYPE)) {
-                    TextView detailView = (TextView) view;
+                    TextView typeView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_type);
                     int phoneType = cursor.getInt(columnIndex);
-                    detailView.append("\n" + ContactsContract.CommonDataKinds.Phone.getTypeLabel(getResources(), phoneType, ""));
+                    typeView.setText(ContactsContract.CommonDataKinds.Phone.getTypeLabel(getResources(), phoneType, ""));
                     return true;
                 }
 
@@ -245,12 +245,13 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
         TextView infoView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_info);
         String displayName = infoView.getText().toString();
-        TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
-        String detail = detailView.getText().toString();
-        String phoneNumber = detail.split("\n")[0].replaceAll("[^\\d]", "");
+        TextView numberView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_number);
+        String phoneNumberFormatted = numberView.getText().toString();
+        String phoneNumber = phoneNumberFormatted.split("\n")[0].replaceAll("[^\\d]", "");
         Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber + ", displayName: " + displayName);
 
         if(callBlockerDbHelper.hasPhoneNumber(phoneNumber)) {
+            Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -258,10 +259,12 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
             selectedPhoneMap.remove(phoneNumber);
             Log.d(TAG, ">>>>> removed");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
+            Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
         } else {
             selectedPhoneMap.put(phoneNumber, displayName);
             Log.d(TAG, ">>>>> added");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
+            Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
         }
 
         ////RotateAnimation rotate = new RotateAnimation(0.0f, -10.0f * 360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
