@@ -3,6 +3,7 @@
     android:id="@+id/add_from_call_log_row_view"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal">
     <!--
     android:layout_height="fill_parent">
@@ -31,7 +32,6 @@
                 android:layout_gravity="center_vertical|left"
                 android:layout_margin="7dp"
                 android:adjustViewBounds="true"
-                android:clickable="true"
                 android:contentDescription="Caller"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_contact_48" />
@@ -107,6 +107,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 </LinearLayout><!-- //garage
+                    android:inputType="phone"
         android:src="@android:drawable/ic_delete"
         android:padding="?android:attr/listPreferredItemPaddingStart"
 -->

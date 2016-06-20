@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
 import com.owlab.callblocker.content.CallBlockerDbHelper;
 import com.owlab.callblocker.content.CallBlockerTbl;
@@ -79,7 +80,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
                         values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, entry.getValue());
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, entry.getValue());
                         Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
                         if(Long.parseLong(newUri.getLastPathSegment()) > 0)
                             Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
@@ -194,7 +195,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     TextView numberView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_number);
                     String phoneNumber = cursor.getString(columnIndex);
                     //Log.d(TAG, ">>>>> phone number in contact: " + phoneNumber);
-                    numberView.setText(phoneNumber);
+                    numberView.setText(Utils.formatPhoneNumber(phoneNumber));
                     return true;
                 }
 

@@ -95,7 +95,7 @@ public class AddByManualDialogFragment extends DialogFragment{
                             ContentValues values = new ContentValues();
                             String compactPhoneNumber = phoneNumberText.getText().toString().replaceAll("[^\\d]", "");
                             values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, compactPhoneNumber);
-                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, descriptionText.getText().toString());
+                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, descriptionText.getText().toString());
                             Uri newUri = getTargetFragment().getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
                             Log.d(TAG, ">>> newUri: " + newUri.toString());
                             Log.d(TAG, ">>> newUri.getLastPathSegment: " + newUri.getLastPathSegment());

@@ -106,7 +106,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
     private void setLoader(final View fragmentView) {
         final String[] columns = {
                 CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
-                CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION,
+                CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME,
                 CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
                 CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
         };
@@ -131,7 +131,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                 if(phoneNumberColumnIndex == -1)
                     phoneNumberColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER);
                 if(descriptionColumnIndex == -1)
-                    descriptionColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION);
+                    descriptionColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME);
                 if(isActiveColumnIndex == -1)
                     isActiveColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE);
 
@@ -140,8 +140,8 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     TextView phoneNumberTextView = (TextView) view;
                     //If addTextChangedListener needed, make it clear that this call happens only once per the textview
                     //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-                    phoneNumberTextView.setText(Utils.formatPhoneNumber(cursor.getString(phoneNumberColumnIndex)));
                     //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
+                    phoneNumberTextView.setText(Utils.formatPhoneNumber(cursor.getString(phoneNumberColumnIndex)));
                     return true;
                 }
 
@@ -227,7 +227,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                 String[] projection = {
                         CallBlockerTbl.Schema._ID,
                         CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
-                        CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION,
+                        CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME,
                         CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
                         CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
                 };

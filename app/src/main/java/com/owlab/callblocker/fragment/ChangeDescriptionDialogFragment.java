@@ -70,7 +70,7 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
                 .setView(diagView)
                 //.setParentView(input)
                 .setIcon(R.drawable.ic_edit_48)
-                .setTitle("Change description")
+                .setTitle("Change display name")
                 .setMessage(Utils.formatPhoneNumber(phoneNumber))
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
@@ -78,10 +78,10 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
                         //mUpdateDescriptionDialogListener.onUpdateDescriptionUpdateClick(_id, descriptionText.getText().toString());
                         dialog.dismiss();
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, descriptionText.getText().toString());
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, descriptionText.getText().toString());
                         int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerContentProvider.CONTENT_URI, values, CallBlockerTbl.Schema._ID + "=" + _id, null);
                         if(updateCount > 0) {
-                            Snackbar.make(getTargetFragment().getView(), "Description changed", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(getTargetFragment().getView(), "Display name changed", Snackbar.LENGTH_SHORT).show();
                             getTargetFragment().getActivity().getContentResolver().notifyChange(CallBlockerContentProvider.CONTENT_URI, null);
                         }
                     }

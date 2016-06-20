@@ -13,6 +13,7 @@
         android:layout_marginLeft="7dp"
         android:gravity="center_vertical|left"
         android:text="0313333333"
+        android:clickable="false"
         android:textAppearance="?android:attr/textAppearanceListItem" />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,6 +35,7 @@
         android:layout_marginRight="7dp"
         android:id="@+id/phone_number_list_row_is_active_switch"
         android:theme="@style/OnOffSwitch"
+        android:clickable="true"
         />
 
     <ImageView
@@ -52,4 +54,5 @@
 <!-- //garage
         android:src="@android:drawable/ic_delete"
         android:maxLength="14"
+        android:inputType="phone"
 -->

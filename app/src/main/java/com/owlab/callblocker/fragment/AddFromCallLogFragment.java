@@ -41,6 +41,7 @@ import java.util.Map;
 /**
  */
 public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
+//public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 //public class AddFromCallLogFragment extends ListFragment {
     private static final String TAG = AddFromCallLogFragment.class.getSimpleName();
 
@@ -83,7 +84,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
                         values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DESCRIPTION, entry.getValue());
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, entry.getValue());
                         Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
                         if(Long.parseLong(newUri.getLastPathSegment()) > 0) {
                             Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
@@ -102,6 +103,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         });
 
         setupLoader(view);
+
+
 
         return view;
     }
@@ -228,7 +231,13 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                         Log.d(TAG, ">>>>> set nameView: " + displayName);
                     }
 
-                    numberView.setText(Utils.formatPhoneNumber(phoneNumber));
+                    //numberView.setText(phoneNumberFormatted);
+                    //numberView.setText(Utils.formatPhoneNumber(phoneNumberFormatted));
+                    //numberView.setText(Utils.formatPhoneNumber(phoneNumber));
+                    numberView.setText(Utils.formatPhoneNumber(phoneNumberFormatted));
+                    //numberView.removeTextChangedListener(new PhoneNumberFormattingTextWatcher());
+                    //numberView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+                    //numberView.setText(phoneNumber);
                     return true;
                 }
 
@@ -307,6 +316,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
+    //public void onListItemClick(ListView listView, View view, int position, long rowId) {
+        //super.onListItemClick(listView, view, position, rowId);
         Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
         TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_number);
         TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_name);
@@ -347,5 +358,6 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
             Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
         }
+
     }
 }

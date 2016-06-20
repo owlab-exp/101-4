@@ -14,8 +14,8 @@ public class Utils {
         String formattedPhoneNumber = null;
         //To support different builds
         //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //`Log.d(TAG, ">>>>> defafultCountryCode: " + Locale.getDefault().getCountry());
-            formattedPhoneNumber = PhoneNumberUtils.formatNumber(phoneNumber, Locale.getDefault().getCountry());
+        //`Log.d(TAG, ">>>>> defafultCountryCode: " + Locale.getDefault().getCountry());
+        formattedPhoneNumber = PhoneNumberUtils.formatNumber(phoneNumber, Locale.getDefault().getCountry());
         //} else {
         //    formattedPhoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
         //}

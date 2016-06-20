@@ -3,7 +3,9 @@
     android:id="@+id/add_from_contacts_row_view"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:descendantFocusability="blocksDescendants"
+    >
 
     <!-- //
     Default icon might be replaced with from contacts, if possible.
@@ -17,7 +19,6 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="7dp"
         android:adjustViewBounds="true"
-        android:clickable="true"
         android:contentDescription="Caller"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_contact_48" />
@@ -63,4 +64,5 @@
     </LinearLayout>
 </LinearLayout><!-- //garage
         android:src="@android:drawable/ic_delete"
+            android:inputType="phone"
 -->

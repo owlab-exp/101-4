@@ -14,7 +14,7 @@ public class CallBlockerTbl {
         public static final String TABLE_NAME = "FILTERED_PHONE";
 
         public static final String COLUMN_NAME_PHONE_NUMBER = "phone_number";
-        public static final String COLUMN_NAME_DESCRIPTION = "description";
+        public static final String COLUMN_NAME_DISPLAY_NAME = "display_name";
         public static final String COLUMN_NAME_IS_ACTIVE = "is_active";
         public static final String COLUMN_NAME_CREATED_AT = "created_at";
     }
@@ -29,7 +29,7 @@ public class CallBlockerTbl {
             "CREATE TABLE " + Schema.TABLE_NAME + " (" +
                     Schema._ID + " INTEGER PRIMARY KEY" + SEP_COMMA +
                     Schema.COLUMN_NAME_PHONE_NUMBER + TYPE_TEXT + " NOT NULL UNIQUE" + SEP_COMMA +
-                    Schema.COLUMN_NAME_DESCRIPTION + TYPE_TEXT + SEP_COMMA +
+                    Schema.COLUMN_NAME_DISPLAY_NAME + TYPE_TEXT + SEP_COMMA +
                     Schema.COLUMN_NAME_IS_ACTIVE + TYPE_INTEGER + " DEFAULT 1" + SEP_COMMA +
                     Schema.COLUMN_NAME_CREATED_AT +  TYPE_CURRENT_TIMESTAMP +
                     ");" +
