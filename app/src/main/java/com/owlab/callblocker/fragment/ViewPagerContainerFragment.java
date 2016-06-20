@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.Utils;
 
 /**
  * Created by ernest on 6/20/16.
@@ -24,6 +25,10 @@ public class ViewPagerContainerFragment extends Fragment {
         View root = inflater.inflate(R.layout.view_pager_container_view, container, false);
 
         ViewPager viewPager = (ViewPager) root.findViewById(R.id.pager);
+        //
+        viewPager.setPageMargin(Utils.convertDip2Pixels(getActivity(), 20));
+        viewPager.setPageMarginDrawable(R.color.colorPrimarylight);
+
         FragmentManager fragmentManager = getChildFragmentManager();
         MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager);
         if (viewPager != null) {

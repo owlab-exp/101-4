@@ -53,7 +53,7 @@ public class AddByManualDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         //final EditText input = new EditText(getActivity());
-        View diagView = inflater.inflate(R.layout.add_by_manual_dialog_layout_new, null);
+        View diagView = inflater.inflate(R.layout.add_by_manual_dialog_layout, null);
         AlertDialog addPhoneNumberDialog = builder
                 .setView(diagView)
                 //.setParentView(input)

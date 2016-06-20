@@ -1,6 +1,8 @@
 package com.owlab.callblocker;
 
+import android.content.Context;
 import android.telephony.PhoneNumberUtils;
+import android.util.TypedValue;
 
 import java.util.Locale;
 
@@ -20,5 +22,9 @@ public class Utils {
         //    formattedPhoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
         //}
         return formattedPhoneNumber;
+    }
+
+    public static int convertDip2Pixels(Context context, int dip) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 }
