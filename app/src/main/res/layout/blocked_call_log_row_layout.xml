@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/blocked_call_log_row_view"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal">
+    <!--
+    android:layout_height="fill_parent">
+    -->
+
+    <!-- //
+    Default icon might be replaced with from contacts, if possible.
+    The icon will be flipped with check mark icon when checked (clicked) for addition to the blocked list
+    Also when more than equal one is flipped, then the IMPORT icon will be enabled!
+    -->
+    <LinearLayout
+        android:id="@+id/blocked_call_log_row_caller_info"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.5"
+        android:layout_margin="0dp"
+        android:padding="0dp"
+        android:orientation="horizontal"
+        >
+
+            <ImageView
+                android:id="@+id/blocked_call_log_row_caller_icon"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|left"
+                android:layout_margin="7dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="Caller"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_contact_48" />
+            <!--//
+            phone number, and contact name if possible
+            -->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical">
+
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/blocked_call_log_row_caller_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/blocked_call_log_row_caller_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/blocked_call_log_row_caller_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Type"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_call_received_black_18dp" />
+    <!--//
+    type:incoming, outgoing, missed, ...
+    date
+    duration
+    -->
+    <LinearLayout
+        android:id="@+id/blocked_call_log_row_call_detail"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/blocked_call_log_row_call_date"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/blocked_call_log_row_call_duration"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+</LinearLayout><!-- //garage
+                    android:inputType="phone"
+        android:src="@android:drawable/ic_delete"
+        android:padding="?android:attr/listPreferredItemPaddingStart"
+-->

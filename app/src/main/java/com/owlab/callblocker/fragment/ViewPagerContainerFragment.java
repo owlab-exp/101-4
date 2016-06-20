@@ -46,6 +46,9 @@ public class ViewPagerContainerFragment extends Fragment {
                 case 0:
                     PhoneListFragment phoneListFragment = new PhoneListFragment();
                     return phoneListFragment;
+                case 1:
+                    BlockedCallLogFragment blockedCallLogFragment = new BlockedCallLogFragment();
+                    return blockedCallLogFragment;
             }
 
             return null;
@@ -53,14 +56,16 @@ public class ViewPagerContainerFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 1;
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch(position) {
                 case 0:
-                    return "Phone number";
+                    return "Blocked Phone Number";
+                case 1:
+                    return "Blocked Call Log";
             }
 
             return null;
