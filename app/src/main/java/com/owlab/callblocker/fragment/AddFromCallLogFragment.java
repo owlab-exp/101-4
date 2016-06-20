@@ -5,6 +5,7 @@ import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
+import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
@@ -116,6 +118,34 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         //if(isFabRotated) {
         enterFab.startAnimation(rotateForwardAppear);
         getListView().setOnItemClickListener(this);
+    }
+
+    Context parentContext;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        parentContext = context;
+
+        if(parentContext instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity)parentContext;
+            //mainActivity.changeActionBarContent("Settings");
+            android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
+            if(mainActionBar != null) {
+                mainActionBar.setTitle("Call Log");
+            }
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(parentContext != null && parentContext instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) parentContext;
+            android.support.v7.app.ActionBar mainActionBar = mainActivity.getSupportActionBar();
+            if (mainActionBar != null) {
+                mainActionBar.setTitle(R.string.app_name);
+            }
+        }
     }
 
     @Override
