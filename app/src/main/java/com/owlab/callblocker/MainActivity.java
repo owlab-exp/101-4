@@ -80,18 +80,18 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.menuitem_settings:
-                SettingsFragment settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag(CONS.FRAGMENT_SETTINGS);
+                SettingsFragment settingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_SETTINGS);
                 if (settingsFragment == null) {
                     settingsFragment = new SettingsFragment();
 
                 }
-                getFragmentManager().beginTransaction()
+                getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, settingsFragment, CONS.FRAGMENT_SETTINGS)
                         .addToBackStack(null)
                         .commit();
                 return true;
             case android.R.id.home:
-                getFragmentManager().popBackStack();
+                getSupportFragmentManager().popBackStack();
                 return true;
         }
 

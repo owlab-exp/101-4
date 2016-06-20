@@ -3,12 +3,13 @@ package com.owlab.callblocker.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
+import android.support.v7.preference.CheckBoxPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 
 import com.owlab.callblocker.FUNS;
 import com.owlab.callblocker.MainActivity;
@@ -17,12 +18,14 @@ import com.owlab.callblocker.R;
 /**
  * Created by ernest on 6/5/16.
  */
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+//public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String TAG = SettingsFragment.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.d(TAG, ">>>>> onCreate called");
         // set contents
         addPreferencesFromResource(R.xml.settings);
@@ -41,6 +44,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         CheckBoxPreference deleteCallLogPref = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_delete_call_log));
         deleteCallLogPref.setOnPreferenceChangeListener(new FUNS.DeleteCallLogPrefChangeListener(getActivity()));
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle bundle, String s) {
+        Log.d(TAG, ">>>>> onCreatePreferences called");
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     //@Override

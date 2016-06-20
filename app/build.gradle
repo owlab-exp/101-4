@@ -24,4 +24,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
+
+    //TODO investigate following...
+    compile 'com.takisoft.fix:preference-v7:23.4.0.5'
+    //compile 'com.android.support:preference-v7:23.4.0'
+    //compile 'com.android.support:preference-v14:23.4.0'
 }

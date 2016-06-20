@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * List up blocked call log
+ * Each row is expanded if clicked,to show "call" and "delete" button
  */
 public class BlockedCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 //public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
