@@ -3,6 +3,7 @@ package com.owlab.callblocker.fragment;
 import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -11,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,13 +22,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerContentProvider;
 import com.owlab.callblocker.content.CallBlockerDbHelper;
 import com.owlab.callblocker.content.CallBlockerTbl;
@@ -106,6 +108,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
         //if(isFabRotated) {
         enterFab.startAnimation(rotateForwardAppear);
+        getListView().setOnItemClickListener(this);
     }
 
     @Override
@@ -115,71 +118,112 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
-    private void setupLoader(final View fragmentView) {
-        final String[] columns = {
-                CallLog.Calls._ID
-                , CallLog.Calls.NUMBER
-                , CallLog.Calls.TYPE
-                , CallLog.Calls.DATE
-                , CallLog.Calls.DURATION
-               // , CallLog.Calls.NEW
-               // , CallLog.Calls.COUNTRY_ISO
-        };
-        final int[] rowItems = new int[]{
-                R.id.add_from_call_log_row_caller_icon
-                , R.id.add_from_call_log_row_caller_info
-                , R.id.add_from_call_log_row_caller_type
-                , R.id.add_from_call_log_row_call_detail
-                , R.id.add_from_call_log_row_call_detail
-        };
+    final String[] FROM_COLUMNS = {
+            //CallLog.Calls._ID
+            CallLog.Calls.NUMBER
+            , CallLog.Calls.NUMBER
+            , CallLog.Calls.TYPE
+            , CallLog.Calls.DATE
+            , CallLog.Calls.DURATION
+            // , CallLog.Calls.NEW
+            // , CallLog.Calls.COUNTRY_ISO
+    };
+    final int[] TO_IDS = new int[]{
+            R.id.add_from_call_log_row_caller_icon
+            , R.id.add_from_call_log_row_caller_info
+            , R.id.add_from_call_log_row_caller_type
+            , R.id.add_from_call_log_row_call_detail
+            , R.id.add_from_call_log_row_call_detail
+    };
 
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, columns, rowItems, 0);
+    private void setupLoader(final View fragmentView) {
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            private int idColumnIndex = -1;
-            private int numberColumnIndex = -1;
-            private int typeColumnIndex = -1;
-            private int dateColumnIndex = -1;
-            private int durationColumnIndex = -1;
-            //private int newColumnIndex = -1;
-            //private int countryISOColumnIndex = -1;
+
+            ContentResolver contentResolver = getActivity().getContentResolver();
+            //String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID};
+            String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI};
+            //String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_URI};
 
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
-                //final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID));
-                if(idColumnIndex == -1)
-                    idColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls._ID);
-                if(numberColumnIndex == -1)
-                    numberColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER);
-                if(typeColumnIndex == -1)
-                    typeColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE);
-                if(dateColumnIndex == -1)
-                    dateColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DATE);
-                if(durationColumnIndex == -1)
-                    durationColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION);
-                //if(newColumnIndex == -1)
-                //    newColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.NEW);
-                //if(countryISOColumnIndex == -1)
-                //    countryISOColumnIndex = cursor.getColumnIndexOrThrow(CallLog.Calls.COUNTRY_ISO);
-
-                if(columnIndex == idColumnIndex) {
-
-                    return true;
+                boolean hideListRow = false;
+                String phoneNumberR = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER));
+                LinearLayout rowView = (LinearLayout) view.getParent();
+                if(callBlockerDbHelper.hasPhoneNumber(phoneNumberR)) {
+                    rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
+                    hideListRow = true;
+                } else {
+                    if(selectedPhoneMap.containsKey(phoneNumberR.replaceAll("[^\\d]", ""))) {
+                        rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
+                    } else {
+                        rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
+                    }
                 }
 
-                if(columnIndex == numberColumnIndex) {
-                    //Log.d(TAG, ">>>>> phone number formatting...");
-                    TextView callerInfoTextView = (TextView) view;
-                    //If addTextChangedListener needed, make it clear that this call happens only once per the textview
-                    //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-                    callerInfoTextView.setText(Utils.formatPhoneNumber(cursor.getString(numberColumnIndex)));
-                    //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
-                    return true;
+                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER)) {
+                    String phoneNumber = cursor.getString(columnIndex);
+                    if(view instanceof ImageView) {
+                        //icon view
+                        ImageView photoView = (ImageView) view;
+                        if(hideListRow) {
+                            //If this row should be shrinked, then
+                            //photoView.getLayoutParams().height = 0;
+                        }
+                        //TODO get photo if exists
+                        if(!phoneNumber.trim().equals("")) {
+                            //long contactId = -1l;
+                            String photoUriStr = null;
+                            Log.d(TAG, ">>>>> looking for: " + phoneNumber);
+                            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+                            Log.d(TAG, ">>>>> uri: " + uri.toString());
+                            Cursor contactsCursor = contentResolver.query(uri, projection, null, null, null);
+                            if (contactsCursor != null) {
+                                if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
+                                    //contactId = contactsCursor.getLong(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
+                                    photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
+                                    //photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_URI));
+                                }
+                                contactsCursor.close();
+                            }
+
+                            //if(contactId != -1l) {
+                            if (photoUriStr != null) {
+                                //Bitmap photo = null;
+                                //try {
+                                //    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getActivity().getContentResolver(), ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId));
+                                //    if (inputStream != null) {
+                                //        photo = BitmapFactory.decodeStream(inputStream);
+                                //        inputStream.close();
+                                //    }
+                                //} catch (IOException e) {
+                                //    e.printStackTrace();
+                                //}
+                                //if (photo != null) {
+                                //    photoView.setImageBitmap(photo);
+                                //    return true;
+                                //}
+                                photoView.setImageURI(Uri.parse(photoUriStr));
+                                return true;
+                            }
+                        }
+
+                        photoView.setImageResource(R.drawable.ic_contact_28);
+                        return true;
+
+                    } else if(view instanceof TextView) {
+                        //info iew
+                        TextView infoTV = (TextView)view;
+                        infoTV.setText(phoneNumber);
+                        //infoTV.setText(Utils.formatPhoneNumber(phoneNumber));
+                        return true;
+                    }
                 }
 
-                if(columnIndex == typeColumnIndex) {
+                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE)) {
                     ImageView typeIV = (ImageView) view;
 
-                    String type = cursor.getString(typeColumnIndex);
+                    String type = cursor.getString(columnIndex);
                     switch(Integer.parseInt(type)) {
                         case CallLog.Calls.OUTGOING_TYPE:
                             //detailTextView.setText("Outgoing call");
@@ -197,8 +241,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     return true;
                 }
 
-                if(columnIndex == dateColumnIndex) {
-                    String dateStr = cursor.getString(dateColumnIndex);
+                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.DATE)) {
+                    String dateStr = cursor.getString(columnIndex);
 
                     long dateLong = Long.valueOf(dateStr);
                     SimpleDateFormat dateFormat = new SimpleDateFormat();
@@ -209,80 +253,11 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     return true;
                 }
 
-                if(columnIndex == durationColumnIndex) {
+                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION)) {
                     TextView detailTextView = (TextView) view;
-                    detailTextView.append("\n" + cursor.getString(durationColumnIndex) + " sec");
+                    detailTextView.append("\n" + cursor.getString(columnIndex) + " sec");
                     return true;
                 }
-
-                /**
-                if(columnIndex == descriptionColumnIndex) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String description = cursor.getString(descriptionColumnIndex);
-                    TextView descriptionTextView = (TextView) view;
-                    descriptionTextView.setText(description);
-                    descriptionTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View descriptionView) {
-                            ChangeDescriptionDialogFragment changeDescriptionDialogFragment = new ChangeDescriptionDialogFragment();
-                            Bundle argument = new Bundle();
-                            argument.putInt("_id", _id);
-                            argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", description);
-                            changeDescriptionDialogFragment.setArguments(argument);
-                            changeDescriptionDialogFragment.setTargetFragment(AddFromCallLogFragment.this, 0);
-                            changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
-                        }
-                    });
-                    return true;
-                }
-
-                if(columnIndex == isActiveColumnIndex) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    Switch isActiveSwitch = (Switch) view;
-                    isActiveSwitch.setChecked(cursor.getInt(isActiveColumnIndex) > 0);
-                    isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE, isChecked ? 1:0);
-                            int updateCount = getActivity().getContentResolver().update(
-                                    CallBlockerContentProvider.CONTENT_URI,
-                                    contentValues, CallBlockerTbl.Schema._ID + " = " + _id,
-                                    null);
-                            if(updateCount > 0) {
-                                //TODO test if getRootView is right
-                                Snackbar.make(fragmentView, "Blocking " + (isChecked ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    return true;
-                }
-
-                if(view.getId() == R.id.phone_number_list_row_delete_icon) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String description = cursor.getString(descriptionColumnIndex);
-                    ImageView deleteIconView = (ImageView) view;
-                    deleteIconView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            DialogFragment deletePhoneDialogFragment = new DeletePhoneDialogFragment();
-                            Bundle argument = new Bundle();
-                            argument.putInt("_id", _id);
-                            argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", description);
-                            deletePhoneDialogFragment.setArguments(argument);
-                            deletePhoneDialogFragment.setTargetFragment(AddFromCallLogFragment.this, 0);
-                            deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");
-                        }
-                    });
-                    return true;
-                }
-
-                */
                 return false;
             }
         });

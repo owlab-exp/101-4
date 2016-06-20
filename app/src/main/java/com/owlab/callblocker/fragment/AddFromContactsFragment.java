@@ -51,26 +51,6 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     CallBlockerDbHelper callBlockerDbHelper; //= new CallBlockerDbHelper(getActivity());
     Map<String, String> selectedPhoneMap = new HashMap<>();
 
-    //Provider columns
-    @SuppressLint("InlineApi")
-    private static final String[] FROM_COLUMNS = {
-            //ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
-            //ContactsContract.Data.CONTACT_ID
-            ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI
-            //, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
-            , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-            , ContactsContract.CommonDataKinds.Phone.NUMBER
-            , ContactsContract.CommonDataKinds.Phone.TYPE
-    };
-
-    //List row items for the provider columns
-    private static final int[] TO_IDS = {
-            R.id.add_from_contacts_row_contact_icon
-            , R.id.add_from_contacts_row_contact_info
-            , R.id.add_from_contacts_row_contact_detail
-            , R.id.add_from_contacts_row_contact_detail
-    };
-
     public AddFromContactsFragment() {
         Log.d(TAG, ">>>>> instantiated");
     }
@@ -138,6 +118,25 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
+    //Provider columns
+    @SuppressLint("InlineApi")
+    private static final String[] FROM_COLUMNS = {
+            //ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+            //ContactsContract.Data.CONTACT_ID
+            ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI
+            //, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
+            , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            , ContactsContract.CommonDataKinds.Phone.NUMBER
+            , ContactsContract.CommonDataKinds.Phone.TYPE
+    };
+
+    //List row items for the provider columns
+    private static final int[] TO_IDS = {
+            R.id.add_from_contacts_row_contact_icon
+            , R.id.add_from_contacts_row_contact_info
+            , R.id.add_from_contacts_row_contact_detail
+            , R.id.add_from_contacts_row_contact_detail
+    };
 
     private void setupLoader(final View fragmentView) {
 
@@ -147,18 +146,17 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
 
-                boolean hideRow = false;
+                boolean hideListRow = false;
                 String phoneNumberR = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 LinearLayout rowView = (LinearLayout) view.getParent();
-                callBlockerDbHelper.hasPhoneNumber(phoneNumberR);
                 if(callBlockerDbHelper.hasPhoneNumber(phoneNumberR)) {
                 //if(blockedPhoneCursor.getCount() > 0) {
                     //Log.d(TAG, ">>> found phone number: " + phoneNumberR);
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
                     //rowView.setOnClickListener(null);
                     //rowView.getLayoutParams().height = 0;
-                    hideRow = true;
+                    hideListRow = true;
                 } else {
                     //This is needed because the layout is reused for other rows
                     if(selectedPhoneMap.containsKey(phoneNumberR.replaceAll("[^\\d]", ""))) {
@@ -174,7 +172,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                 //if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.Data.CONTACT_ID)) {
                 if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)) {
                     ImageView photoView = (ImageView) view;
-                    if(hideRow) {
+                    if(hideListRow) {
                         ////Image height should be suppressed
                         //photoView.getLayoutParams().height = 0;
                     }
@@ -186,21 +184,10 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     //Log.d(TAG, ">>>>> PHOTO_THUMBNAIL_URI: " + photoThumbnailUri);
                     if(photoThumbnailUri != null) {
                         photoView.setImageURI(Uri.parse(photoThumbnailUri));
-                        //try {
-                        //    AssetFileDescriptor afd = getActivity().getContentResolver().openAssetFileDescriptor(Uri.parse(photoThumbnailUri), "r");
-                        //    FileDescriptor fd = afd.getFileDescriptor();
-                        //    Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd, null, null);
-                        //    photoView.setImageBitmap(bitmap);
-                        //    return true;
-                        //} catch (FileNotFoundException e) {
-                        //    e.printStackTrace();
-                        //    return false;
-                        //}
-                        return true;
                     } else {
                         photoView.setImageResource(R.drawable.ic_contact_28);
-                        return true;
                     }
+                    return true;
                 }
 
                 if(columnIndex == cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)) {
@@ -217,24 +204,6 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     detailView.append("\n" + ContactsContract.CommonDataKinds.Phone.getTypeLabel(getResources(), phoneType, ""));
                     return true;
                 }
-
-                //if(columnIndex == dateColumnIndex) {
-                //    String dateStr = cursor.getString(dateColumnIndex);
-
-                //    long dateLong = Long.valueOf(dateStr);
-                //    SimpleDateFormat dateFormat = new SimpleDateFormat();
-                //    //TODO if today, then do simpler format
-
-                //    TextView detailTextView = (TextView) view;
-                //    detailTextView.append(dateFormat.format(dateLong));
-                //    return true;
-                //}
-
-                //if(columnIndex == durationColumnIndex) {
-                //    TextView detailTextView = (TextView) view;
-                //    detailTextView.append("\n" + cursor.getString(durationColumnIndex) + " sec");
-                //    return true;
-                //}
 
                 return false;
             }

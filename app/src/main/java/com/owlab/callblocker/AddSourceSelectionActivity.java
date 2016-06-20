@@ -16,6 +16,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AddSourceSelectionActivity extends AppCompatActivity {
     private static final String TAG = AddSourceSelectionActivity.class.getSimpleName();
 
@@ -64,31 +67,47 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         View.OnClickListener fromCallLogOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
+                List<String> neededPermissionList = new ArrayList<>();
+                boolean shouldShowRequestPermissionRationale = false;
+                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CALL_LOG)) {
+                        shouldShowRequestPermissionRationale = true;
+                    }
+                    neededPermissionList.add(Manifest.permission.READ_CALL_LOG);
+                }
+                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CONTACTS)) {
+                        shouldShowRequestPermissionRationale = true;
+                    }
+                    neededPermissionList.add(Manifest.permission.READ_CONTACTS);
+                }
+
+                if (neededPermissionList.size() == 0) {
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CALL_LOG);
                     setResult(RESULT_OK, intent);
                     finish();
-                    //startActivity(intent);
-                    //startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(AddSourceSelectionActivity.this).toBundle());
-                } else {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CALL_LOG)) {
-                        FUNS.showMessageWithOKCancel(
-                                AddSourceSelectionActivity.this,
-                                "This feature need the following permission. Denying may cause not to function as intended.",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int which) {
-                                        //Request permission
-                                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CALL_LOG}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG);
-                                    }
+                    return;
+                }
+
+                final String[] neededPermissions = new String[neededPermissionList.size()];
+                neededPermissionList.toArray(neededPermissions);
+
+                if (shouldShowRequestPermissionRationale) {
+                    FUNS.showMessageWithOKCancel(
+                            AddSourceSelectionActivity.this,
+                            "This feature need the following permission. Denying may cause not to function as intended.",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int which) {
+                                    //Request permission
+                                    ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG);
                                 }
-                                , null);
-                    } else {
-                        //Request permission
-                        ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, new String[]{Manifest.permission.READ_CALL_LOG}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG);
-                    }
+                            }
+                            , null);
+                } else {
+                    //Request permissions
+                    ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG);
                 }
             }
         };
@@ -132,10 +151,10 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         View.OnClickListener addByManualOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_ADD_BY_MANUAL);
-                    setResult(RESULT_OK, intent);
-                    finish();
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_ADD_BY_MANUAL);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         };
 
@@ -200,11 +219,13 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        boolean readContactsPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+        boolean readCallLogPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        boolean readContactsPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
 
-        switch(requestCode) {
+        switch (requestCode) {
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG:
-                if(readContactsPermissionGranted) {
+                if (readCallLogPermissionGranted) {
                     //open read & import call log fragment
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CALL_LOG);
@@ -218,7 +239,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                 }
                 break;
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS:
-                if(readContactsPermissionGranted) {
+                if (readContactsPermissionGranted) {
                     //open read & import call log fragment
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                     intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CONTACTS);
