@@ -3,12 +3,12 @@ package com.owlab.callblocker.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +23,7 @@ import com.owlab.callblocker.content.CallBlockerTbl;
 /**
  * Created by ernest on 5/15/16.
  */
-public class AddByManualDialogFragment extends DialogFragment{
+public class AddByManualDialogFragment extends DialogFragment {
     private static final String TAG = AddByManualDialogFragment.class.getSimpleName();
 
     //public interface AddItemDialogListener {

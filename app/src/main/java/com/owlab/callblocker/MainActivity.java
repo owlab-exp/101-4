@@ -1,11 +1,11 @@
 package com.owlab.callblocker;
 
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,9 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Switch;
 
+import com.owlab.callblocker.fragment.AddByManualDialogFragment;
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
 import com.owlab.callblocker.fragment.AddFromContactsFragment;
-import com.owlab.callblocker.fragment.AddByManualDialogFragment;
 import com.owlab.callblocker.fragment.PhoneListFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //if(intent != null && fragment != null && fragment.equals(CONS.FRAGMENT_CALL_LOG)) {
         //    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
         //} else {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_PHONE_LIST).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_PHONE_LIST).commit();
         //}
     }
 
@@ -129,18 +129,20 @@ public class MainActivity extends AppCompatActivity {
                 String targetFragment = data.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
                 Log.d(TAG, ">>>>> target fragment: " + targetFragment);
                 if(CONS.FRAGMENT_CALL_LOG.equals(targetFragment)) {
-                    getFragmentManager().beginTransaction()
+                    getSupportFragmentManager().beginTransaction()
                             .addToBackStack(CONS.FRAGMENT_PHONE_LIST)
+                            //.replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commitAllowingStateLoss();
                             .replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
                 } else if(CONS.FRAGMENT_CONTACTS.equals(targetFragment)) {
-                    getFragmentManager().beginTransaction()
+                    getSupportFragmentManager().beginTransaction()
                             .addToBackStack(CONS.FRAGMENT_PHONE_LIST)
+                            //.replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commitAllowingStateLoss();
                             .replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commit();
                 } else if(CONS.FRAGMENT_ADD_BY_MANUAL.equals(targetFragment)) {
-                    Fragment phoneListFragment = getFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);
+                    Fragment phoneListFragment = getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);
                     DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
                     addByManualDialogFragment.setTargetFragment(phoneListFragment, 0);
-                    addByManualDialogFragment.show(getFragmentManager(), "ADD_BY_MANUAL_DIALOG");
+                    addByManualDialogFragment.show(getSupportFragmentManager(), "ADD_BY_MANUAL_DIALOG");
                 }
             } else if(resultCode == RESULT_CANCELED) {
                 Log.d(TAG, ">>>>> result canceled received");
@@ -149,5 +151,17 @@ public class MainActivity extends AppCompatActivity {
                 //TODO what is this?
             }
         }
+    }
+
+    /**
+     * Because of bug in support package
+     * Without this override, the above onActivityResult will result in exceptions!
+     * http://stackoverflow.com/questions/7575921/illegalstateexception-can-not-perform-this-action-after-onsaveinstancestate-wit
+     * @param outState
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
+        //super.onSaveInstanceState(outState);
     }
 }
