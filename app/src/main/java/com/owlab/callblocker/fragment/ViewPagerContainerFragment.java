@@ -63,9 +63,9 @@ public class ViewPagerContainerFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             switch(position) {
                 case 0:
-                    return "Blocked Phone Number";
+                    return "Blocked Number";
                 case 1:
-                    return "Blocked Call Log";
+                    return "Blocked Call";
             }
 
             return null;
