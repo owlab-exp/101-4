@@ -14,7 +14,7 @@ public final class CONS {
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAIL = -1;
     public static final int RESULT_OTHER = -1;
-    public static final String FRAGMENT_PHONE_LIST = "PHONE_LIST_FRAGMENT";
+    public static final String FRAGMENT_VIEW_PAGER_CONTAINER = "VIEW_PAGER_CONTAINER_FRAGMENT";
     public static final String FRAGMENT_SETTINGS = "SETTINGS_FRAGMENT";
     public static final String FRAGMENT_CALL_LOG = "CALL_LOG_FRAGMENT";
     public static final String FRAGMENT_CONTACTS = "CONTACTS_FRAGMENT";

@@ -16,8 +16,8 @@ import android.widget.Switch;
 import com.owlab.callblocker.fragment.AddByManualDialogFragment;
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
 import com.owlab.callblocker.fragment.AddFromContactsFragment;
-import com.owlab.callblocker.fragment.PhoneListFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
+import com.owlab.callblocker.fragment.ViewPagerContainerFragment;
 
 /**
  * Top most setting element is "SERVICE ON/OFF"
@@ -40,14 +40,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        //Intent intent = getIntent();
-        //String fragment = intent.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
-        ////getFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), "PHONE_LIST_FRAGMENT").commit();
-        //if(intent != null && fragment != null && fragment.equals(CONS.FRAGMENT_CALL_LOG)) {
-        //    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
-        //} else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_PHONE_LIST).commit();
-        //}
+
+
+        //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
+
     }
 
     private Menu menu;
@@ -130,16 +127,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, ">>>>> target fragment: " + targetFragment);
                 if(CONS.FRAGMENT_CALL_LOG.equals(targetFragment)) {
                     getSupportFragmentManager().beginTransaction()
-                            .addToBackStack(CONS.FRAGMENT_PHONE_LIST)
+                            .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
                             //.replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commitAllowingStateLoss();
                             .replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
                 } else if(CONS.FRAGMENT_CONTACTS.equals(targetFragment)) {
                     getSupportFragmentManager().beginTransaction()
-                            .addToBackStack(CONS.FRAGMENT_PHONE_LIST)
+                            .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
                             //.replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commitAllowingStateLoss();
                             .replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commit();
                 } else if(CONS.FRAGMENT_ADD_BY_MANUAL.equals(targetFragment)) {
-                    Fragment phoneListFragment = getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);
+                    Fragment phoneListFragment = getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
                     DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
                     addByManualDialogFragment.setTargetFragment(phoneListFragment, 0);
                     addByManualDialogFragment.show(getSupportFragmentManager(), "ADD_BY_MANUAL_DIALOG");
@@ -164,4 +161,6 @@ public class MainActivity extends AppCompatActivity {
         //outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
         //super.onSaveInstanceState(outState);
     }
+
+
 }

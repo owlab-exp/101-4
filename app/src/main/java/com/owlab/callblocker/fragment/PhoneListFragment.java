@@ -69,7 +69,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                 isFabRotated = true;
 
                 Intent startAddActivityIntent = new Intent(getActivity(), AddSourceSelectionActivity.class);
-                startAddActivityIntent.putExtra(CONS.INTENT_KEY_TRANSITION_SOURCE, CONS.FRAGMENT_PHONE_LIST);
+                startAddActivityIntent.putExtra(CONS.INTENT_KEY_TRANSITION_SOURCE, CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
 
                 //getActivity().startActivity(startAddActivityIntent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
                 //To return the enclosing activity of this

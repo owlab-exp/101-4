@@ -99,10 +99,10 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                         Toast.makeText(getActivity(), numOfNotAdded + " " + (numOfNotAdded > 1 ? "phone numbers":"phone number") + " not added, duplicate?", Toast.LENGTH_SHORT).show();
 
                     selectedPhoneMap.clear();
-                    //Fragment fragment = getFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);
-                    //getActivity().getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, CONS.FRAGMENT_PHONE_LIST).commit();
+                    //Fragment fragment = getFragmentManager().findFragmentByTag(CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
+                    //getActivity().getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
                     FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.popBackStack(CONS.FRAGMENT_PHONE_LIST, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragmentManager.popBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
                     Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
                 }

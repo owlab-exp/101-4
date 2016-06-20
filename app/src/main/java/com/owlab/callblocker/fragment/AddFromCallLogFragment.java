@@ -105,7 +105,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                         Toast.makeText(getActivity(), numOfAdded + " " + (numOfAdded > 1 ? "phone numbers":"phone number") + " added", Toast.LENGTH_SHORT).show();
                     if(numOfNotAdded > 0)
                         Toast.makeText(getActivity(), numOfNotAdded + " " + (numOfNotAdded > 1 ? "phone numbers":"phone number") + " not added, duplicate?", Toast.LENGTH_SHORT).show();
-                    getFragmentManager().popBackStack(CONS.FRAGMENT_PHONE_LIST, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    getFragmentManager().popBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
                     Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
                 }

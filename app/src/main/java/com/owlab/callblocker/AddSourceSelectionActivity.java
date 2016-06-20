@@ -172,7 +172,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         //initialize for onPause
         transitionTarget = null;
 
-        if (transitionSource != null && transitionSource.equals(CONS.FRAGMENT_PHONE_LIST)) {
+        if (transitionSource != null && transitionSource.equals(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)) {
             addFromCallLogFab.startAnimation(rotateForwardAppear);
             //addFromCallLogFab.startAnimation(rotateForwardDisappear);
         } else {
