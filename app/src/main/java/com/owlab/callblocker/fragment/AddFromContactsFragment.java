@@ -79,16 +79,25 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
             @Override
             public void onClick(View view) {
                 if(selectedPhoneMap.size() > 0) {
+                    int numOfAdded = 0;
+                    int numOfNotAdded = 0;
                     for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
                         values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
                         values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, entry.getValue());
                         Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
                         if(Long.parseLong(newUri.getLastPathSegment()) > 0)
-                            Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity(), entry.getKey() + " failed to add, duplicate?", Toast.LENGTH_SHORT).show();
+                            numOfAdded++;
+                        else {
+                            numOfNotAdded++;
+                        }
                     }
+
+                    if(numOfAdded > 0)
+                        Toast.makeText(getActivity(), numOfAdded + " " + (numOfAdded > 1 ? "phone numbers":"phone number") + " added", Toast.LENGTH_SHORT).show();
+                    if(numOfNotAdded > 0)
+                        Toast.makeText(getActivity(), numOfNotAdded + " " + (numOfNotAdded > 1 ? "phone numbers":"phone number") + " not added, duplicate?", Toast.LENGTH_SHORT).show();
+
                     selectedPhoneMap.clear();
                     //Fragment fragment = getFragmentManager().findFragmentByTag(CONS.FRAGMENT_PHONE_LIST);
                     //getActivity().getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, CONS.FRAGMENT_PHONE_LIST).commit();
