@@ -86,7 +86,7 @@ public class AddByManualDialogFragment extends DialogFragment {
                     public void onClick(View view) {
                         //Log.d(TAG, ">>> clicked");
                         EditText phoneNumberText = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_phone_number);
-                        EditText descriptionText = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_description);
+                        EditText displayNameET = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_description);
                         if(phoneNumberText.getText().toString().trim().isEmpty()) {
                             Snackbar.make(getView(), "Empty phone number", Snackbar.LENGTH_SHORT).show();
                         } else {
@@ -95,7 +95,7 @@ public class AddByManualDialogFragment extends DialogFragment {
                             ContentValues values = new ContentValues();
                             String compactPhoneNumber = phoneNumberText.getText().toString().replaceAll("[^\\d]", "");
                             values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, compactPhoneNumber);
-                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, descriptionText.getText().toString());
+                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, displayNameET.getText().toString());
                             Uri newUri = getTargetFragment().getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
                             Log.d(TAG, ">>> newUri: " + newUri.toString());
                             Log.d(TAG, ">>> newUri.getLastPathSegment: " + newUri.getLastPathSegment());

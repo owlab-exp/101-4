@@ -122,7 +122,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             private int _idColumnIndex = -1;
             private int phoneNumberColumnIndex = -1;
-            private int descriptionColumnIndex = -1;
+            private int displayNameColumnIndex = -1;
             private int isActiveColumnIndex = -1;
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
@@ -131,8 +131,8 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     _idColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID);
                 if(phoneNumberColumnIndex == -1)
                     phoneNumberColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER);
-                if(descriptionColumnIndex == -1)
-                    descriptionColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME);
+                if(displayNameColumnIndex == -1)
+                    displayNameColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME);
                 if(isActiveColumnIndex == -1)
                     isActiveColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE);
 
@@ -154,12 +154,12 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                 if(columnIndex == cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME)) {
                     final int _id = cursor.getInt(_idColumnIndex);
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String description = cursor.getString(descriptionColumnIndex);
+                    final String displayName = cursor.getString(displayNameColumnIndex);
                     TextView descriptionTextView = (TextView) view;
 
                     //Here defensive code
                     descriptionTextView.setOnClickListener(null);
-                    descriptionTextView.setText(description);
+                    descriptionTextView.setText(displayName);
                     descriptionTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View descriptionView) {
@@ -167,7 +167,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                             Bundle argument = new Bundle();
                             argument.putInt("_id", _id);
                             argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", description);
+                            argument.putString("description", displayName);
                             changeDescriptionDialogFragment.setArguments(argument);
                             changeDescriptionDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
                             changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
@@ -204,7 +204,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                 if(view.getId() == R.id.phone_number_list_row_delete_icon) {
                     final int _id = cursor.getInt(_idColumnIndex);
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String description = cursor.getString(descriptionColumnIndex);
+                    final String displayName = cursor.getString(displayNameColumnIndex);
                     ImageView deleteIconView = (ImageView) view;
 
                     //Here defensive code
@@ -216,7 +216,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                             Bundle argument = new Bundle();
                             argument.putInt("_id", _id);
                             argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", description);
+                            argument.putString("description", displayName);
                             deletePhoneDialogFragment.setArguments(argument);
                             deletePhoneDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
                             deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");

@@ -57,14 +57,14 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
 
         View diagView = inflater.inflate(R.layout.change_description_dialog_layout, null);
         //TextView phoneNumberTextView = (TextView) diagView.findViewById(R.id.updateDialog_textView_phoneNumber);
-        final EditText descriptionText = (EditText) diagView.findViewById(R.id.change_description_dialog_description);
+        final EditText displayNameET = (EditText) diagView.findViewById(R.id.change_description_dialog_description);
 
         //phoneNumberTextView.setText(phoneNumber);
         //phoneNumberTextView.setEnabled(false);
 
         // To send cursor to the end
-        descriptionText.setText("");
-        descriptionText.append(description);
+        displayNameET.setText("");
+        displayNameET.append(description);
 
         updateDescriptionDialog = builder
                 .setView(diagView)
@@ -75,10 +75,10 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        //mUpdateDescriptionDialogListener.onUpdateDescriptionUpdateClick(_id, descriptionText.getText().toString());
+                        //mUpdateDescriptionDialogListener.onUpdateDescriptionUpdateClick(_id, displayNameET.getText().toString());
                         dialog.dismiss();
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, descriptionText.getText().toString());
+                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, displayNameET.getText().toString());
                         int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerContentProvider.CONTENT_URI, values, CallBlockerTbl.Schema._ID + "=" + _id, null);
                         if(updateCount > 0) {
                             Snackbar.make(getTargetFragment().getView(), "Display name changed", Snackbar.LENGTH_SHORT).show();
