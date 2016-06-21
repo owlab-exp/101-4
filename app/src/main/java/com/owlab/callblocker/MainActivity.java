@@ -153,9 +153,12 @@ public class MainActivity extends AppCompatActivity {
                             //.replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commitAllowingStateLoss();
                             .replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commit();
                 } else if(CONS.FRAGMENT_ADD_BY_MANUAL.equals(targetFragment)) {
-                    Fragment phoneListFragment = getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
+                    Fragment viewPagerContainer = getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
+                    Fragment currentPageFragment = ((ViewPagerContainerFragment)viewPagerContainer).getCurrentPageFragment();
+                    Log.d(TAG, ">>> fragment found: " + (viewPagerContainer == null ? null : viewPagerContainer.toString()));
                     DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
-                    addByManualDialogFragment.setTargetFragment(phoneListFragment, 0);
+                    //addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
+                    addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment: viewPagerContainer, 0);
                     addByManualDialogFragment.show(getSupportFragmentManager(), "ADD_BY_MANUAL_DIALOG");
                 }
             } else if(resultCode == RESULT_CANCELED) {

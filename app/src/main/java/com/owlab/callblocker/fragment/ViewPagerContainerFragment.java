@@ -1,22 +1,16 @@
 package com.owlab.callblocker.fragment;
 
-import android.Manifest;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.PermissionChecker;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.owlab.callblocker.CONS;
-import com.owlab.callblocker.FUNS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 
@@ -26,16 +20,16 @@ import com.owlab.callblocker.Utils;
 public class ViewPagerContainerFragment extends Fragment {
     private static final String TAG = ViewPagerContainerFragment.class.getSimpleName();
 
+
+    ViewPager viewPager;
+    MyFragmentPagerAdapter myFragmentPagerAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.view_pager_container_view, container, false);
 
 
-
-        int pageCount = 2;
-
-        ViewPager viewPager = (ViewPager) root.findViewById(R.id.pager);
+        viewPager = (ViewPager) root.findViewById(R.id.pager);
         //
         viewPager.setPageMargin(Utils.convertDip2Pixels(getActivity(), 20));
         viewPager.setPageMarginDrawable(R.color.colorPrimarylight);
@@ -43,9 +37,7 @@ public class ViewPagerContainerFragment extends Fragment {
         FragmentManager fragmentManager = getChildFragmentManager();
 
 
-
-
-        MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager, pageCount);
+        myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager, 2);
         if (viewPager != null) {
             viewPager.setAdapter(myFragmentPagerAdapter);
         }
@@ -53,7 +45,16 @@ public class ViewPagerContainerFragment extends Fragment {
         return root;
     }
 
-    public static class MyFragmentPagerAdapter  extends FragmentPagerAdapter {
+    public Fragment getCurrentPageFragment() {
+        if(viewPager != null) {
+            int currentItem = viewPager.getCurrentItem();
+            return myFragmentPagerAdapter.getFragment(currentItem);
+        }
+        return null;
+    }
+
+    public static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+        private SparseArrayCompat<Fragment> fragments = new SparseArrayCompat<>();
 
         private int pageCount;
 
@@ -62,16 +63,28 @@ public class ViewPagerContainerFragment extends Fragment {
             this.pageCount = pageCount;
         }
 
+        public Fragment getFragment(int position) {
+            return fragments.get(position);
+        }
+
         @Override
         public Fragment getItem(int position) {
             Log.d(TAG, "Getting item in position: " + position);
+            Fragment fragment = fragments.get(position);
+
+            if (fragment != null) {
+                return fragment;
+            }
+
             switch (position) {
-                case 0:
-                    BlockedNumberListFragment blockedNumberListFragment = new BlockedNumberListFragment();
-                    return blockedNumberListFragment;
-                case 1:
-                    BlockedCallLogFragment blockedCallLogFragment = new BlockedCallLogFragment();
-                    return blockedCallLogFragment;
+                    case 0:
+                        BlockedNumberListFragment blockedNumberListFragment = new BlockedNumberListFragment();
+                        fragments.put(0, blockedNumberListFragment);
+                        return blockedNumberListFragment;
+                    case 1:
+                        BlockedCallLogFragment blockedCallLogFragment = new BlockedCallLogFragment();
+                        fragments.put(1, blockedCallLogFragment);
+                        return blockedCallLogFragment;
             }
 
             return null;
@@ -84,7 +97,7 @@ public class ViewPagerContainerFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch(position) {
+            switch (position) {
                 case 0:
                     return "Blocked Numbers";
                 case 1:

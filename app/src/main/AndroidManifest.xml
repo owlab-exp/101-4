@@ -63,7 +63,7 @@
             android:name=".service.CallBlockerIntentService"
             android:exported="false" />
         <service
-            android:name=".service.CallLogDeleteService"
+            android:name=".service.CallLogObserverStartService"
             android:exported="false" />
     </application>
 

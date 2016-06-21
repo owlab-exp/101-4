@@ -9,15 +9,15 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.owlab.callblocker.contentobserver.CallLogDeleter;
+import com.owlab.callblocker.contentobserver.CallLogObserver;
 
 /**
  * Created by ernest on 6/13/16.
  */
-public class CallLogDeleteService extends Service {
-    private static final String TAG = CallLogDeleteService.class.getSimpleName();
+public class CallLogObserverStartService extends Service {
+    private static final String TAG = CallLogObserverStartService.class.getSimpleName();
 
-    private CallLogDeleter callLogDeleter;
+    private CallLogObserver callLogObserver;
 
     @Override
     public void onCreate() {
@@ -28,12 +28,13 @@ public class CallLogDeleteService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, ">>>>> starting...");
 
-        //callLogDeleter = new CallLogDeleter(new Handler(), getBaseContext());
+        //callLogObserver = new CallLogObserver(new Handler(), getBaseContext());
         String phoneNumber = intent.getExtras().getString("phoneNumber");
         long startTime = intent.getExtras().getLong("startTime");
-        callLogDeleter = new CallLogDeleter(new Handler(), getBaseContext(), this, phoneNumber, startTime);
+        boolean delete = intent.getExtras().getBoolean("delete");
+        callLogObserver = new CallLogObserver(new Handler(), getBaseContext(), this, phoneNumber, startTime, delete);
         Log.d(TAG, ">>>>> Uri to be registered: " + CallLog.Calls.CONTENT_URI);
-        getBaseContext().getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, callLogDeleter);
+        getBaseContext().getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, callLogObserver);
         Toast.makeText(getBaseContext(), "Call log cleansing service started", Toast.LENGTH_SHORT).show();
 
         return START_STICKY;
@@ -43,8 +44,8 @@ public class CallLogDeleteService extends Service {
     public void onDestroy() {
         Log.d(TAG, ">>>>> destroying...");
 
-        getBaseContext().getContentResolver().unregisterContentObserver(callLogDeleter);
-        callLogDeleter = null;
+        getBaseContext().getContentResolver().unregisterContentObserver(callLogObserver);
+        callLogObserver = null;
         Toast.makeText(getBaseContext(), "Call log cleansing service finished", Toast.LENGTH_SHORT).show();
     }
 
