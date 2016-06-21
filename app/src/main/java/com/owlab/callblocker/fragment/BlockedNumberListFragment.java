@@ -34,14 +34,14 @@ import com.owlab.callblocker.content.CallBlockerTbl;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PhoneListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = PhoneListFragment.class.getSimpleName();
+public class BlockedNumberListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String TAG = BlockedNumberListFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
     private static final int DB_LOADER = 0;
     private boolean isFabRotated = false;
 
-    public PhoneListFragment() {
+    public BlockedNumberListFragment() {
         Log.d(TAG, ">>>>> instantiated");
     }
 
@@ -153,7 +153,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                         argument.putString("phoneNumber", phoneNumber);
                         argument.putString("description", displayName);
                         changeDescriptionDialogFragment.setArguments(argument);
-                        changeDescriptionDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
+                        changeDescriptionDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
                         changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
                     }
                 });
@@ -190,7 +190,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                         argument.putString("phoneNumber", phoneNumber);
                         argument.putString("description", displayName);
                         deletePhoneDialogFragment.setArguments(argument);
-                        deletePhoneDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
+                        deletePhoneDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
                         deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");
                     }
                 });

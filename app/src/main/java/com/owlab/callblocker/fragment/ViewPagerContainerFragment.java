@@ -49,8 +49,8 @@ public class ViewPagerContainerFragment extends Fragment {
             Log.d(TAG, "Getting item in position: " + position);
             switch (position) {
                 case 0:
-                    PhoneListFragment phoneListFragment = new PhoneListFragment();
-                    return phoneListFragment;
+                    BlockedNumberListFragment blockedNumberListFragment = new BlockedNumberListFragment();
+                    return blockedNumberListFragment;
                 case 1:
                     BlockedCallLogFragment blockedCallLogFragment = new BlockedCallLogFragment();
                     return blockedCallLogFragment;

@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneListFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
+        //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BlockedNumberListFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
 
     }
