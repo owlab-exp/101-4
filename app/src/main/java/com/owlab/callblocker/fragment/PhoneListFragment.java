@@ -89,7 +89,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
     public void onResume() {
         super.onResume();
 
-        if(isFabRotated) {
+        if (isFabRotated) {
             final FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_add);
             Animation rotateBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
             fab.startAnimation(rotateBackward);
@@ -104,128 +104,98 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
     }
 
     private final String[] FROM_COLUMNS = {
-            CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
-            CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME,
-            CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
-            CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
+            CallBlockerTbl.Schema._ID
+            , CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER
+            , CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME
+            , CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE
+            //, CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
     };
 
     private final int[] TO_IDS = new int[]{
-            R.id.phone_number_list_row_phone_number,
-            R.id.phone_number_list_row_description,
-            R.id.phone_number_list_row_is_active_switch,
-            R.id.phone_number_list_row_delete_icon
+            R.id.phone_number_list_row_holder
+            //, R.id.phone_number_list_row_holder
+            //, R.id.phone_number_list_row_holder
+            //, R.id.phone_number_list_row_holder
+            ////R.id.phone_number_list_row_phone_number,
+            ////R.id.phone_number_list_row_description,
+            ////R.id.phone_number_list_row_is_active_switch,
+            ////R.id.phone_number_list_row_delete_icon
     };
 
     private void setLoader(final View fragmentView) {
         cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.phone_list_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            private int _idColumnIndex = -1;
-            private int phoneNumberColumnIndex = -1;
-            private int displayNameColumnIndex = -1;
-            private int isActiveColumnIndex = -1;
+            //private int _idColumnIndex = -1;
+            //private int phoneNumberColumnIndex = -1;
+            //private int displayNameColumnIndex = -1;
+            //private int isActiveColumnIndex = -1;
             @Override
-            public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
-                //final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID));
-                if(_idColumnIndex == -1)
-                    _idColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID);
-                if(phoneNumberColumnIndex == -1)
-                    phoneNumberColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER);
-                if(displayNameColumnIndex == -1)
-                    displayNameColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME);
-                if(isActiveColumnIndex == -1)
-                    isActiveColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE);
+            public boolean setViewValue(final View view, final Cursor cursor, int idIndex) {
+                final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID));
+                final String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER));
+                final String displayName = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME));
+                final boolean checkedRead = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) > 0;
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER)) {
-                    //Log.d(TAG, ">>>>> phone number formatting...");
-                    TextView phoneNumberTextView = (TextView) view;
-                    //If addTextChangedListener needed, make it clear that this call happens only once per the textview
-                    //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-                    //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
-                    String phoneNumber = cursor.getString(columnIndex);
-                    //Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
-                    //String phoneNumberFormatted = Utils.formatPhoneNumber(phoneNumber);
-                    //Log.d(TAG, ">>>>> phoneNumberFormatted: " + phoneNumberFormatted);
+                TextView phoneNumberTV = (TextView) view.findViewById(R.id.phone_number_list_row_phone_number);
+                phoneNumberTV.setText(Utils.formatPhoneNumber(phoneNumber));
 
-                    phoneNumberTextView.setText(Utils.formatPhoneNumber(phoneNumber));
-                    return true;
-                }
+                TextView displayNameTV = (TextView) view.findViewById(R.id.phone_number_list_row_display_name);
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME)) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String displayName = cursor.getString(displayNameColumnIndex);
-                    TextView descriptionTextView = (TextView) view;
+                //Here defensive code
+                displayNameTV.setOnClickListener(null);
+                displayNameTV.setText(displayName);
+                displayNameTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View descriptionView) {
+                        ChangeDescriptionDialogFragment changeDescriptionDialogFragment = new ChangeDescriptionDialogFragment();
+                        Bundle argument = new Bundle();
+                        argument.putInt("_id", _id);
+                        argument.putString("phoneNumber", phoneNumber);
+                        argument.putString("description", displayName);
+                        changeDescriptionDialogFragment.setArguments(argument);
+                        changeDescriptionDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
+                        changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
+                    }
+                });
 
-                    //Here defensive code
-                    descriptionTextView.setOnClickListener(null);
-                    descriptionTextView.setText(displayName);
-                    descriptionTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View descriptionView) {
-                            ChangeDescriptionDialogFragment changeDescriptionDialogFragment = new ChangeDescriptionDialogFragment();
-                            Bundle argument = new Bundle();
-                            argument.putInt("_id", _id);
-                            argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", displayName);
-                            changeDescriptionDialogFragment.setArguments(argument);
-                            changeDescriptionDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
-                            changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
+                Switch isActiveSwitch = (Switch) view.findViewById(R.id.phone_number_list_row_is_active_switch);
+                //This is necessary not to set multiple OnCheckedChangeListener!
+                isActiveSwitch.setOnCheckedChangeListener(null);
+                isActiveSwitch.setChecked(checkedRead);
+                isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean checkedChanged) {
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE, checkedChanged ? 1 : 0);
+                        int updateCount = getActivity().getContentResolver().update(
+                                CallBlockerContentProvider.CONTENT_URI,
+                                contentValues, CallBlockerTbl.Schema._ID + " = " + _id,
+                                null);
+                        if (updateCount > 0) {
+                            //TODO test if getRootView is right
+                            Snackbar.make(fragmentView, "Blocking " + (checkedChanged ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
                         }
-                    });
-                    return true;
-                }
+                    }
+                });
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    Switch isActiveSwitch = (Switch) view;
-                    //This is necessary not to set multiple OnCheckedChangeListener!
-                    isActiveSwitch.setOnCheckedChangeListener(null);
-                    isActiveSwitch.setChecked(cursor.getInt(isActiveColumnIndex) > 0);
-                    isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE, isChecked ? 1:0);
-                            int updateCount = getActivity().getContentResolver().update(
-                                    CallBlockerContentProvider.CONTENT_URI,
-                                    contentValues, CallBlockerTbl.Schema._ID + " = " + _id,
-                                    null);
-                            if(updateCount > 0) {
-                                //TODO test if getRootView is right
-                                Snackbar.make(fragmentView, "Blocking " + (isChecked ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    return true;
-                }
+                ImageView deleteIconView = (ImageView) view.findViewById(R.id.phone_number_list_row_delete_icon);
+                //Here defensive code
+                deleteIconView.setOnClickListener(null);
+                deleteIconView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DialogFragment deletePhoneDialogFragment = new DeletePhoneDialogFragment();
+                        Bundle argument = new Bundle();
+                        argument.putInt("_id", _id);
+                        argument.putString("phoneNumber", phoneNumber);
+                        argument.putString("description", displayName);
+                        deletePhoneDialogFragment.setArguments(argument);
+                        deletePhoneDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
+                        deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");
+                    }
+                });
 
-                if(view.getId() == R.id.phone_number_list_row_delete_icon) {
-                    final int _id = cursor.getInt(_idColumnIndex);
-                    final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
-                    final String displayName = cursor.getString(displayNameColumnIndex);
-                    ImageView deleteIconView = (ImageView) view;
-
-                    //Here defensive code
-                    deleteIconView.setOnClickListener(null);
-                    deleteIconView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            DialogFragment deletePhoneDialogFragment = new DeletePhoneDialogFragment();
-                            Bundle argument = new Bundle();
-                            argument.putInt("_id", _id);
-                            argument.putString("phoneNumber", phoneNumber);
-                            argument.putString("description", displayName);
-                            deletePhoneDialogFragment.setArguments(argument);
-                            deletePhoneDialogFragment.setTargetFragment(PhoneListFragment.this, 0);
-                            deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");
-                        }
-                    });
-                    return true;
-                }
-
-                return false;
+                return true;
             }
         });
 
@@ -236,7 +206,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
         CursorLoader cursorLoader = null;
-        switch(loaderId) {
+        switch (loaderId) {
             case DB_LOADER:
                 String[] projection = {
                         CallBlockerTbl.Schema._ID,

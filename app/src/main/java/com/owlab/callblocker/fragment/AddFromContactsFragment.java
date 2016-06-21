@@ -173,7 +173,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     //List row items for the provider FROM_COLUMNS
     private static final int[] TO_IDS = {
             R.id.add_from_contacts_row_contact_icon
-            , R.id.add_from_contacts_row_contact_info
+            , R.id.add_from_contacts_row_contact_display_name
             , R.id.add_from_contacts_row_contact_detail
             , R.id.add_from_contacts_row_contact_detail
     };
@@ -283,7 +283,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
         Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
-        TextView infoView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_info);
+        TextView infoView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_display_name);
         String displayName = infoView.getText().toString();
         TextView numberView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_number);
         String phoneNumberFormatted = numberView.getText().toString();
