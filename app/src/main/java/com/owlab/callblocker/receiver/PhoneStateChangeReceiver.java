@@ -85,7 +85,7 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
                 Log.d(TAG, ">>>>> starting delete service");
                 Intent intent = new Intent(context, CallLogObserverStartService.class);
                 intent.putExtra("phoneNumber", phoneNumber);
-                intent.putExtra("startTime", start.getTime() - (2*1000));
+                intent.putExtra("startTime", start.getTime() - (3*1000));
                 intent.putExtra("delete", deleteCallLogOn);
                 context.startService(intent);
 
