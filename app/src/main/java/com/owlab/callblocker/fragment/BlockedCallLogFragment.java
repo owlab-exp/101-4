@@ -220,13 +220,16 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                         //Nothing to do here right now
                     }
 
-                    String displayName = null;
-                    String photoUriStr = null;
-                    if(!phoneNumber.trim().equals("")) {
+                    if(phoneNumber.trim().equals("")) {
+                        photoView.setImageResource(R.drawable.ic_contact_28);
+                        nameView.setText("Private number");
+                    } else {
+                        String displayName = null;
+                        String photoUriStr = null;
                         //long contactId = -1l;
-                        Log.d(TAG, ">>>>> looking for: " + phoneNumber);
+                        //Log.d(TAG, ">>>>> looking for: " + phoneNumber);
                         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-                        Log.d(TAG, ">>>>> uri: " + uri.toString());
+                        //Log.d(TAG, ">>>>> uri: " + uri.toString());
                         Cursor contactsCursor = contentResolver.query(uri, projection, null, null, null);
                         if (contactsCursor != null) {
                             if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
@@ -237,7 +240,6 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                             }
                             contactsCursor.close();
                         }
-                    }
 
                         //if(contactId != -1l) {
                         if (photoUriStr != null) {
@@ -260,11 +262,13 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                             photoView.setImageResource(R.drawable.ic_contact_28);
                         }
 
-                    if(displayName != null) {
-                        nameView.setText(displayName);
-                        Log.d(TAG, ">>>>> set nameView: " + displayName);
+                        if(displayName != null) {
+                            nameView.setText(displayName);
+                            //Log.d(TAG, ">>>>> set nameView: " + displayName);
+                        } else {
+                            nameView.setText("");
+                        }
                     }
-
                     //numberView.setText(phoneNumberFormatted);
                     //numberView.setText(Utils.formatPhoneNumber(phoneNumberFormatted));
                     //numberView.setText(Utils.formatPhoneNumber(phoneNumber));

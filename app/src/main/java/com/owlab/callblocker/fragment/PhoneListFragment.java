@@ -103,13 +103,14 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
         super.onPause();
     }
 
-    final String[] FROM_COLUMNS = {
+    private final String[] FROM_COLUMNS = {
             CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
             CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME,
             CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
             CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
     };
-    final int[] TO_IDS = new int[]{
+    
+    private final int[] TO_IDS = new int[]{
             R.id.phone_number_list_row_phone_number,
             R.id.phone_number_list_row_description,
             R.id.phone_number_list_row_is_active_switch,
@@ -135,7 +136,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                 if(isActiveColumnIndex == -1)
                     isActiveColumnIndex = cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE);
 
-                if(columnIndex == phoneNumberColumnIndex) {
+                if(columnIndex == cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER)) {
                     //Log.d(TAG, ">>>>> phone number formatting...");
                     TextView phoneNumberTextView = (TextView) view;
                     //If addTextChangedListener needed, make it clear that this call happens only once per the textview
@@ -150,7 +151,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     return true;
                 }
 
-                if(columnIndex == descriptionColumnIndex) {
+                if(columnIndex == cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME)) {
                     final int _id = cursor.getInt(_idColumnIndex);
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
                     final String description = cursor.getString(descriptionColumnIndex);
@@ -172,7 +173,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     return true;
                 }
 
-                if(columnIndex == isActiveColumnIndex) {
+                if(columnIndex == cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) {
                     final int _id = cursor.getInt(_idColumnIndex);
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
                     Switch isActiveSwitch = (Switch) view;
