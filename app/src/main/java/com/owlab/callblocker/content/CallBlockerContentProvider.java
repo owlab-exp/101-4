@@ -90,6 +90,7 @@ public class CallBlockerContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+        Log.d(TAG, ">>>>> insert called with uri: " + uri.toString() + ", values: " + contentValues.toString());
         SQLiteDatabase db = mCallBlockerDbHelper.getWritableDatabase();
 
         long rowId = 0L;

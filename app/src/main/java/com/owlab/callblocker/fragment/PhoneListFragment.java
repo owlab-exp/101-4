@@ -109,7 +109,7 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
             CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
             CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
     };
-    
+
     private final int[] TO_IDS = new int[]{
             R.id.phone_number_list_row_phone_number,
             R.id.phone_number_list_row_description,
@@ -143,9 +143,9 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     //phoneNumberTextView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
                     //phoneNumberTextView.setText(cursor.getString(phoneNumberColumnIndex));
                     String phoneNumber = cursor.getString(columnIndex);
-                    Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
-                    String phoneNumberFormatted = Utils.formatPhoneNumber(phoneNumber);
-                    Log.d(TAG, ">>>>> phoneNumberFormatted: " + phoneNumberFormatted);
+                    //Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
+                    //String phoneNumberFormatted = Utils.formatPhoneNumber(phoneNumber);
+                    //Log.d(TAG, ">>>>> phoneNumberFormatted: " + phoneNumberFormatted);
 
                     phoneNumberTextView.setText(Utils.formatPhoneNumber(phoneNumber));
                     return true;
@@ -156,6 +156,9 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
                     final String description = cursor.getString(descriptionColumnIndex);
                     TextView descriptionTextView = (TextView) view;
+
+                    //Here defensive code
+                    descriptionTextView.setOnClickListener(null);
                     descriptionTextView.setText(description);
                     descriptionTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -177,6 +180,8 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     final int _id = cursor.getInt(_idColumnIndex);
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
                     Switch isActiveSwitch = (Switch) view;
+                    //This is necessary not to set multiple OnCheckedChangeListener!
+                    isActiveSwitch.setOnCheckedChangeListener(null);
                     isActiveSwitch.setChecked(cursor.getInt(isActiveColumnIndex) > 0);
                     isActiveSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
@@ -201,6 +206,9 @@ public class PhoneListFragment extends ListFragment implements LoaderManager.Loa
                     final String phoneNumber = cursor.getString(phoneNumberColumnIndex);
                     final String description = cursor.getString(descriptionColumnIndex);
                     ImageView deleteIconView = (ImageView) view;
+
+                    //Here defensive code
+                    deleteIconView.setOnClickListener(null);
                     deleteIconView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

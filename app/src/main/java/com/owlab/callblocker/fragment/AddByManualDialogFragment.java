@@ -84,7 +84,7 @@ public class AddByManualDialogFragment extends DialogFragment {
                 positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d(TAG, ">>> clicked");
+                        //Log.d(TAG, ">>> clicked");
                         EditText phoneNumberText = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_phone_number);
                         EditText descriptionText = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_description);
                         if(phoneNumberText.getText().toString().trim().isEmpty()) {
