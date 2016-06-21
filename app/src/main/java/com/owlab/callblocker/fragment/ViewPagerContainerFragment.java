@@ -1,15 +1,22 @@
 package com.owlab.callblocker.fragment;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.PermissionChecker;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.owlab.callblocker.CONS;
+import com.owlab.callblocker.FUNS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 
@@ -24,13 +31,21 @@ public class ViewPagerContainerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.view_pager_container_view, container, false);
 
+
+
+        int pageCount = 2;
+
         ViewPager viewPager = (ViewPager) root.findViewById(R.id.pager);
         //
         viewPager.setPageMargin(Utils.convertDip2Pixels(getActivity(), 20));
         viewPager.setPageMarginDrawable(R.color.colorPrimarylight);
 
         FragmentManager fragmentManager = getChildFragmentManager();
-        MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager);
+
+
+
+
+        MyFragmentPagerAdapter myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager, pageCount);
         if (viewPager != null) {
             viewPager.setAdapter(myFragmentPagerAdapter);
         }
@@ -40,8 +55,11 @@ public class ViewPagerContainerFragment extends Fragment {
 
     public static class MyFragmentPagerAdapter  extends FragmentPagerAdapter {
 
-        public MyFragmentPagerAdapter(FragmentManager fm) {
+        private int pageCount;
+
+        public MyFragmentPagerAdapter(FragmentManager fm, int pageCount) {
             super(fm);
+            this.pageCount = pageCount;
         }
 
         @Override
@@ -61,7 +79,7 @@ public class ViewPagerContainerFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 2;
+            return pageCount;
         }
 
         @Override

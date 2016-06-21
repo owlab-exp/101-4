@@ -17,8 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.content.CallBlockerContentProvider;
-import com.owlab.callblocker.content.CallBlockerTbl;
+import com.owlab.callblocker.content.CallBlockerProvider;
+import com.owlab.callblocker.content.CallBlockerDb;
 
 /**
  * Created by ernest on 5/15/16.
@@ -94,9 +94,9 @@ public class AddByManualDialogFragment extends DialogFragment {
                             //mAddItemDialogListener.onAddItemDialogAddClick(AddItemDialogFragment.this);
                             ContentValues values = new ContentValues();
                             String compactPhoneNumber = phoneNumberText.getText().toString().replaceAll("[^\\d]", "");
-                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, compactPhoneNumber);
-                            values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, displayNameET.getText().toString());
-                            Uri newUri = getTargetFragment().getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
+                            values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, compactPhoneNumber);
+                            values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, displayNameET.getText().toString());
+                            Uri newUri = getTargetFragment().getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
                             Log.d(TAG, ">>> newUri: " + newUri.toString());
                             Log.d(TAG, ">>> newUri.getLastPathSegment: " + newUri.getLastPathSegment());
                             if(Long.parseLong(newUri.getLastPathSegment()) > 0)

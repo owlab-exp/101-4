@@ -15,8 +15,8 @@ import android.widget.EditText;
 
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerContentProvider;
-import com.owlab.callblocker.content.CallBlockerTbl;
+import com.owlab.callblocker.content.CallBlockerProvider;
+import com.owlab.callblocker.content.CallBlockerDb;
 
 /**
  * Created by ernest on 5/15/16.
@@ -78,11 +78,11 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
                         //mUpdateDescriptionDialogListener.onUpdateDescriptionUpdateClick(_id, displayNameET.getText().toString());
                         dialog.dismiss();
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, displayNameET.getText().toString());
-                        int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerContentProvider.CONTENT_URI, values, CallBlockerTbl.Schema._ID + "=" + _id, null);
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, displayNameET.getText().toString());
+                        int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_NUMBER_URI, values, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + "=" + _id, null);
                         if(updateCount > 0) {
                             Snackbar.make(getTargetFragment().getView(), "Display name changed", Snackbar.LENGTH_SHORT).show();
-                            getTargetFragment().getActivity().getContentResolver().notifyChange(CallBlockerContentProvider.CONTENT_URI, null);
+                            getTargetFragment().getActivity().getContentResolver().notifyChange(CallBlockerProvider.BLOCKED_NUMBER_URI, null);
                         }
                     }
                 })

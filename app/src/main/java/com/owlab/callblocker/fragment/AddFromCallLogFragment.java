@@ -32,9 +32,9 @@ import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerContentProvider;
+import com.owlab.callblocker.content.CallBlockerProvider;
 import com.owlab.callblocker.content.CallBlockerDbHelper;
-import com.owlab.callblocker.content.CallBlockerTbl;
+import com.owlab.callblocker.content.CallBlockerDb;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -87,9 +87,9 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     int numOfNotAdded = 0;
                     for (Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, entry.getValue());
-                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, entry.getKey());
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, entry.getValue());
+                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
                         if (Long.parseLong(newUri.getLastPathSegment()) > 0) {
                             //Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
                             numOfAdded++;
@@ -196,7 +196,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                 String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
                 LinearLayout rowView = (LinearLayout) view.getParent();
 
-                if (callBlockerDbHelper.hasPhoneNumber(phoneNumberStripped)) {
+                if (callBlockerDbHelper.isBlockedNumber(phoneNumberStripped)) {
                     //Already in blocked numbers
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
                 } else {
@@ -212,7 +212,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                 TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_name);
 
 
-                if (phoneNumberStripped.trim().equals("")) {
+                if (phoneNumberStripped.equals("")) {
                     photoView.setImageResource(R.drawable.ic_contact_28);
                     nameView.setText("Private number");
                 } else {
@@ -327,7 +327,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
         Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
 
-        if (callBlockerDbHelper.hasPhoneNumber(phoneNumber)) {
+        if (callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
             Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
             return;
         }

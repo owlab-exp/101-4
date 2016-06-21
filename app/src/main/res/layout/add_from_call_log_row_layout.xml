@@ -20,7 +20,6 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/add_from_call_log_row_caller_info"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
@@ -84,7 +83,6 @@
         duration
         -->
         <LinearLayout
-            android:id="@+id/add_from_call_log_row_call_detail"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"

@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerContentProvider;
+import com.owlab.callblocker.content.CallBlockerProvider;
 
 /**
  * Created by ernest on 5/15/16.
@@ -74,7 +74,8 @@ public class DeletePhoneDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         //mDeleteItemDialogListener.onDeleteItemConirmClick(_id);
                         dialog.dismiss();
-                        Uri deleteUri = ContentUris.withAppendedId(CallBlockerContentProvider.CONTENT_URI, _id);
+                        //TODO not need uri encoding of _id?
+                        Uri deleteUri = ContentUris.withAppendedId(CallBlockerProvider.BLOCKED_NUMBER_URI, _id);
                         int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(deleteUri, null, null);
                         if(deleteCount > 0)
                         Snackbar.make(getTargetFragment().getView(), phoneNumber + " is deleted", Snackbar.LENGTH_SHORT).show();

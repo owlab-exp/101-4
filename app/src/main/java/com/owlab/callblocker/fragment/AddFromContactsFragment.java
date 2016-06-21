@@ -31,9 +31,9 @@ import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerContentProvider;
+import com.owlab.callblocker.content.CallBlockerProvider;
 import com.owlab.callblocker.content.CallBlockerDbHelper;
-import com.owlab.callblocker.content.CallBlockerTbl;
+import com.owlab.callblocker.content.CallBlockerDb;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,9 +83,9 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     int numOfNotAdded = 0;
                     for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, entry.getValue());
-                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, entry.getKey());
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, entry.getValue());
+                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
                         if(Long.parseLong(newUri.getLastPathSegment()) > 0)
                             numOfAdded++;
                         else {
@@ -190,7 +190,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                 String phoneNumberR = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 LinearLayout rowView = (LinearLayout) view.getParent();
-                if(callBlockerDbHelper.hasPhoneNumber(phoneNumberR)) {
+                if(callBlockerDbHelper.isBlockedNumber(phoneNumberR)) {
                 //if(blockedPhoneCursor.getCount() > 0) {
                     //Log.d(TAG, ">>> found phone number: " + phoneNumberR);
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
@@ -290,7 +290,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         String phoneNumber = phoneNumberFormatted.split("\n")[0].replaceAll("[^\\d]", "");
         Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber + ", displayName: " + displayName);
 
-        if(callBlockerDbHelper.hasPhoneNumber(phoneNumber)) {
+        if(callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
             Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
             return;
         }

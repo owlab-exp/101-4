@@ -18,6 +18,7 @@ import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.owlab.callblocker.fragment.ViewPagerContainerFragment;
 import com.owlab.callblocker.service.CallBlockerIntentService;
 
 import java.util.ArrayList;
@@ -385,27 +386,25 @@ public class FUNS {
         boolean permissionCallPhoneGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
         boolean permissionReadCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
         boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionReadBlockedCallLogGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         //boolean permissionReadContactsGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         //boolean permissionWriteContactsGranted = PermissionChecker.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
 
         switch (requestCode) {
-            //case CONS.REQUEST_CODE_ASK_PERMISSION_READ_PHONE_STATE:
-            //    Log.d(TAG, ">>>>> result of asking read phone state permission");
-            //    break;
-            //case CONS.REQUEST_CODE_ASK_PERMISSION_CALL_PHONE:
-            //    Log.d(TAG, ">>>>> result of asking call phone permission");
-            //    break;
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS:
+                if(permissionReadBlockedCallLogGranted) {
+                    ((MainActivity)activity).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
+                } else {
+                    Toast.makeText(activity, "Lack of permission", Toast.LENGTH_SHORT).show();
+                    activity.finish();
+                }
+                break;
+
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_BLOCKING:
-                Log.d(TAG, ">>>>> result of asking remaining " + permissions.length + " permission(s)");
+                //Log.d(TAG, ">>>>> result of asking remaining " + permissions.length + " permission(s)");
 
-                //for(int i = 0; i < permissions.length; i++) {
-                //    String permission = permissions[i];
-                //    boolean isGranted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
-
-                //    Toast.makeText(activity, permission + " " + (isGranted ? "granted": "denied"), Toast.LENGTH_SHORT).show();
-                //}
                 boolean canStart = true;
 
                 if(sharedPreferences.getBoolean(activity.getString(R.string.settings_key_suppress_ringing), false) && !permissionReadPhoneStateGranted) {

@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CallBlockerDbHelper extends SQLiteOpenHelper {
     private static final String TAG = CallBlockerDbHelper.class.getSimpleName();
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "CallBlocker.db";
 
     public CallBlockerDbHelper(Context context) {
@@ -20,12 +20,14 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CallBlockerTbl.SQL_CREATE_TABLE);
+        db.execSQL(CallBlockerDb.SQL_CREATE_TABLE_BLOCKED_NUMBER);
+        db.execSQL(CallBlockerDb.SQL_CREATE_TABLE_BLOCKED_CALL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(CallBlockerTbl.SQL_DROP_TABLE);
+        db.execSQL(CallBlockerDb.SQL_DROP_TABLE_BLOCKED_NUMBER);
+        db.execSQL(CallBlockerDb.SQL_DROP_TABLE_BLOCKED_CALL);
         onCreate(db);
     }
 
@@ -36,7 +38,7 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
 
 
     //Several helper methods for other use
-    public boolean hasPhoneNumber(String phoneNumber) {
+    public boolean isBlockedNumber(String phoneNumber) {
         //Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
         if(phoneNumber == null) {
             return false;
@@ -46,9 +48,9 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
 
         //Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(CallBlockerTbl.Schema.TABLE_NAME,
-                new String[]{CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER},
-                CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER + " = ? ",
+        Cursor cursor = db.query(CallBlockerDb.TBL_BLOCKED_NUMBER,
+                new String[]{CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER},
+                CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ? ",
                 new String[]{purePhoneNumber},
                 null,
                 null,

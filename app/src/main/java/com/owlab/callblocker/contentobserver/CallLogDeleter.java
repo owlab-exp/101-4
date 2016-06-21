@@ -79,7 +79,7 @@ public class CallLogDeleter extends ContentObserver {
 
             //Default sort order is DATE DESC
             Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? " + " AND " + CallLog.Calls.DATE + " >= " + startTime, phoneNumbers, "");
-            //Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? ", phoneNumbers, "");
+            //Cursor cursor = context.getContentResolver().query(CallLog.Calls.BLOCKED_NUMBER_URI, null, CallLog.Calls.NUMBER + " = ? ", phoneNumbers, "");
             Log.d(TAG, ">>>>> " + cursor.getCount() + " calls found in log");
 
             int deleteCount = 0;

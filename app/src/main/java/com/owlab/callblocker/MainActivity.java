@@ -1,11 +1,16 @@
 package com.owlab.callblocker;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,12 +44,24 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
-
-        //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BlockedNumberListFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
-
+        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+                FUNS.showMessageWithOKCancel(
+                        this,
+                        "This App need REAT CONTACTS permission to view blocked calls",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
+                            }
+                        },
+                        null);
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
+            }
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
+        }
     }
 
     private Menu menu;
@@ -161,6 +178,5 @@ public class MainActivity extends AppCompatActivity {
         //outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
         //super.onSaveInstanceState(outState);
     }
-
 
 }

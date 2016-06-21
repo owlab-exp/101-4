@@ -28,7 +28,9 @@ import android.widget.Toast;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
+import com.owlab.callblocker.content.CallBlockerDb;
 import com.owlab.callblocker.content.CallBlockerDbHelper;
+import com.owlab.callblocker.content.CallBlockerProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -44,7 +46,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     private static final String TAG = BlockedCallLogFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
-    private static final int CALL_LOG_LOADER = 0;
+    private static final int BLOCKED_CALL_LOG_LOADER = 0;
     //private boolean isFabRotated = false;
 
     FloatingActionButton enterFab;
@@ -56,7 +58,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     Map<String, Long> selectedPhoneRowIdMap = new HashMap<>();
 
     public BlockedCallLogFragment() {
-        Log.d(TAG, ">>>>> instantiated");
+        //Log.d(TAG, ">>>>> instantiated");
     }
 
     @Override
@@ -82,9 +84,9 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                     int numOfNotAdded = 0;
                     for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, entry.getKey());
-                        values.put(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME, entry.getValue());
-                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerContentProvider.CONTENT_URI, values);
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, entry.getKey());
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, entry.getValue());
+                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
                         if(Long.parseLong(newUri.getLastPathSegment()) > 0) {
                             //Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
                             numOfAdded++;
@@ -119,8 +121,6 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     public void onResume() {
         super.onResume();
 
-        //if(isFabRotated) {
-        //enterFab.startAnimation(rotateForwardAppear);
         getListView().setOnItemClickListener(this);
     }
 
@@ -130,14 +130,6 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
         super.onAttach(context);
         parentContext = context;
 
-        //if(parentContext instanceof MainActivity) {
-        //    MainActivity mainActivity = (MainActivity)parentContext;
-        //    //mainActivity.changeActionBarContent("Settings");
-        //    android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-        //    if(mainActionBar != null) {
-        //        mainActionBar.setTitle("Call Log");
-        //    }
-        //}
     }
 
     @Override
@@ -157,70 +149,47 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
         super.onPause();
 
         //enterFab.startAnimation(rotateBackwardDisappear);
+        getListView().setOnItemClickListener(null);
     }
 
     final String[] FROM_COLUMNS = {
-            //CallLog.Calls._ID
-            CallLog.Calls.NUMBER
-            , CallLog.Calls.TYPE
-            , CallLog.Calls.DATE
-            , CallLog.Calls.DURATION
-            // , CallLog.Calls.NEW
-            // , CallLog.Calls.COUNTRY_ISO
+            CallBlockerDb.COLS_BLOCKED_CALL._ID
+            , CallBlockerDb.COLS_BLOCKED_CALL.NUMBER
+            , CallBlockerDb.COLS_BLOCKED_CALL.TYPE
+            , CallBlockerDb.COLS_BLOCKED_CALL.DATE
+            , CallBlockerDb.COLS_BLOCKED_CALL.DURATION
     };
     final int[] TO_IDS = new int[]{
-            //R.id.add_from_call_log_row_caller_icon
-            R.id.add_from_call_log_row_caller_info
-            , R.id.add_from_call_log_row_caller_type
-            , R.id.add_from_call_log_row_call_detail
-            , R.id.add_from_call_log_row_call_detail
+            R.id.blocked_call_log_row_holder
     };
 
     private void setupLoader(final View fragmentView) {
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.blocked_call_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             ContentResolver contentResolver = getActivity().getContentResolver();
-            //String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID};
             String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI};
-            //String[] projection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_URI};
 
             @Override
-            public boolean setViewValue(final View view, final Cursor cursor, int columnIndex) {
-                boolean hideListRow = false;
-                String phoneNumberR = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER));
-                LinearLayout rowView = (LinearLayout) view.getParent();
-                //LinearLayout rowView = null;
-                //ViewParent parentView = view.getParent();
-                //if(parentView instanceof LinearLayout) {
-                //    rowView = (LinearLayout) parentView;
-                //} else if(parentView instanceof RelativeLayout) {
-                //    rowView = (LinearLayout) parentView.getParent();
-                //}
+            public boolean setViewValue(final View view, final Cursor cursor, int idIdx) {
 
-                if(callBlockerDbHelper.hasPhoneNumber(phoneNumberR)) {
-                    rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
-                    hideListRow = true;
+                String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.NUMBER));
+                String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+
+                LinearLayout rowView = (LinearLayout) view.getParent();
+
+                if(selectedPhoneMap.containsKey(phoneNumberStripped)) {
+                    rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
                 } else {
-                    if(selectedPhoneMap.containsKey(phoneNumberR.replaceAll("[^\\d]", ""))) {
-                        rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
-                    } else {
-                        rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
-                    }
+                    rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
                 }
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER)) {
-                    String phoneNumberFormatted = cursor.getString(columnIndex);
-                    String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
-                    ImageView photoView = (ImageView) view.findViewById(R.id.add_from_call_log_row_caller_icon);
-                    TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_number);
-                    TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_name);
+                ImageView photoView = (ImageView) view.findViewById(R.id.blocked_call_log_row_caller_icon);
+                TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_number);
+                TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_name);
 
-                    if(hideListRow) {
-                        //Nothing to do here right now
-                    }
 
-                    if(phoneNumber.trim().equals("")) {
+                    if(phoneNumberStripped.equals("")) {
                         photoView.setImageResource(R.drawable.ic_contact_28);
                         nameView.setText("Private number");
                     } else {
@@ -228,35 +197,18 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                         String photoUriStr = null;
                         //long contactId = -1l;
                         //Log.d(TAG, ">>>>> looking for: " + phoneNumber);
-                        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+                        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumberStripped));
                         //Log.d(TAG, ">>>>> uri: " + uri.toString());
                         Cursor contactsCursor = contentResolver.query(uri, projection, null, null, null);
                         if (contactsCursor != null) {
                             if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
                                 displayName = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.DISPLAY_NAME));
-                                //contactId = contactsCursor.getLong(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID));
                                 photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI));
-                                //photoUriStr = contactsCursor.getString(contactsCursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup.PHOTO_URI));
                             }
                             contactsCursor.close();
                         }
 
-                        //if(contactId != -1l) {
                         if (photoUriStr != null) {
-                            //Bitmap photo = null;
-                            //try {
-                            //    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getActivity().getContentResolver(), ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactId));
-                            //    if (inputStream != null) {
-                            //        photo = BitmapFactory.decodeStream(inputStream);
-                            //        inputStream.close();
-                            //    }
-                            //} catch (IOException e) {
-                            //    e.printStackTrace();
-                            //}
-                            //if (photo != null) {
-                            //    photoView.setImageBitmap(photo);
-                            //    return true;
-                            //}
                             photoView.setImageURI(Uri.parse(photoUriStr));
                         } else {
                             photoView.setImageResource(R.drawable.ic_contact_28);
@@ -264,25 +216,16 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
                         if(displayName != null) {
                             nameView.setText(displayName);
-                            //Log.d(TAG, ">>>>> set nameView: " + displayName);
                         } else {
                             nameView.setText("");
                         }
                     }
-                    //numberView.setText(phoneNumberFormatted);
-                    //numberView.setText(Utils.formatPhoneNumber(phoneNumberFormatted));
-                    //numberView.setText(Utils.formatPhoneNumber(phoneNumber));
-                    numberView.setText(Utils.formatPhoneNumber(phoneNumberFormatted));
-                    //numberView.removeTextChangedListener(new PhoneNumberFormattingTextWatcher());
-                    //numberView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-                    //numberView.setText(phoneNumber);
-                    return true;
-                }
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE)) {
-                    ImageView typeIV = (ImageView) view;
+                    numberView.setText(Utils.formatPhoneNumber(phoneNumberStripped));
 
-                    String type = cursor.getString(columnIndex);
+                    ImageView typeIV = (ImageView) view.findViewById(R.id.blocked_call_log_row_caller_type);
+                    String type = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.TYPE));
+
                     switch(Integer.parseInt(type)) {
                         case CallLog.Calls.OUTGOING_TYPE:
                             //detailTextView.setText("Outgoing call");
@@ -297,34 +240,26 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                             typeIV.setImageResource(R.drawable.ic_call_missed_black_18dp);
                             break;
                     }
-                    return true;
-                }
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.DATE)) {
-                    String dateStr = cursor.getString(columnIndex);
+                    String dateStr = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.DATE));
 
                     long dateLong = Long.valueOf(dateStr);
                     SimpleDateFormat dateFormat = new SimpleDateFormat();
                     //TODO if today, then do simpler format
 
-                    TextView dateView = (TextView) view.findViewById(R.id.add_from_call_log_row_call_date);
+                    TextView dateView = (TextView) view.findViewById(R.id.blocked_call_log_row_call_date);
                     dateView.setText(dateFormat.format(dateLong));
-                    return true;
-                }
 
-                if(columnIndex == cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION)) {
-                    String duration = cursor.getString(columnIndex);
-                    TextView durationView = (TextView) view.findViewById(R.id.add_from_call_log_row_call_duration);
+                    String duration = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.DURATION));
+                    TextView durationView = (TextView) view.findViewById(R.id.blocked_call_log_row_call_duration);
                     durationView.setText(duration + " seconds");
-                    return true;
-                }
 
-                return false;
+                return true;
             }
         });
 
         setListAdapter(cursorAdapter);
-        getLoaderManager().initLoader(CALL_LOG_LOADER, null, this);
+        getLoaderManager().initLoader(BLOCKED_CALL_LOG_LOADER, null, this);
     }
 
     @Override
@@ -333,8 +268,8 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
         CursorLoader cursorLoader = null;
         switch(loaderId) {
-            case CALL_LOG_LOADER:
-                cursorLoader = new CursorLoader(getActivity(), CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
+            case BLOCKED_CALL_LOG_LOADER:
+                cursorLoader = new CursorLoader(getActivity(), CallBlockerProvider.BLOCKED_CALL_URI, null, null, null, CallBlockerDb.COLS_BLOCKED_CALL.DATE + " DESC");
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
@@ -354,47 +289,45 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
-    //public void onListItemClick(ListView listView, View view, int position, long rowId) {
-        //super.onListItemClick(listView, view, position, rowId);
-        Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
-        TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_number);
-        TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_caller_name);
+        //Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
+        TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_number);
+        TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_name);
         //String displayName = infoView.getText().toString();
         //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
         //String detail = detailView.getText().toString();
-        String phoneNumberFormatted = numberView.getText().toString();
-        String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
+        String phoneNumberRead = numberView.getText().toString();
+        String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
         String displayName = nameView.getText().toString();
 
-        Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
+        //Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
 
-        if(callBlockerDbHelper.hasPhoneNumber(phoneNumber)) {
-            Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        //if(callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
+        //    Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
+        //    return;
+        //}
 
-        if(phoneNumber.trim().equals("")) {
-            Toast.makeText(getActivity(), "Phone number is unknown", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        //if(phoneNumberStripped.equals("")) {
+        //    Toast.makeText(getActivity(), "Phone number is unknown", Toast.LENGTH_SHORT).show();
+        //    return;
+        //}
 
-        if(selectedPhoneMap.containsKey(phoneNumber)) {
-            if(rowId != selectedPhoneRowIdMap.get(phoneNumber)) {
-                Toast.makeText(getActivity(), phoneNumber + " already in the bucket", Toast.LENGTH_SHORT).show();
+        if(selectedPhoneMap.containsKey(phoneNumberStripped)) {
+            if(rowId != selectedPhoneRowIdMap.get(phoneNumberStripped)) {
+                Toast.makeText(getActivity(), phoneNumberStripped + " already in the bucket", Toast.LENGTH_SHORT).show();
                 return;
             } else {
-                selectedPhoneMap.remove(phoneNumber);
-                selectedPhoneRowIdMap.remove(phoneNumber);
+                selectedPhoneMap.remove(phoneNumberStripped);
+                selectedPhoneRowIdMap.remove(phoneNumberStripped);
                 Log.d(TAG, ">>>>> removed");
                 view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
-                Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), phoneNumberStripped + " removed from the bucket", Toast.LENGTH_SHORT).show();
             }
         } else {
-            selectedPhoneMap.put(phoneNumber, displayName);
-            selectedPhoneRowIdMap.put(phoneNumber, rowId);
+            selectedPhoneMap.put(phoneNumberStripped, displayName);
+            selectedPhoneRowIdMap.put(phoneNumberStripped, rowId);
             Log.d(TAG, ">>>>> added");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
-            Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), phoneNumberStripped + " added to the bucket", Toast.LENGTH_SHORT).show();
         }
 
     }

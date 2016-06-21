@@ -28,8 +28,8 @@ import com.owlab.callblocker.AddSourceSelectionActivity;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerContentProvider;
-import com.owlab.callblocker.content.CallBlockerTbl;
+import com.owlab.callblocker.content.CallBlockerProvider;
+import com.owlab.callblocker.content.CallBlockerDb;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -104,11 +104,11 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
     }
 
     private final String[] FROM_COLUMNS = {
-            CallBlockerTbl.Schema._ID
-            , CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER
-            , CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME
-            , CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE
-            //, CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
+            CallBlockerDb.COLS_BLOCKED_NUMBER._ID
+            , CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER
+            , CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME
+            , CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE
+            //, CallBlockerDb.COLS_BLOCKED_NUMBER.CREATED_AT
     };
 
     private final int[] TO_IDS = new int[]{
@@ -131,10 +131,10 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
             //private int isActiveColumnIndex = -1;
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int idIndex) {
-                final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema._ID));
-                final String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER));
-                final String displayName = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME));
-                final boolean checkedRead = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) > 0;
+                final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER._ID));
+                final String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER));
+                final String displayName = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME));
+                final boolean checkedRead = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE)) > 0;
 
                 TextView phoneNumberTV = (TextView) view.findViewById(R.id.phone_number_list_row_phone_number);
                 phoneNumberTV.setText(Utils.formatPhoneNumber(phoneNumber));
@@ -166,10 +166,10 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean checkedChanged) {
                         ContentValues contentValues = new ContentValues();
-                        contentValues.put(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE, checkedChanged ? 1 : 0);
+                        contentValues.put(CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE, checkedChanged ? 1 : 0);
                         int updateCount = getActivity().getContentResolver().update(
-                                CallBlockerContentProvider.CONTENT_URI,
-                                contentValues, CallBlockerTbl.Schema._ID + " = " + _id,
+                                CallBlockerProvider.BLOCKED_NUMBER_URI,
+                                contentValues, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id,
                                 null);
                         if (updateCount > 0) {
                             //TODO test if getRootView is right
@@ -209,13 +209,13 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
         switch (loaderId) {
             case DB_LOADER:
                 String[] projection = {
-                        CallBlockerTbl.Schema._ID,
-                        CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER,
-                        CallBlockerTbl.Schema.COLUMN_NAME_DISPLAY_NAME,
-                        CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE,
-                        CallBlockerTbl.Schema.COLUMN_NAME_CREATED_AT
+                        CallBlockerDb.COLS_BLOCKED_NUMBER._ID,
+                        CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER,
+                        CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME,
+                        CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE,
+                        CallBlockerDb.COLS_BLOCKED_NUMBER.CREATED_AT
                 };
-                cursorLoader = new CursorLoader(this.getActivity(), CallBlockerContentProvider.CONTENT_URI, projection, null, null, null);
+                cursorLoader = new CursorLoader(this.getActivity(), CallBlockerProvider.BLOCKED_NUMBER_URI, projection, null, null, null);
                 break;
         }
         return cursorLoader;

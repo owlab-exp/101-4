@@ -14,8 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.content.CallBlockerContentProvider;
-import com.owlab.callblocker.content.CallBlockerTbl;
+import com.owlab.callblocker.content.CallBlockerProvider;
+import com.owlab.callblocker.content.CallBlockerDb;
 import com.owlab.callblocker.service.CallLogDeleteService;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,9 +35,9 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         Log.d(TAG, ">>>>> instantiated");
     }
 
-    //private static final String[] mProjection = {CallBlockerTbl.Schema._ID, CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER, CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE};
-    private static final String[] mProjection = {CallBlockerTbl.Schema._ID, CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER};
-    private static final String mSelectionClause = CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER + " = ?" + " AND " + CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE + " = " + 1;
+    //private static final String[] mProjection = {CallBlockerDb.COLS_BLOCKED_NUMBER._ID, CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE};
+    private static final String[] mProjection = {CallBlockerDb.COLS_BLOCKED_NUMBER._ID, CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER};
+    private static final String mSelectionClause = CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ?" + " AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " = " + 1;
     //TODO select only active ones
     private static final String[] mSelectionArgs = {""};
 
@@ -64,19 +64,19 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         // TODO: is this needed? if the passed phone number is a pure form already, then this will not be needed
         String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
         mSelectionArgs[0] = purePhoneNumber;
-        Cursor cursor = context.getContentResolver().query(CallBlockerContentProvider.CONTENT_URI, mProjection, mSelectionClause, mSelectionArgs, null);
+        Cursor cursor = context.getContentResolver().query(CallBlockerProvider.BLOCKED_NUMBER_URI, mProjection, mSelectionClause, mSelectionArgs, null);
         //Log.d(TAG, ">>>>> cursor: " + (cursor != null ? cursor.getCount() : 0));
         //while(cursor.moveToNext()) {
         //    Log.d(TAG, ">>>> found row: (" +
-        //            cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_PHONE_NUMBER)) + ", " +
-        //            cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) +
+        //            cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER)) + ", " +
+        //            cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE)) +
         //            ")"
         //    );
         //}
 
         if (cursor != null && cursor.getCount() > 0) {
             //cursor.moveToFirst();
-            //boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerTbl.Schema.COLUMN_NAME_IS_ACTIVE)) > 0;
+            //boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE)) > 0;
             //cursor.close();
 
             //if (isActive) {
