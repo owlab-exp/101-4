@@ -200,7 +200,8 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
                     //Already in blocked numbers
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
                 } else {
-                    if (selectedPhoneMap.containsKey(phoneNumberStripped)) {
+                    //if (selectedPhoneMap.containsKey(phoneNumberStripped)) {
+                    if (selectedPhoneRowIdMap.containsValue(cursor.getLong(cursor.getColumnIndexOrThrow(Telephony.Sms._ID)))) {
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
                     } else {
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));

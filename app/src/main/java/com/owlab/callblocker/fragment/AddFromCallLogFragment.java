@@ -196,7 +196,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     //Already in blocked numbers
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
                 } else {
-                    if (selectedPhoneMap.containsKey(phoneNumberStripped)) {
+                    //if (selectedPhoneMap.containsKey(phoneNumberStripped)) {
+                    if (selectedPhoneRowIdMap.containsValue(cursor.getLong(cursor.getColumnIndexOrThrow(CallLog.Calls._ID)))) {
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
                     } else {
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
