@@ -153,11 +153,11 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
-    //Provider FROM_COLUMNS
+    //Provider COLUMNS
     @SuppressLint("InlineApi")
-    private static final String[] FROM_COLUMNS = {
-            //ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
-            //ContactsContract.Data.CONTACT_ID
+    private static final String[] COLUMNS = {
+            //_ID not exists in Phone emulator, unlike studio SDK
+            //ContactsContract.Data._ID
             ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI
             //, Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME
             , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
@@ -165,7 +165,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
             , ContactsContract.CommonDataKinds.Phone.TYPE
     };
 
-    //List row items for the provider FROM_COLUMNS
+    //List row items for the provider COLUMNS
     private static final int[] TO_IDS = {
             R.id.add_from_contacts_row_contact_photo
             , R.id.add_from_contacts_row_contact_display_name
@@ -175,7 +175,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
 
     private void setupLoader(final View fragmentView) {
 
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_contacts_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_contacts_row_layout, null, COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             @Override
@@ -256,7 +256,12 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         switch(loaderId) {
             case CONTACTS_LOADER:
 
-                cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+                String selection = ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " > ?";
+                String[] selectionArgs = new String[]{
+                        Integer.toString(0)
+                };
+                String order = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
+                cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, selection, selectionArgs, order);
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);

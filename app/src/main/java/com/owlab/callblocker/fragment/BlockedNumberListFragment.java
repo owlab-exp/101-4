@@ -209,11 +209,10 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
         switch (loaderId) {
             case DB_LOADER:
                 String[] projection = {
-                        CallBlockerDb.COLS_BLOCKED_NUMBER._ID,
-                        CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER,
-                        CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME,
-                        CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE,
-                        CallBlockerDb.COLS_BLOCKED_NUMBER.CREATED_AT
+                        CallBlockerDb.COLS_BLOCKED_NUMBER._ID
+                        , CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER
+                        , CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME
+                        , CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE
                 };
                 cursorLoader = new CursorLoader(this.getActivity(), CallBlockerProvider.BLOCKED_NUMBER_URI, projection, null, null, null);
                 break;

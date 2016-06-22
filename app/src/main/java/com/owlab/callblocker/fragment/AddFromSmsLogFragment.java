@@ -164,8 +164,9 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
         getListView().setOnItemLongClickListener(null);
     }
 
-    final String[] FROM_COLUMNS = {
-            Telephony.TextBasedSmsColumns.ADDRESS
+    final String[] COLUMNS = {
+            Telephony.Sms._ID
+            , Telephony.TextBasedSmsColumns.ADDRESS
             , Telephony.TextBasedSmsColumns.TYPE
             , Telephony.TextBasedSmsColumns.SUBJECT
             , Telephony.TextBasedSmsColumns.BODY
@@ -181,8 +182,8 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
     };
 
     private void setupLoader(final View fragmentView) {
-        //cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_sms_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_sms_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        //cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_sms_log_row_layout, null, COLUMNS, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_sms_log_row_layout, null, COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             ContentResolver contentResolver = getActivity().getContentResolver();

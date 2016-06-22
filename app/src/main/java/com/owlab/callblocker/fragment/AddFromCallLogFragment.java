@@ -159,9 +159,9 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         enterFab.startAnimation(rotateBackwardDisappear);
     }
 
-    final String[] FROM_COLUMNS = {
-            //CallLog.Calls._ID
-            CallLog.Calls.NUMBER
+    final String[] COLUMNS = {
+            CallLog.Calls._ID
+            , CallLog.Calls.NUMBER
             , CallLog.Calls.TYPE
             , CallLog.Calls.DATE
             , CallLog.Calls.DURATION
@@ -178,7 +178,9 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     };
 
     private void setupLoader(final View fragmentView) {
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        //This also works
+        //cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, null, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             ContentResolver contentResolver = getActivity().getContentResolver();
@@ -285,12 +287,12 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-        Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
+        //Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
 
         CursorLoader cursorLoader = null;
         switch (loaderId) {
             case CALL_LOG_LOADER:
-                cursorLoader = new CursorLoader(getActivity(), CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
+                cursorLoader = new CursorLoader(getActivity(), CallLog.Calls.CONTENT_URI, COLUMNS, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
