@@ -27,6 +27,8 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
     FloatingActionButton addFromCallLogFab;
     TextView addFromCallLogLabel;
+    FloatingActionButton addFromSmsLogFab;
+    TextView addFromSmsLogLabel;
     FloatingActionButton addFromContactsFab;
     TextView addFromContactsLabel;
     FloatingActionButton addByManualFab;
@@ -51,6 +53,8 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         //buttons
         addFromCallLogFab = (FloatingActionButton) findViewById(R.id.fab_add_from_call_log);
         addFromCallLogLabel = (TextView) findViewById(R.id.label_add_from_call_log);
+        addFromSmsLogFab = (FloatingActionButton) findViewById(R.id.fab_add_from_sms_log);
+        addFromSmsLogLabel = (TextView) findViewById(R.id.label_add_from_sms_log);
         addFromContactsFab = (FloatingActionButton) findViewById(R.id.fab_add_from_contacts);
         addFromContactsLabel = (TextView) findViewById(R.id.label_add_from_contacts);
         addByManualFab = (FloatingActionButton) findViewById(R.id.fab_add_by_manual);
@@ -114,6 +118,57 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
         addFromCallLogFab.setOnClickListener(fromCallLogOnClickListener);
         addFromCallLogLabel.setOnClickListener(fromCallLogOnClickListener);
+
+        View.OnClickListener fromSmsLogOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<String> neededPermissionList = new ArrayList<>();
+                boolean shouldShowRequestPermissionRationale = false;
+                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_SMS)) {
+                        shouldShowRequestPermissionRationale = true;
+                    }
+                    neededPermissionList.add(Manifest.permission.READ_SMS);
+                }
+                if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(AddSourceSelectionActivity.this, Manifest.permission.READ_CONTACTS)) {
+                        shouldShowRequestPermissionRationale = true;
+                    }
+                    neededPermissionList.add(Manifest.permission.READ_CONTACTS);
+                }
+
+                if (neededPermissionList.size() == 0) {
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_SMS_LOG);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    return;
+                }
+
+                final String[] neededPermissions = new String[neededPermissionList.size()];
+                neededPermissionList.toArray(neededPermissions);
+
+                if (shouldShowRequestPermissionRationale) {
+                    FUNS.showMessageWithOKCancel(
+                            AddSourceSelectionActivity.this,
+                            "This feature need the following permission. Denying may cause not to function as intended.",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int which) {
+                                    //Request permission
+                                    ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_SMS_LOG);
+                                }
+                            }
+                            , null);
+                } else {
+                    //Request permissions
+                    ActivityCompat.requestPermissions(AddSourceSelectionActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_SMS_LOG);
+                }
+            }
+        };
+
+        addFromSmsLogFab.setOnClickListener(    fromSmsLogOnClickListener);
+        addFromSmsLogLabel.setOnClickListener(  fromSmsLogOnClickListener);
 
         View.OnClickListener addFromContactsOnClickListener = new View.OnClickListener() {
             @Override
@@ -181,6 +236,8 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         }
 
         addFromCallLogLabel.startAnimation(miniFabOpen);
+        addFromSmsLogFab.startAnimation(miniFabOpen);
+        addFromSmsLogLabel.startAnimation(miniFabOpen);
         addFromContactsFab.startAnimation(miniFabOpen);
         addFromContactsLabel.startAnimation(miniFabOpen);
         addByManualFab.startAnimation(miniFabOpen);
@@ -221,6 +278,8 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         boolean readCallLogPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
                 && PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        boolean readSmsLogPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         boolean readContactsPermissionGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
 
         switch (requestCode) {
@@ -235,6 +294,20 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
                 } else {
                     Toast.makeText(this, "Can not open call log by lack of permission.", Toast.LENGTH_SHORT).show();
+                    //Snackbar.make(findViewById(android.R.id.content), "Can not open the call by lack of permission.", Snackbar.LENGTH_SHORT).show();
+                }
+                break;
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_SMS_LOG:
+                if (readSmsLogPermissionGranted) {
+                    //open read & import call log fragment
+                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_SMS_LOG);
+                    //startActivity(intent);
+                    setResult(RESULT_OK, intent);
+                    finish();
+
+                } else {
+                    Toast.makeText(this, "Can not open sms log by lack of permission.", Toast.LENGTH_SHORT).show();
                     //Snackbar.make(findViewById(android.R.id.content), "Can not open the call by lack of permission.", Snackbar.LENGTH_SHORT).show();
                 }
                 break;

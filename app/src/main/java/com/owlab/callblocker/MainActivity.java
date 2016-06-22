@@ -21,6 +21,7 @@ import android.widget.Switch;
 import com.owlab.callblocker.fragment.AddByManualDialogFragment;
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
 import com.owlab.callblocker.fragment.AddFromContactsFragment;
+import com.owlab.callblocker.fragment.AddFromSmsLogFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
 import com.owlab.callblocker.fragment.ViewPagerContainerFragment;
 
@@ -147,6 +148,11 @@ public class MainActivity extends AppCompatActivity {
                             .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
                             //.replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commitAllowingStateLoss();
                             .replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
+                } else if(CONS.FRAGMENT_SMS_LOG.equals(targetFragment)) {
+                    getSupportFragmentManager().beginTransaction()
+                            .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
+                            //.replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commitAllowingStateLoss();
+                            .replace(R.id.fragment_container, new AddFromSmsLogFragment(), CONS.FRAGMENT_SMS_LOG).commit();
                 } else if(CONS.FRAGMENT_CONTACTS.equals(targetFragment)) {
                     getSupportFragmentManager().beginTransaction()
                             .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
