@@ -7,8 +7,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.Telephony;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -50,7 +50,7 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
     private static final String TAG = AddFromSmsLogFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
-    private static final int CALL_LOG_LOADER = 0;
+    private static final int SMS_LOG_LOADER = 0;
     //private boolean isFabRotated = false;
 
     FloatingActionButton enterFab;
@@ -62,7 +62,7 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
     Map<String, Long> selectedPhoneRowIdMap = new HashMap<>();
 
     public AddFromSmsLogFragment() {
-        Log.d(TAG, ">>>>> instantiated");
+        //Log.d(TAG, ">>>>> instantiated");
     }
 
     @Override
@@ -78,7 +78,7 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, ">>>>> onCreateView called");
-        View view = inflater.inflate(R.layout.add_from_call_log_layout, container, false);
+        View view = inflater.inflate(R.layout.add_from_sms_log_layout, container, false);
 
         enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
         enterFab.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +134,7 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
         MainActivity mainActivity = (MainActivity)getActivity();
         ActionBar mainActionBar = mainActivity.getSupportActionBar();
         if(mainActionBar != null) {
-            mainActionBar.setTitle(R.string.title_add_from_call_log);
+            mainActionBar.setTitle(R.string.title_add_from_sms_log);
             mainActionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -160,16 +160,15 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
     }
 
     final String[] FROM_COLUMNS = {
-            //CallLog.Calls._ID
-            CallLog.Calls.NUMBER
-            , CallLog.Calls.TYPE
-            , CallLog.Calls.DATE
-            , CallLog.Calls.DURATION
-            // , CallLog.Calls.NEW
-            // , CallLog.Calls.COUNTRY_ISO
+            Telephony.TextBasedSmsColumns.ADDRESS
+            , Telephony.TextBasedSmsColumns.TYPE
+            , Telephony.TextBasedSmsColumns.SUBJECT
+            , Telephony.TextBasedSmsColumns.BODY
+            , Telephony.TextBasedSmsColumns.DATE
+            , Telephony.TextBasedSmsColumns.DATE_SENT
     };
     final int[] TO_IDS = new int[]{
-            R.id.add_from_call_log_row_holder
+            R.id.add_from_sms_log_row_holder
             ////R.id.add_from_call_log_row_caller_icon
             //R.id.add_from_call_log_row_caller_info
             //, R.id.add_from_call_log_row_caller_type
@@ -178,7 +177,7 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
     };
 
     private void setupLoader(final View fragmentView) {
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_sms_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             ContentResolver contentResolver = getActivity().getContentResolver();
@@ -188,7 +187,7 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
 
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int idIdx) {
-                String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER));
+                String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.ADDRESS));
                 String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
                 LinearLayout rowView = (LinearLayout) view.getParent();
 
@@ -203,9 +202,9 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
                     }
                 }
 
-                ImageView photoView = (ImageView) view.findViewById(R.id.add_from_call_log_row_photo);
-                TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_number);
-                TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_name);
+                ImageView photoView = (ImageView) view.findViewById(R.id.add_from_sms_log_row_photo);
+                TextView numberView = (TextView) view.findViewById(R.id.add_from_sms_log_row_number);
+                TextView nameView = (TextView) view.findViewById(R.id.add_from_sms_log_row_name);
 
 
                 if (phoneNumberStripped.equals("")) {
@@ -242,54 +241,74 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
                         nameView.setText("");
                     }
                 }
+
                 numberView.setText(Utils.formatPhoneNumber(phoneNumberStripped));
 
-                ImageView typeIV = (ImageView) view.findViewById(R.id.add_from_call_log_row_type);
-                String type = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE));
+
+                String type = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.TYPE));
+                String dateReceivedStr = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.DATE));
+                String dateSentStr = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.DATE_SENT));
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat();
+
+                ImageView typeIV = (ImageView) view.findViewById(R.id.add_from_sms_log_row_type);
+                TextView dateView = (TextView) view.findViewById(R.id.add_from_sms_log_row_date);
+
                 switch (Integer.parseInt(type)) {
-                    case CallLog.Calls.OUTGOING_TYPE:
-                        //detailTextView.setText("Outgoing call");
-                        typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                    case Telephony.TextBasedSmsColumns.MESSAGE_TYPE_DRAFT:
+                        //typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                        dateView.setText("");
                         break;
-                    case CallLog.Calls.INCOMING_TYPE:
-                        //detailTextView.setText("Incoming call");
-                        typeIV.setImageResource(R.drawable.ic_call_received_black_18dp);
+                    case Telephony.TextBasedSmsColumns.MESSAGE_TYPE_OUTBOX:
+                        //typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                        dateView.setText("");
                         break;
-                    case CallLog.Calls.MISSED_TYPE:
-                        //detailTextView.setText("Missed call");
-                        typeIV.setImageResource(R.drawable.ic_call_missed_black_18dp);
+                    case Telephony.TextBasedSmsColumns.MESSAGE_TYPE_QUEUED:
+                        //typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                        dateView.setText("");
                         break;
+                    case Telephony.TextBasedSmsColumns.MESSAGE_TYPE_FAILED:
+                        //typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                        dateView.setText("");
+                        break;
+                    case Telephony.TextBasedSmsColumns.MESSAGE_TYPE_SENT:
+                        //typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                        long dateSentLong = Long.valueOf(dateSentStr);
+                        dateView.setText(dateFormat.format(dateSentLong));
+                        break;
+                    case Telephony.TextBasedSmsColumns.MESSAGE_TYPE_INBOX:
+                        //typeIV.setImageResource(R.drawable.ic_call_made_black_18dp);
+                        long dateReceivedLong = Long.valueOf(dateReceivedStr);
+                        dateView.setText(dateFormat.format(dateReceivedLong));
+                        break;
+                    default:
+                        Log.e(TAG, "Unsupported type: " + type);
                 }
 
-                String dateStr = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.DATE));
+                String subject = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.SUBJECT));
 
-                long dateLong = Long.valueOf(dateStr);
-                SimpleDateFormat dateFormat = new SimpleDateFormat();
-                //TODO if today, then do simpler format
+                TextView durationView = (TextView) view.findViewById(R.id.add_from_sms_log_row_subject);
+                durationView.setText(subject);
 
-                TextView dateView = (TextView) view.findViewById(R.id.add_from_call_log_row_date);
-                dateView.setText(dateFormat.format(dateLong));
-
-                String duration = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.DURATION));
-                TextView durationView = (TextView) view.findViewById(R.id.add_from_call_log_row_duration);
-                durationView.setText(duration + " seconds");
+                //TODO message body in the drawer of this row
 
                 return true;
             }
         });
 
         setListAdapter(cursorAdapter);
-        getLoaderManager().initLoader(CALL_LOG_LOADER, null, this);
+        getLoaderManager().initLoader(SMS_LOG_LOADER, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-        Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
+        //Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
 
         CursorLoader cursorLoader = null;
         switch (loaderId) {
-            case CALL_LOG_LOADER:
-                cursorLoader = new CursorLoader(getActivity(), CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
+            case SMS_LOG_LOADER:
+                //default sort order: date desc
+                cursorLoader = new CursorLoader(getActivity(), Telephony.Sms.CONTENT_URI, null, null, null, null);
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
@@ -312,8 +331,8 @@ public class AddFromSmsLogFragment extends ListFragment implements LoaderManager
         //public void onListItemClick(ListView listView, View view, int position, long rowId) {
         //super.onListItemClick(listView, view, position, rowId);
         Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
-        TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_number);
-        TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_name);
+        TextView numberView = (TextView) view.findViewById(R.id.add_from_sms_log_row_number);
+        TextView nameView = (TextView) view.findViewById(R.id.add_from_sms_log_row_name);
         //String displayName = infoView.getText().toString();
         //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
         //String detail = detailView.getText().toString();

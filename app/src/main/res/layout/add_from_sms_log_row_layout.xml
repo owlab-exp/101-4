@@ -67,7 +67,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/add_from_sms_log_row_inout"
+            android:id="@+id/add_from_sms_log_row_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -92,7 +92,7 @@
             android:orientation="vertical">
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/add_from_sms_log_row_message"
+                android:id="@+id/add_from_sms_log_row_subject"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
