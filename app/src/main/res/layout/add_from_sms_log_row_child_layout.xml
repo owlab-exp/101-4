@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_from_sms_log_row_child_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
+    <!--
+    android:layout_height="fill_parent">
+    -->
+
+    <!-- //
+    Default icon might be replaced with from contacts, if possible.
+    The icon will be flipped with check mark icon when checked (clicked) for addition to the blocked list
+    Also when more than equal one is flipped, then the IMPORT icon will be enabled!
+    -->
+    <LinearLayout
+        android:id="@+id/add_from_sms_log_row_child_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#ede7f6"
+        >
+
+        <!--
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/add_from_sms_log_row_child_subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|left"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    -->
+
+                <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/add_from_sms_log_row_child_body"
+                    android:background="@drawable/sms_message_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|left"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginLeft="64dp"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:elevation="4dp"
+                    />
+    </LinearLayout>
+</LinearLayout><!-- //garage
+                    android:inputType="phone"
+        android:src="@android:drawable/ic_delete"
+        android:padding="?android:attr/listPreferredItemPaddingStart"
+-->

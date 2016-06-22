@@ -10,8 +10,8 @@
         android:layout_height="match_parent"
         >
 
-        <ListView
-            android:id="@id/android:list"
+        <ExpandableListView
+            android:id="@+id/expandable_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
@@ -40,5 +40,6 @@
         />
 </android.support.design.widget.CoordinatorLayout>
 <!-- // reserve
+            android:id="@id/android:list"
         android:layout_margin="@dimen/fab_margin"
 -->

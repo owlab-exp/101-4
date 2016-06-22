@@ -54,7 +54,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, ">>>>> onCreateView called");
+        //Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.blocked_number_list_layout, container, false);
 
         //Floating Action Button

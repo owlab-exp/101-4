@@ -179,7 +179,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
     private void setupLoader(final View fragmentView) {
         //This also works
-        //cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, null, TO_IDS, 0);
+        //cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, null, TO_GROUP_IDS, 0);
         cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.add_from_call_log_row_layout, null, COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 

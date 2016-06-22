@@ -71,7 +71,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, ">>>>> onCreateView called");
+        //Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.blocked_call_log_layout, container, false);
 
         /**
