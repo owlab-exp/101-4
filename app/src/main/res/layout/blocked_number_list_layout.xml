@@ -36,9 +36,10 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/fab_add_48"
-        app:backgroundTint="@android:color/holo_purple"
+        app:backgroundTint="@color/colorAccent"
         />
 </android.support.design.widget.CoordinatorLayout>
 <!-- // reserve
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@android:color/holo_purple"
 -->

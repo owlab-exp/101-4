@@ -50,7 +50,7 @@
                     android:layout_marginBottom="15dp"
                     android:src="@drawable/fab_add_by_manual_48"
                     android:visibility="invisible"
-                    app:backgroundTint="@android:color/darker_gray"
+                    app:backgroundTint="@color/colorAccentGrey"
                     app:fabSize="mini" />
 
                 <TextView
@@ -76,7 +76,7 @@
                     android:layout_marginBottom="15dp"
                     android:src="@drawable/fab_add_from_contacts_48"
                     android:visibility="invisible"
-                    app:backgroundTint="@android:color/darker_gray"
+                    app:backgroundTint="@color/colorAccentGrey"
                     app:fabSize="mini" />
 
                 <TextView
@@ -102,7 +102,7 @@
                     android:layout_marginBottom="15dp"
                     android:src="@drawable/fab_add_from_sms_log_48"
                     android:visibility="invisible"
-                    app:backgroundTint="@android:color/darker_gray"
+                    app:backgroundTint="@color/colorAccentGrey"
                     app:fabSize="mini" />
 
                 <TextView
@@ -127,7 +127,7 @@
                     android:layout_gravity="center_vertical|center"
                     android:elevation="3dp"
                     android:src="@drawable/fab_add_from_call_log_48"
-                    app:backgroundTint="@android:color/holo_purple"
+                    app:backgroundTint="@color/colorAccent"
                     app:fabSize="normal"
                     app:pressedTranslationZ="12dp" />
             </GridLayout>

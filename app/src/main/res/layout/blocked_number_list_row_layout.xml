@@ -40,7 +40,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
             android:clickable="true"
-            android:theme="@style/OnOffSwitch" />
+            />
 
         <ImageView
             android:id="@+id/phone_number_list_row_delete_icon"
@@ -59,4 +59,5 @@
         android:src="@android:drawable/ic_delete"
         android:maxLength="14"
         android:inputType="phone"
+            android:theme="@style/OnOffSwitch" />
 -->

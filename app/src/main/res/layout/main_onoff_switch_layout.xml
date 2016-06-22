@@ -9,6 +9,9 @@
         android:layout_marginRight="7dp"
         android:textOff="OFF"
         android:textOn="ON"
-        android:theme="@style/OnOffSwitch"
+        android:theme="@style/Switch"
         />
 </RelativeLayout>
+<!--
+        android:theme="@style/OnOffSwitch"
+-->

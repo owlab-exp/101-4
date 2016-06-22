@@ -55,7 +55,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, ">>>>> onCreateView called");
-        View view = inflater.inflate(R.layout.phone_list_layout, container, false);
+        View view = inflater.inflate(R.layout.blocked_number_list_layout, container, false);
 
         //Floating Action Button
         final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add);
@@ -123,7 +123,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
     };
 
     private void setLoader(final View fragmentView) {
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.phone_list_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.blocked_number_list_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             //private int _idColumnIndex = -1;
             //private int phoneNumberColumnIndex = -1;
