@@ -256,12 +256,9 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         switch(loaderId) {
             case CONTACTS_LOADER:
 
-                String selection = ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " > ?";
-                String[] selectionArgs = new String[]{
-                        Integer.toString(0)
-                };
-                String order = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
-                cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, selection, selectionArgs, order);
+                //Phone.CONTENT_URI only results rows having phone number
+                cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+                //cursorLoader = new CursorLoader(getActivity(), ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.Contacts.HAS_PHONE_NUMBER + " > 0", null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
@@ -293,6 +290,11 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         if(callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
             //Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), phoneNumber + " already in the block list", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (phoneNumber.trim().equals("")) {
+            Snackbar.make(getView(), "Phone number is empty", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
