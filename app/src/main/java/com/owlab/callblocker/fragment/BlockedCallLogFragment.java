@@ -184,9 +184,9 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
                 }
 
-                ImageView photoView = (ImageView) view.findViewById(R.id.blocked_call_log_row_caller_icon);
-                TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_number);
-                TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_name);
+                ImageView photoView = (ImageView) view.findViewById(R.id.blocked_call_log_row_photo);
+                TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_number);
+                TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_name);
 
 
                     if(phoneNumberStripped.equals("")) {
@@ -223,7 +223,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
                     numberView.setText(Utils.formatPhoneNumber(phoneNumberStripped));
 
-                    ImageView typeIV = (ImageView) view.findViewById(R.id.blocked_call_log_row_caller_type);
+                    ImageView typeIV = (ImageView) view.findViewById(R.id.blocked_call_log_row_type);
                     String type = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.TYPE));
 
                     switch(Integer.parseInt(type)) {
@@ -247,11 +247,11 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                     SimpleDateFormat dateFormat = new SimpleDateFormat();
                     //TODO if today, then do simpler format
 
-                    TextView dateView = (TextView) view.findViewById(R.id.blocked_call_log_row_call_date);
+                    TextView dateView = (TextView) view.findViewById(R.id.blocked_call_log_row_date);
                     dateView.setText(dateFormat.format(dateLong));
 
                     String duration = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.DURATION));
-                    TextView durationView = (TextView) view.findViewById(R.id.blocked_call_log_row_call_duration);
+                    TextView durationView = (TextView) view.findViewById(R.id.blocked_call_log_row_duration);
                     durationView.setText(duration + " seconds");
 
                 return true;
@@ -290,8 +290,8 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
         //Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
-        TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_number);
-        TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_caller_name);
+        TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_number);
+        TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_name);
         //String displayName = infoView.getText().toString();
         //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
         //String detail = detailView.getText().toString();

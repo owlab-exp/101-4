@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/add_from_call_log_row_view"
+    android:id="@+id/add_from_sms_log_row_view"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:descendantFocusability="blocksDescendants"
@@ -15,7 +15,7 @@
     Also when more than equal one is flipped, then the IMPORT icon will be enabled!
     -->
     <LinearLayout
-        android:id="@+id/add_from_call_log_row_holder"
+        android:id="@+id/add_from_sms_log_row_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -29,7 +29,7 @@
             android:padding="0dp">
 
             <ImageView
-                android:id="@+id/add_from_call_log_row_photo"
+                android:id="@+id/add_from_sms_log_row_photo"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|left"
@@ -49,7 +49,7 @@
                 android:orientation="vertical">
 
                 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/add_from_call_log_row_number"
+                    android:id="@+id/add_from_sms_log_row_number"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_gravity="center_vertical"
@@ -57,7 +57,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/add_from_call_log_row_name"
+                    android:id="@+id/add_from_sms_log_row_name"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_gravity="center_vertical"
@@ -67,7 +67,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/add_from_call_log_row_type"
+            android:id="@+id/add_from_sms_log_row_inout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -92,7 +92,7 @@
             android:orientation="vertical">
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/add_from_call_log_row_date"
+                android:id="@+id/add_from_sms_log_row_message"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center_vertical"
@@ -101,7 +101,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/add_from_call_log_row_duration"
+                android:id="@+id/add_from_sms_log_row_date"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center_vertical"

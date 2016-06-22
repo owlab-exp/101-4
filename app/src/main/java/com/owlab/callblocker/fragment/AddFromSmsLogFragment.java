@@ -44,10 +44,10 @@ import java.util.Map;
 
 /**
  */
-public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
+public class AddFromSmsLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
     //public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 //public class AddFromCallLogFragment extends ListFragment {
-    private static final String TAG = AddFromCallLogFragment.class.getSimpleName();
+    private static final String TAG = AddFromSmsLogFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
     private static final int CALL_LOG_LOADER = 0;
@@ -61,7 +61,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     Map<String, String> selectedPhoneMap = new HashMap<>();
     Map<String, Long> selectedPhoneRowIdMap = new HashMap<>();
 
-    public AddFromCallLogFragment() {
+    public AddFromSmsLogFragment() {
         Log.d(TAG, ">>>>> instantiated");
     }
 

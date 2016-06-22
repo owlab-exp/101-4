@@ -2,5 +2,8 @@
     <string name="app_name">14번길7-19</string>
     <string name="action_settings">Settings</string>
     <string name="add_from_call_log">Add from call log</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_add_from_contacts">Add from contacts</string>
+    <string name="title_add_from_call_log">Add from call log</string>
 
 </resources>

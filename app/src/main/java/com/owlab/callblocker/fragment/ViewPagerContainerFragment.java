@@ -6,11 +6,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 
@@ -43,6 +46,26 @@ public class ViewPagerContainerFragment extends Fragment {
         }
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MainActivity mainActivity = (MainActivity)getActivity();
+        ActionBar mainActionBar = mainActivity.getSupportActionBar();
+        if(mainActionBar != null) {
+            mainActionBar.setTitle(R.string.app_name);
+            mainActionBar.setDisplayHomeAsUpEnabled(false);
+
+            //mainActivity.invalidateOptionsMenu();
+            Menu mainMenu = mainActivity.getMenu();
+            if (mainMenu != null && !mainMenu.findItem(R.id.menuitem_settings).isEnabled()) {
+                //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+                //mainMenu.findItem(R.id.menuitem_settings).setVisible(false);
+                mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
+            }
+        }
     }
 
     public Fragment getCurrentPageFragment() {

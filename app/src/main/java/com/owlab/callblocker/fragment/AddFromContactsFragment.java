@@ -9,11 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +33,9 @@ import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerProvider;
-import com.owlab.callblocker.content.CallBlockerDbHelper;
 import com.owlab.callblocker.content.CallBlockerDb;
+import com.owlab.callblocker.content.CallBlockerDbHelper;
+import com.owlab.callblocker.content.CallBlockerProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -104,7 +106,8 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     FragmentManager fragmentManager = getFragmentManager();
                     fragmentManager.popBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
-                    Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), "No phone number selected", Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -121,6 +124,13 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         //if(isFabRotated) {
         enterFab.startAnimation(rotateForwardAppear);
         getListView().setOnItemClickListener(this);
+
+        MainActivity mainActivity = (MainActivity)getActivity();
+        ActionBar mainActionBar = mainActivity.getSupportActionBar();
+        if(mainActionBar != null) {
+            mainActionBar.setTitle(R.string.title_add_from_contacts);
+            mainActionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     Context parentContext;
@@ -129,26 +139,11 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         super.onAttach(context);
         parentContext = context;
 
-        if(parentContext instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity)parentContext;
-            //mainActivity.changeActionBarContent("Settings");
-            android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-            if(mainActionBar != null) {
-                mainActionBar.setTitle("Contacts");
-            }
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if(parentContext != null && parentContext instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity) parentContext;
-            android.support.v7.app.ActionBar mainActionBar = mainActivity.getSupportActionBar();
-            if (mainActionBar != null) {
-                mainActionBar.setTitle(R.string.app_name);
-            }
-        }
     }
 
     @Override
@@ -172,7 +167,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
 
     //List row items for the provider FROM_COLUMNS
     private static final int[] TO_IDS = {
-            R.id.add_from_contacts_row_contact_icon
+            R.id.add_from_contacts_row_contact_photo
             , R.id.add_from_contacts_row_contact_display_name
             , R.id.add_from_contacts_row_contact_detail
             , R.id.add_from_contacts_row_contact_detail
@@ -291,7 +286,8 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber + ", displayName: " + displayName);
 
         if(callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
-            Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), phoneNumber + " already in the block list", Snackbar.LENGTH_SHORT).show();
             return;
         }
 
@@ -299,12 +295,14 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
             selectedPhoneMap.remove(phoneNumber);
             Log.d(TAG, ">>>>> removed");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
-            Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), phoneNumber + " removed from the bucket", Snackbar.LENGTH_SHORT).show();
         } else {
             selectedPhoneMap.put(phoneNumber, displayName);
             Log.d(TAG, ">>>>> added");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
-            Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), phoneNumber + " added to the bucket", Snackbar.LENGTH_SHORT).show();
         }
 
         ////RotateAnimation rotate = new RotateAnimation(0.0f, -10.0f * 360.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);

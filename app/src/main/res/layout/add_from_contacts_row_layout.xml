@@ -12,7 +12,7 @@
     Also when more than equal one is flipped, then the IMPORT icon will be enabled!
     -->
     <ImageView
-        android:id="@+id/add_from_contacts_row_contact_icon"
+        android:id="@+id/add_from_contacts_row_contact_photo"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

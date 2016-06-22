@@ -3,6 +3,7 @@ package com.owlab.callblocker.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -61,16 +62,28 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     //    ((MainActivity)getActivity()).changeActionBarContent("Settings");
     //}
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MainActivity mainActivity = (MainActivity)getActivity();
+        ActionBar mainActionBar = mainActivity.getSupportActionBar();
+        if(mainActionBar != null) {
+            mainActionBar.setTitle(R.string.title_settings);
+            mainActionBar.setDisplayHomeAsUpEnabled(true);
+            Menu mainMenu = mainActivity.getMenu();
+            if (mainMenu != null) {
+                //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+                //mainMenu.findItem(R.id.menuitem_settings).setVisible(false);
+                mainMenu.findItem(R.id.menuitem_settings).setEnabled(false);
+            }
+        }
+    }
+
     //@Override
     //public void onPause() {
     //    super.onPause();
     //    ((MainActivity)getActivity()).restoreActionBar();
-    //}
-
-    //@Override
-    //public void onResume() {
-    //    super.onResume();
-    //    ((MainActivity)getActivity()).changeActionBarContent("Settings");
     //}
 
     Context parentContext;
@@ -82,22 +95,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         parentContext = context;
 
-        if(parentContext instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity)parentContext;
-            //mainActivity.changeActionBarContent("Settings");
-            android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-            if(mainActionBar != null) {
-                mainActionBar.setTitle("Settings");
-                mainActionBar.setDisplayHomeAsUpEnabled(true);
+        //if(parentContext instanceof MainActivity) {
+        //    MainActivity mainActivity = (MainActivity)parentContext;
+        //    //mainActivity.changeActionBarContent("Settings");
+        //    android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
+        //    if(mainActionBar != null) {
+        //        mainActionBar.setTitle("Settings");
+        //        mainActionBar.setDisplayHomeAsUpEnabled(true);
 
-                Menu mainMenu = mainActivity.getMenu();
-                if (mainMenu != null) {
-                    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-                    //mainMenu.findItem(R.id.menuitem_settings).setVisible(false);
-                    mainMenu.findItem(R.id.menuitem_settings).setEnabled(false);
-                }
-            }
-        }
+        //        Menu mainMenu = mainActivity.getMenu();
+        //        if (mainMenu != null) {
+        //            //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+        //            //mainMenu.findItem(R.id.menuitem_settings).setVisible(false);
+        //            mainMenu.findItem(R.id.menuitem_settings).setEnabled(false);
+        //        }
+        //    }
+        //}
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -108,23 +121,23 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         super.onDetach();
         Log.d(TAG, ">>>>> detached");
 
-        if(parentContext != null && parentContext instanceof MainActivity) {
-            MainActivity mainActivity = (MainActivity) parentContext;
-            android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-            if(mainActionBar != null) {
-                mainActionBar.setTitle(R.string.app_name);
-                mainActionBar.setDisplayHomeAsUpEnabled(false);
+        //if(parentContext != null && parentContext instanceof MainActivity) {
+        //    MainActivity mainActivity = (MainActivity) parentContext;
+        //    android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
+        //    if(mainActionBar != null) {
+        //        mainActionBar.setTitle(R.string.app_name);
+        //        mainActionBar.setDisplayHomeAsUpEnabled(false);
 
-                //Regenerate menu
-                mainActivity.invalidateOptionsMenu();
-                //Menu mainMenu = mainActivity.getMenu();
-                //if (mainMenu != null) {
-                //    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-                //    //mainMenu.findItem(R.id.menuitem_settings).setVisible(true);
-                //    mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
-                //}
-            }
-        }
+        //        //Regenerate menu
+        //        mainActivity.invalidateOptionsMenu();
+        //        //Menu mainMenu = mainActivity.getMenu();
+        //        //if (mainMenu != null) {
+        //        //    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
+        //        //    //mainMenu.findItem(R.id.menuitem_settings).setVisible(true);
+        //        //    mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
+        //        //}
+        //    }
+        //}
 
         //Unregister preferencechangelistener
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
