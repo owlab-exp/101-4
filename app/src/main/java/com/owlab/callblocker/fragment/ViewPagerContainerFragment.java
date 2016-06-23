@@ -17,30 +17,37 @@ import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 
+import java.util.Objects;
+
 /**
  * Created by ernest on 6/20/16.
  */
 public class ViewPagerContainerFragment extends Fragment {
     private static final String TAG = ViewPagerContainerFragment.class.getSimpleName();
 
+    private final int pageCount = 2;
+    private final int pageMarginDp = 20;
 
     ViewPager viewPager;
     MyFragmentPagerAdapter myFragmentPagerAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.d(TAG, ">>>>> onCreateView called with savedInstanceState: " + Objects.toString(savedInstanceState));
+
         View root = inflater.inflate(R.layout.view_pager_container_view, container, false);
 
 
         viewPager = (ViewPager) root.findViewById(R.id.pager);
         //
-        viewPager.setPageMargin(Utils.convertDip2Pixels(getActivity(), 20));
+        viewPager.setPageMargin(Utils.convertDip2Pixels(getActivity(), pageMarginDp));
         viewPager.setPageMarginDrawable(R.color.colorPrimarylight);
 
         FragmentManager fragmentManager = getChildFragmentManager();
 
 
-        myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager, 2);
+        myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager, pageCount);
         if (viewPager != null) {
             viewPager.setAdapter(myFragmentPagerAdapter);
         }
@@ -52,6 +59,7 @@ public class ViewPagerContainerFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        Log.d(TAG, ">>>>> onResume called");
         MainActivity mainActivity = (MainActivity)getActivity();
         ActionBar mainActionBar = mainActivity.getSupportActionBar();
         if(mainActionBar != null) {
@@ -68,6 +76,19 @@ public class ViewPagerContainerFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, ">>>>> onSaveInstanceState called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Log.d(TAG, ">>>>> onPause called");
+    }
+
     public Fragment getCurrentPageFragment() {
         if(viewPager != null) {
             int currentItem = viewPager.getCurrentItem();
@@ -77,6 +98,8 @@ public class ViewPagerContainerFragment extends Fragment {
     }
 
     public static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+        private static final String TAG = MyFragmentPagerAdapter.class.getSimpleName();
+
         private SparseArrayCompat<Fragment> fragments = new SparseArrayCompat<>();
 
         private int pageCount;
@@ -84,6 +107,7 @@ public class ViewPagerContainerFragment extends Fragment {
         public MyFragmentPagerAdapter(FragmentManager fm, int pageCount) {
             super(fm);
             this.pageCount = pageCount;
+            Log.d(TAG, ">>>>> instantiated");
         }
 
         public Fragment getFragment(int position) {
@@ -102,11 +126,11 @@ public class ViewPagerContainerFragment extends Fragment {
             switch (position) {
                     case 0:
                         BlockedNumberListFragment blockedNumberListFragment = new BlockedNumberListFragment();
-                        fragments.put(0, blockedNumberListFragment);
+                        fragments.put(position, blockedNumberListFragment);
                         return blockedNumberListFragment;
                     case 1:
                         BlockedCallLogFragment blockedCallLogFragment = new BlockedCallLogFragment();
-                        fragments.put(1, blockedCallLogFragment);
+                        fragments.put(position, blockedCallLogFragment);
                         return blockedCallLogFragment;
             }
 

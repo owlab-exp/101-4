@@ -1,6 +1,5 @@
 package com.owlab.callblocker.fragment;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -16,6 +15,8 @@ import com.owlab.callblocker.FUNS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 
+import java.util.Objects;
+
 /**
  * Created by ernest on 6/5/16.
  */
@@ -27,7 +28,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG, ">>>>> onCreate called");
+        Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + Objects.toString(savedInstanceState));
         // set contents
         addPreferencesFromResource(R.xml.settings);
 
@@ -57,14 +58,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         super.onViewCreated(view, savedInstanceState);
     }
 
-    //@Override
-    //public void onViewCreated(View view, Bundle savedInstanceState) {
-    //    ((MainActivity)getActivity()).changeActionBarContent("Settings");
-    //}
-
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, ">>>>> onResume called");
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         MainActivity mainActivity = (MainActivity)getActivity();
         ActionBar mainActionBar = mainActivity.getSupportActionBar();
@@ -80,64 +80,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         }
     }
 
-    //@Override
-    //public void onPause() {
-    //    super.onPause();
-    //    ((MainActivity)getActivity()).restoreActionBar();
-    //}
-
-    Context parentContext;
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.d(TAG, ">>>>> attached");
-
-        parentContext = context;
-
-        //if(parentContext instanceof MainActivity) {
-        //    MainActivity mainActivity = (MainActivity)parentContext;
-        //    //mainActivity.changeActionBarContent("Settings");
-        //    android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-        //    if(mainActionBar != null) {
-        //        mainActionBar.setTitle("Settings");
-        //        mainActionBar.setDisplayHomeAsUpEnabled(true);
-
-        //        Menu mainMenu = mainActivity.getMenu();
-        //        if (mainMenu != null) {
-        //            //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-        //            //mainMenu.findItem(R.id.menuitem_settings).setVisible(false);
-        //            mainMenu.findItem(R.id.menuitem_settings).setEnabled(false);
-        //        }
-        //    }
-        //}
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d(TAG, ">>>>> detached");
-
-        //if(parentContext != null && parentContext instanceof MainActivity) {
-        //    MainActivity mainActivity = (MainActivity) parentContext;
-        //    android.support.v7.app.ActionBar mainActionBar =  mainActivity.getSupportActionBar();
-        //    if(mainActionBar != null) {
-        //        mainActionBar.setTitle(R.string.app_name);
-        //        mainActionBar.setDisplayHomeAsUpEnabled(false);
-
-        //        //Regenerate menu
-        //        mainActivity.invalidateOptionsMenu();
-        //        //Menu mainMenu = mainActivity.getMenu();
-        //        //if (mainMenu != null) {
-        //        //    //mainMenu.findItem(R.id.menuitem_main_onoff_switch_layout).getActionView().findViewById(R.id.action_main_onoff_switch).setVisibility(View.INVISIBLE);
-        //        //    //mainMenu.findItem(R.id.menuitem_settings).setVisible(true);
-        //        //    mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
-        //        //}
-        //    }
-        //}
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, ">>>>> onPause called");
 
         //Unregister preferencechangelistener
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 import com.owlab.callblocker.content.CallBlockerProvider;
@@ -51,9 +52,9 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         //final EditTextAddNumberDialogFragment input = new EditText(getActivity());
         Bundle arguments = getArguments();
-        final int _id = arguments.getInt("_id");
-        final String phoneNumber = arguments.getString("phoneNumber");
-        final String description = arguments.getString("description");
+        final int _id = arguments.getInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID);
+        final String phoneNumber = arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER);
+        final String displayName = arguments.getString(CONS.ARG_KEY_DISPLAY_NAME);
 
         View diagView = inflater.inflate(R.layout.change_description_dialog_layout, null);
         //TextView phoneNumberTextView = (TextView) diagView.findViewById(R.id.updateDialog_textView_phoneNumber);
@@ -64,7 +65,7 @@ public class ChangeDescriptionDialogFragment extends DialogFragment {
 
         // To send cursor to the end
         displayNameET.setText("");
-        displayNameET.append(description);
+        displayNameET.append(displayName);
 
         updateDescriptionDialog = builder
                 .setView(diagView)

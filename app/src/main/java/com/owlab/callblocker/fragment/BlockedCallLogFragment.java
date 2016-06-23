@@ -1,7 +1,6 @@
 package com.owlab.callblocker.fragment;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -35,6 +34,7 @@ import com.owlab.callblocker.content.CallBlockerProvider;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * List up blocked call log
@@ -64,8 +64,15 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + Objects.toString(savedInstanceState));
 
         callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, ">>>>> onSaveInstanceState called");
     }
 
     @Override
@@ -121,33 +128,16 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     public void onResume() {
         super.onResume();
 
+        Log.d(TAG, ">>>>> onResume called");
+
         getListView().setOnItemClickListener(this);
-    }
-
-    Context parentContext;
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        parentContext = context;
-
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        //if(parentContext != null && parentContext instanceof MainActivity) {
-        //    MainActivity mainActivity = (MainActivity) parentContext;
-        //    android.support.v7.app.ActionBar mainActionBar = mainActivity.getSupportActionBar();
-        //    if (mainActionBar != null) {
-        //        mainActionBar.setTitle(R.string.app_name);
-        //    }
-        //}
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
+        Log.d(TAG, ">>>>> onPause called");
         //enterFab.startAnimation(rotateBackwardDisappear);
         getListView().setOnItemClickListener(null);
     }

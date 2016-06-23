@@ -32,4 +32,8 @@ public final class CONS {
     public static final String ROW_COLOR_ALREADY_BLOCKED = "#D3D3D3";
     public static final String ROW_COLOR_UNSELECTED = "#ffffff";
     public static final String ROW_COLOR_SELECTED = "#ab82ff";
+
+    public static final String ARG_KEY_BLOCKED_NUMBER_ID = "_id";
+    public static final String ARG_KEY_BLOCKED_NUMBER = "phoneNumber";
+    public static final String ARG_KEY_DISPLAY_NAME = "displayName";
 }

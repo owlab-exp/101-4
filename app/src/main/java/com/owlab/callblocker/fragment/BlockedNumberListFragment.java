@@ -149,12 +149,12 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                     public void onClick(View descriptionView) {
                         ChangeDescriptionDialogFragment changeDescriptionDialogFragment = new ChangeDescriptionDialogFragment();
                         Bundle argument = new Bundle();
-                        argument.putInt("_id", _id);
-                        argument.putString("phoneNumber", phoneNumber);
-                        argument.putString("description", displayName);
+                        argument.putInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID, _id);
+                        argument.putString(CONS.ARG_KEY_BLOCKED_NUMBER, phoneNumber);
+                        argument.putString(CONS.ARG_KEY_DISPLAY_NAME, displayName);
                         changeDescriptionDialogFragment.setArguments(argument);
                         changeDescriptionDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
-                        changeDescriptionDialogFragment.show(getFragmentManager(), "tag_change_description_diag");
+                        changeDescriptionDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_change_description_diag");
                     }
                 });
 
@@ -186,12 +186,12 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                     public void onClick(View view) {
                         DialogFragment deletePhoneDialogFragment = new DeletePhoneDialogFragment();
                         Bundle argument = new Bundle();
-                        argument.putInt("_id", _id);
-                        argument.putString("phoneNumber", phoneNumber);
-                        argument.putString("description", displayName);
+                        argument.putInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID, _id);
+                        argument.putString(CONS.ARG_KEY_BLOCKED_NUMBER, phoneNumber);
+                        argument.putString(CONS.ARG_KEY_DISPLAY_NAME, displayName);
                         deletePhoneDialogFragment.setArguments(argument);
                         deletePhoneDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
-                        deletePhoneDialogFragment.show(getFragmentManager(), "tag_delete_phone_dialog");
+                        deletePhoneDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_delete_phone_dialog");
                     }
                 });
 

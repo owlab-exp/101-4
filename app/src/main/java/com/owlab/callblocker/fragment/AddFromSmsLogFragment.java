@@ -117,6 +117,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                         Toast.makeText(getActivity(), numOfNotAdded + " " + (numOfNotAdded > 1 ? "phone numbers" : "phone number") + " not added, duplicate?", Toast.LENGTH_SHORT).show();
 
                     getFragmentManager().popBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
                 } else {
                     //Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
                     Snackbar.make(getView(), "No phone number selected", Snackbar.LENGTH_SHORT).show();
