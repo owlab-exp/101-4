@@ -35,7 +35,8 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private String fragmentTagToShow = ViewPagerContainerFragment.TAG; //initial fragment
+    private String nextFragmentTag;
+    private boolean onActivityResultCalled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +44,15 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + savedInstanceState);
 
-        //Initialize app
-        FUNS.initializeApp(this);
+        boolean recovered = false;
+        if(savedInstanceState != null) {
+            recovered = true;
+        }
+
+        if(!recovered) {
+            //Initialize app
+            FUNS.initializeApp(this);
+        }
 
 
         setContentView(R.layout.activity_main);
@@ -67,14 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
             }
         } else {
-            ViewPagerContainerFragment viewPagerContainerFragment = (ViewPagerContainerFragment) getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
-            if (viewPagerContainerFragment == null) {
-                Log.d(TAG, ">>>>> viewPagerContainerFragment is null, creating...");
-                viewPagerContainerFragment = new ViewPagerContainerFragment();
-            }
-            //TODO filld this gap
+            if(!recovered)
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, viewPagerContainerFragment, ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG)
                     .commit();
         }
     }
@@ -91,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         Log.d(TAG, ">>>>> onPause");
+
+        //currentFragmentTag = null;
+        //nextFragmentTag = null;
     }
 
     private Menu menu;
@@ -133,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, settingsFragment, SettingsFragment.TAG)
-                        .addToBackStack(null)
+                        .addToBackStack(ViewPagerContainerFragment.TAG)
                         .commit();
                 return true;
             case android.R.id.home:
@@ -165,60 +171,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     @Override
     public void onPostResume() {
         super.onPostResume();
-        Log.d(TAG, ">>>>> onPostResume");
-        Log.d(TAG, ">>>>> fragmentTagToShow: " + fragmentTagToShow);
-
-        //Start to handle which fragment should be shown
-        if (fragmentTagToShow == null) {
-            //do nothing
-            return;
-        }
-
-        Fragment fragmentToShow = getSupportFragmentManager().findFragmentByTag(fragmentTagToShow);
-
-        if (fragmentToShow != null && fragmentToShow.isVisible()) {
-            // do nothing
-        }
-
-        // transit
-        if (AddFromCallLogFragment.TAG.equals(fragmentTagToShow)) {
-            getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(ViewPagerContainerFragment.TAG)
-                    .replace(R.id.fragment_container, fragmentToShow != null ? fragmentToShow : new AddFromCallLogFragment(), AddFromCallLogFragment.TAG)
-                    .commit();
-        } else if (AddFromSmsLogFragment.TAG.equals(fragmentTagToShow)) {
-            getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(ViewPagerContainerFragment.TAG)
-                    .replace(R.id.fragment_container, fragmentToShow != null ? fragmentToShow : new AddFromSmsLogFragment(), AddFromSmsLogFragment.TAG)
-                    .commit();
-        } else if (AddFromContactsFragment.TAG.equals(fragmentTagToShow)) {
-            getSupportFragmentManager().beginTransaction()
-                    .addToBackStack(ViewPagerContainerFragment.TAG)
-                    .replace(R.id.fragment_container, fragmentToShow != null ? fragmentToShow : new AddFromContactsFragment(), AddFromContactsFragment.TAG)
-                    .commit();
-        } else if (AddByManualDialogFragment.TAG.equals(fragmentTagToShow)) {
-            Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
-            Fragment currentPageFragment = ((ViewPagerContainerFragment) viewPagerContainerFragment).getCurrentPageFragment();
-            Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
-            DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
-            //addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
-            addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment : viewPagerContainerFragment, 0);
-            addByManualDialogFragment.show(getSupportFragmentManager(), AddByManualDialogFragment.TAG);
+        Log.d(TAG, "onActivityResultCalled = " + onActivityResultCalled);
+        if(onActivityResultCalled) {
+            showNextFragmentByTag(nextFragmentTag);
+            onActivityResultCalled = false;
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        onActivityResultCalled = true;
         if (requestCode == CONS.REQUEST_CODE_ADD_SOURCE_SELECTION) {
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, ">>>>> result ok received from add source selection activity");
-                fragmentTagToShow = data.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
+                nextFragmentTag = data.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
             } else if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, ">>>>> result canceled received");
-                fragmentTagToShow = ViewPagerContainerFragment.TAG;
+                nextFragmentTag = ViewPagerContainerFragment.TAG;
             } else if (resultCode == RESULT_FIRST_USER) {
                 Log.d(TAG, ">>>>> result_first_user received");
                 //TODO what is this?
@@ -236,14 +210,48 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
-        //getSupportFragmentManager().putFragment(outState, "tag", fragment);
+        //getSupportFragmentManager().putFragment(outState, "nextFragmentTag", fragment);
         super.onSaveInstanceState(outState);
 
         Log.d(TAG, ">>>>> onSaveInstanceState called");
     }
 
-    public static class FragmentSelector {
+    private void showNextFragmentByTag(String tag) {
+        Log.d(TAG, ">>>>> next: " + tag);
+        if(tag == null) {
+            return;
+        }
 
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+
+        if (ViewPagerContainerFragment.TAG.equals(tag)) {
+            //getSupportFragmentManager().beginTransaction()
+            //        .addToBackStack(currentFragmentTag)
+            //        .replace(R.id.fragment_container, fragment != null ? fragment : new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG)
+            //        .commit();
+        } else if (AddFromCallLogFragment.TAG.equals(tag)) {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, fragment != null ? fragment : new AddFromCallLogFragment(), AddFromCallLogFragment.TAG)
+                    .commit();
+        } else if (AddFromSmsLogFragment.TAG.equals(tag)) {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, fragment != null ? fragment : new AddFromSmsLogFragment(), AddFromSmsLogFragment.TAG)
+                    .commit();
+        } else if (AddFromContactsFragment.TAG.equals(tag)) {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, fragment != null ? fragment : new AddFromContactsFragment(), AddFromContactsFragment.TAG)
+                    .commit();
+        } else if (AddByManualDialogFragment.TAG.equals(tag)) {
+            Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
+            Fragment currentPageFragment = ((ViewPagerContainerFragment) viewPagerContainerFragment).getCurrentPageFragment();
+            Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
+            DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
+            //addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
+            addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment : viewPagerContainerFragment, 0);
+            addByManualDialogFragment.show(getSupportFragmentManager(), AddByManualDialogFragment.TAG);
+        }
     }
-
 }
