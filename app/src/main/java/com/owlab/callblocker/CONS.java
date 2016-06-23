@@ -18,12 +18,7 @@ public final class CONS {
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAIL = -1;
     public static final int RESULT_OTHER = -1;
-    public static final String FRAGMENT_VIEW_PAGER_CONTAINER = "VIEW_PAGER_CONTAINER_FRAGMENT";
-    public static final String FRAGMENT_SETTINGS = "SETTINGS_FRAGMENT";
-    public static final String FRAGMENT_CALL_LOG = "CALL_LOG_FRAGMENT";
-    public static final String FRAGMENT_SMS_LOG = "SMS_LOG_FRAGMENT";
-    public static final String FRAGMENT_CONTACTS = "CONTACTS_FRAGMENT";
-    public static final String FRAGMENT_ADD_BY_MANUAL = "ADD_BY_MANUAL_FRAGMENT";
+
     public static final String INTENT_KEY_TARGET_FRAGMENT = "TARGET_FRAGMENT";
     public static final String INTENT_KEY_TRANSITION_SOURCE = "TRANSITION_SOURCE";
 

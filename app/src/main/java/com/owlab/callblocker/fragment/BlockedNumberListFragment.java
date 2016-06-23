@@ -35,7 +35,7 @@ import com.owlab.callblocker.content.CallBlockerDb;
  * A placeholder fragment containing a simple view.
  */
 public class BlockedNumberListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = BlockedNumberListFragment.class.getSimpleName();
+    public static final String TAG = BlockedNumberListFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
     private static final int DB_LOADER = 0;
@@ -69,7 +69,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                 isFabRotated = true;
 
                 Intent startAddActivityIntent = new Intent(getActivity(), AddSourceSelectionActivity.class);
-                startAddActivityIntent.putExtra(CONS.INTENT_KEY_TRANSITION_SOURCE, CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
+                startAddActivityIntent.putExtra(CONS.INTENT_KEY_TRANSITION_SOURCE, ViewPagerContainerFragment.TAG);
 
                 //getActivity().startActivity(startAddActivityIntent, ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
                 //To return the enclosing activity of this

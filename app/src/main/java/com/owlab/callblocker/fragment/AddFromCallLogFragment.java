@@ -47,7 +47,7 @@ import java.util.Map;
 public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
     //public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 //public class AddFromCallLogFragment extends ListFragment {
-    private static final String TAG = AddFromCallLogFragment.class.getSimpleName();
+    public static final String TAG = AddFromCallLogFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
     private static final int CALL_LOG_LOADER = 0;
@@ -109,7 +109,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     if (numOfNotAdded > 0)
                         Toast.makeText(getActivity(), numOfNotAdded + " " + (numOfNotAdded > 1 ? "phone numbers" : "phone number") + " not added, duplicate?", Toast.LENGTH_SHORT).show();
 
-                    getFragmentManager().popBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    getFragmentManager().popBackStack(ViewPagerContainerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
                     //Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
                     Snackbar.make(getView(), "No phone number selected", Snackbar.LENGTH_SHORT).show();

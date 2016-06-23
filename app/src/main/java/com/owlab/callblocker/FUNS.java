@@ -395,7 +395,7 @@ public class FUNS {
         switch (requestCode) {
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS:
                 if(permissionReadBlockedCallLogGranted) {
-                    ((MainActivity)activity).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), CONS.FRAGMENT_VIEW_PAGER_CONTAINER).commit();
+                    ((MainActivity)activity).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG).commit();
                 } else {
                     Toast.makeText(activity, "Lack of permission", Toast.LENGTH_SHORT).show();
                     activity.finish();

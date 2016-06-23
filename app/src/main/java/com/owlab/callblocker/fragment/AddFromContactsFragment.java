@@ -43,7 +43,7 @@ import java.util.Map;
 /**
  */
 public class AddFromContactsFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
-    private static final String TAG = AddFromContactsFragment.class.getSimpleName();
+    public static final String TAG = AddFromContactsFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
     private static final int CONTACTS_LOADER = 0;
@@ -102,7 +102,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
 
                     selectedPhoneMap.clear();
 
-                    getFragmentManager().popBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    getFragmentManager().popBackStack(ViewPagerContainerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
                     //Toast.makeText(getActivity(), "No phone number selected", Toast.LENGTH_SHORT).show();
                     Snackbar.make(getView(), "No phone number selected", Snackbar.LENGTH_SHORT).show();

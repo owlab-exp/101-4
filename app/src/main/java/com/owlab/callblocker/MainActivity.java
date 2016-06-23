@@ -35,7 +35,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private String fragmentTagToShow;
+    private String fragmentTagToShow = ViewPagerContainerFragment.TAG; //initial fragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
                 FUNS.showMessageWithOKCancel(
                         this,
                         "This App need REAT CONTACTS permission to view blocked calls",
@@ -67,13 +67,14 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
             }
         } else {
-            ViewPagerContainerFragment viewPagerContainerFragment = (ViewPagerContainerFragment) getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
-            if(viewPagerContainerFragment == null) {
+            ViewPagerContainerFragment viewPagerContainerFragment = (ViewPagerContainerFragment) getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
+            if (viewPagerContainerFragment == null) {
                 Log.d(TAG, ">>>>> viewPagerContainerFragment is null, creating...");
                 viewPagerContainerFragment = new ViewPagerContainerFragment();
             }
+            //TODO filld this gap
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, viewPagerContainerFragment, CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
+                    .replace(R.id.fragment_container, viewPagerContainerFragment, ViewPagerContainerFragment.TAG)
                     .commit();
         }
     }
@@ -125,13 +126,13 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.menuitem_settings:
-                SettingsFragment settingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_SETTINGS);
+                SettingsFragment settingsFragment = (SettingsFragment) getSupportFragmentManager().findFragmentByTag(SettingsFragment.TAG);
                 if (settingsFragment == null) {
                     settingsFragment = new SettingsFragment();
 
                 }
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, settingsFragment, CONS.FRAGMENT_SETTINGS)
+                        .replace(R.id.fragment_container, settingsFragment, SettingsFragment.TAG)
                         .addToBackStack(null)
                         .commit();
                 return true;
@@ -170,56 +171,55 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, ">>>>> onPostResume");
         Log.d(TAG, ">>>>> fragmentTagToShow: " + fragmentTagToShow);
 
-        if(fragmentTagToShow == null) {
+        //Start to handle which fragment should be shown
+        if (fragmentTagToShow == null) {
             //do nothing
             return;
         }
 
         Fragment fragmentToShow = getSupportFragmentManager().findFragmentByTag(fragmentTagToShow);
 
-        
+        if (fragmentToShow != null && fragmentToShow.isVisible()) {
+            // do nothing
+        }
 
-        if(fragmentToShow == null) {
-            //Nothing to do
-        } else if(fragmentToShow.isVisible()) {
-            //Nothing to do
-        } else {
-            //
-            if(CONS.FRAGMENT_CALL_LOG.equals(fragmentTagToShow)) {
-                getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
-                        .replace(R.id.fragment_container, new AddFromCallLogFragment(), CONS.FRAGMENT_CALL_LOG).commit();
-            } else if(CONS.FRAGMENT_SMS_LOG.equals(fragmentTagToShow)) {
-                getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
-                        .replace(R.id.fragment_container, new AddFromSmsLogFragment(), CONS.FRAGMENT_SMS_LOG).commit();
-            } else if(CONS.FRAGMENT_CONTACTS.equals(fragmentTagToShow)) {
-                getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)
-                        .replace(R.id.fragment_container, new AddFromContactsFragment(), CONS.FRAGMENT_CONTACTS).commit();
-            } else if(CONS.FRAGMENT_ADD_BY_MANUAL.equals(fragmentTagToShow)) {
-                Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(CONS.FRAGMENT_VIEW_PAGER_CONTAINER);
-                Fragment currentPageFragment = ((ViewPagerContainerFragment)viewPagerContainerFragment).getCurrentPageFragment();
-                Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
-                DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
-                //addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
-                addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment: viewPagerContainerFragment, 0);
-                addByManualDialogFragment.show(getSupportFragmentManager(), "ADD_BY_MANUAL_DIALOG");
-            }
-
+        // transit
+        if (AddFromCallLogFragment.TAG.equals(fragmentTagToShow)) {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, fragmentToShow != null ? fragmentToShow : new AddFromCallLogFragment(), AddFromCallLogFragment.TAG)
+                    .commit();
+        } else if (AddFromSmsLogFragment.TAG.equals(fragmentTagToShow)) {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, fragmentToShow != null ? fragmentToShow : new AddFromSmsLogFragment(), AddFromSmsLogFragment.TAG)
+                    .commit();
+        } else if (AddFromContactsFragment.TAG.equals(fragmentTagToShow)) {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, fragmentToShow != null ? fragmentToShow : new AddFromContactsFragment(), AddFromContactsFragment.TAG)
+                    .commit();
+        } else if (AddByManualDialogFragment.TAG.equals(fragmentTagToShow)) {
+            Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
+            Fragment currentPageFragment = ((ViewPagerContainerFragment) viewPagerContainerFragment).getCurrentPageFragment();
+            Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
+            DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
+            //addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
+            addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment : viewPagerContainerFragment, 0);
+            addByManualDialogFragment.show(getSupportFragmentManager(), AddByManualDialogFragment.TAG);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == CONS.REQUEST_CODE_ADD_SOURCE_SELECTION) {
-            if(resultCode == RESULT_OK) {
+        if (requestCode == CONS.REQUEST_CODE_ADD_SOURCE_SELECTION) {
+            if (resultCode == RESULT_OK) {
                 Log.d(TAG, ">>>>> result ok received from add source selection activity");
                 fragmentTagToShow = data.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
-            } else if(resultCode == RESULT_CANCELED) {
+            } else if (resultCode == RESULT_CANCELED) {
                 Log.d(TAG, ">>>>> result canceled received");
-                fragmentTagToShow = CONS.FRAGMENT_VIEW_PAGER_CONTAINER;
-            } else if(resultCode == RESULT_FIRST_USER) {
+                fragmentTagToShow = ViewPagerContainerFragment.TAG;
+            } else if (resultCode == RESULT_FIRST_USER) {
                 Log.d(TAG, ">>>>> result_first_user received");
                 //TODO what is this?
             }
@@ -230,14 +230,20 @@ public class MainActivity extends AppCompatActivity {
      * Because of bug in support package
      * Without this override, the above onActivityResult will result in exceptions!
      * http://stackoverflow.com/questions/7575921/illegalstateexception-can-not-perform-this-action-after-onsaveinstancestate-wit
+     *
      * @param outState
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
+        //getSupportFragmentManager().putFragment(outState, "tag", fragment);
         super.onSaveInstanceState(outState);
 
         Log.d(TAG, ">>>>> onSaveInstanceState called");
+    }
+
+    public static class FragmentSelector {
+
     }
 
 }

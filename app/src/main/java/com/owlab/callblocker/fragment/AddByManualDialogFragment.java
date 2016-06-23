@@ -24,7 +24,7 @@ import com.owlab.callblocker.content.CallBlockerDb;
  * Created by ernest on 5/15/16.
  */
 public class AddByManualDialogFragment extends DialogFragment {
-    private static final String TAG = AddByManualDialogFragment.class.getSimpleName();
+    public static final String TAG = AddByManualDialogFragment.class.getSimpleName();
 
     //public interface AddItemDialogListener {
     //    public void onAddItemDialogAddClick(DialogFragment dialog);

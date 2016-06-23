@@ -16,6 +16,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.owlab.callblocker.fragment.AddByManualDialogFragment;
+import com.owlab.callblocker.fragment.AddFromCallLogFragment;
+import com.owlab.callblocker.fragment.AddFromContactsFragment;
+import com.owlab.callblocker.fragment.AddFromSmsLogFragment;
+import com.owlab.callblocker.fragment.ViewPagerContainerFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +94,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
                 if (neededPermissionList.size() == 0) {
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CALL_LOG);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddFromCallLogFragment.TAG);
                     setResult(RESULT_OK, intent);
                     finish();
                     return;
@@ -139,7 +145,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
                 if (neededPermissionList.size() == 0) {
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_SMS_LOG);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddFromSmsLogFragment.TAG);
                     setResult(RESULT_OK, intent);
                     finish();
                     return;
@@ -176,7 +182,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                 //if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 if (PermissionChecker.checkSelfPermission(getBaseContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CONTACTS);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddFromContactsFragment.TAG);
                     setResult(RESULT_OK, intent);
                     finish();
                 } else {
@@ -207,7 +213,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_ADD_BY_MANUAL);
+                intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddByManualDialogFragment.TAG);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -227,7 +233,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         //initialize for onPause
         transitionTarget = null;
 
-        if (transitionSource != null && transitionSource.equals(CONS.FRAGMENT_VIEW_PAGER_CONTAINER)) {
+        if (transitionSource != null && transitionSource.equals(ViewPagerContainerFragment.TAG)) {
             addFromCallLogFab.startAnimation(rotateForwardAppear);
             //addFromCallLogFab.startAnimation(rotateForwardDisappear);
         } else {
@@ -254,7 +260,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
         //initialize for onResume
         transitionSource = null;
 
-        if (transitionTarget != null && transitionTarget.equals(CONS.FRAGMENT_CALL_LOG)) {
+        if (transitionTarget != null && transitionTarget.equals(AddFromCallLogFragment.TAG)) {
             addFromCallLogFab.startAnimation(rotateForwardDisappear);
         } else {
             addFromCallLogFab.startAnimation(rotateBackwardDisappear);
@@ -287,7 +293,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                 if (readCallLogPermissionGranted) {
                     //open read & import call log fragment
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CALL_LOG);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddFromCallLogFragment.TAG);
                     //startActivity(intent);
                     setResult(RESULT_OK, intent);
                     finish();
@@ -301,7 +307,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                 if (readSmsLogPermissionGranted) {
                     //open read & import call log fragment
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_SMS_LOG);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddFromSmsLogFragment.TAG);
                     //startActivity(intent);
                     setResult(RESULT_OK, intent);
                     finish();
@@ -315,7 +321,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
                 if (readContactsPermissionGranted) {
                     //open read & import call log fragment
                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, CONS.FRAGMENT_CONTACTS);
+                    intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddFromContactsFragment.TAG);
                     //startActivity(intent);
                     setResult(RESULT_OK, intent);
                     finish();

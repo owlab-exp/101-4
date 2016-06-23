@@ -21,7 +21,7 @@ import com.owlab.callblocker.content.CallBlockerProvider;
  * Created by ernest on 5/15/16.
  */
 public class DeletePhoneDialogFragment extends DialogFragment {
-    private static final String TAG = DeletePhoneDialogFragment.class.getSimpleName();
+    public static final String TAG = DeletePhoneDialogFragment.class.getSimpleName();
 
     //public interface DeleteItemDialogListener {
     //    public void onDeleteItemCancelClick();

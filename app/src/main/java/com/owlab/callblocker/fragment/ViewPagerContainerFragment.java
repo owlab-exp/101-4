@@ -23,7 +23,7 @@ import java.util.Objects;
  * Created by ernest on 6/20/16.
  */
 public class ViewPagerContainerFragment extends Fragment {
-    private static final String TAG = ViewPagerContainerFragment.class.getSimpleName();
+    public static final String TAG = ViewPagerContainerFragment.class.getSimpleName();
 
     private final int pageCount = 2;
     private final int pageMarginDp = 20;
