@@ -52,6 +52,8 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 //public class AddFromCallLogFragment extends ListFragment {
     private static final String TAG = AddFromSmsLogFragment.class.getSimpleName();
 
+    Context parentContext;
+
     private SmsLogSimpleCursorTreeAdapter cursorTreeAdapter;
     private ExpandableListView expandableListView;
     //the number should not be a positive, not to be confused when handle child
@@ -148,7 +150,6 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
         }
     }
 
-    Context parentContext;
 
     @Override
     public void onAttach(Context context) {
@@ -158,6 +159,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public void onDetach() {
+        parentContext = null;
         super.onDetach();
     }
 
@@ -566,14 +568,18 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
             groupIdPositionMap.put(smsId, groupPosition);
 
-            Loader loader = AddFromSmsLogFragment.this.getLoaderManager().getLoader(smsId);
-            Loader renewedLoader = null;
-            if(loader != null && !loader.isReset()) {
-                renewedLoader = getLoaderManager().restartLoader(smsId, null, AddFromSmsLogFragment.this);
+            if(parentContext != null) {
+                Loader loader = AddFromSmsLogFragment.this.getLoaderManager().getLoader(smsId);
+                Loader renewedLoader = null;
+                if (loader != null && !loader.isReset()) {
+                    renewedLoader = getLoaderManager().restartLoader(smsId, null, AddFromSmsLogFragment.this);
+                } else {
+                    renewedLoader = getLoaderManager().initLoader(smsId, null, AddFromSmsLogFragment.this);
+                }
+                CursorLoader cursorLoader = (CursorLoader) renewedLoader;
             } else {
-                renewedLoader = getLoaderManager().initLoader(smsId, null, AddFromSmsLogFragment.this);
+                Log.d(TAG, ">>>>> Not attached in the parent activity");
             }
-            CursorLoader cursorLoader = (CursorLoader) renewedLoader;
 
 
             return null;
