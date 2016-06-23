@@ -65,12 +65,11 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     Animation rotateBackwardDisappear;
 
     CallBlockerDbHelper callBlockerDbHelper;
-    Map<String, String> selectedPhoneMap = new HashMap<>();
-    Map<String, Long> selectedPhoneRowIdMap = new HashMap<>();
+    HashMap<String, String> selectedPhoneMap = new HashMap<>();
+    HashMap<String, Long> selectedPhoneRowIdMap = new HashMap<>();
 
-    public AddFromSmsLogFragment() {
-        //Log.d(TAG, ">>>>> instantiated");
-    }
+    private static final String KEY_SELECTED_NUMBER_MAP = "selectedPhoneMap";
+    private static final String KEY_SELECTED_ROW_ID_MAP = "selectedPhoneRowIdMap";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,6 +78,19 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
         rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
         rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
         callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
+
+
+        if(savedInstanceState != null) {
+            Object saved = savedInstanceState.getSerializable(KEY_SELECTED_NUMBER_MAP);
+            if(saved != null) {
+                selectedPhoneMap = (HashMap<String, String>) saved;
+            }
+
+            saved = savedInstanceState.getSerializable(KEY_SELECTED_ROW_ID_MAP);
+            if(saved != null) {
+                selectedPhoneRowIdMap = (HashMap<String, Long>) saved;
+            }
+        }
     }
 
     @Override
@@ -129,6 +141,13 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(KEY_SELECTED_NUMBER_MAP, selectedPhoneMap);
+        outState.putSerializable(KEY_SELECTED_ROW_ID_MAP, selectedPhoneRowIdMap);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.owlab.callblocker.fragment;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -58,8 +57,11 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     Animation rotateBackwardDisappear;
 
     CallBlockerDbHelper callBlockerDbHelper;
-    Map<String, String> selectedPhoneMap = new HashMap<>();
-    Map<String, Long> selectedPhoneRowIdMap = new HashMap<>();
+    HashMap<String, String> selectedNumberMap = new HashMap<>();
+    HashMap<String, Long> selectedRowIdMap = new HashMap<>();
+
+    private static final String KEY_SELECTED_NUMBER_MAP = "selectedNumberMap";
+    private static final String KEY_SELECTED_ROW_ID_MAP = "selectedRowIdMap";
 
     public AddFromCallLogFragment() {
         Log.d(TAG, ">>>>> instantiated");
@@ -72,6 +74,26 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
         rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
         callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
+
+        if(savedInstanceState != null) {
+            Object saved = savedInstanceState.getSerializable(KEY_SELECTED_NUMBER_MAP);
+            if(saved != null) {
+                selectedNumberMap = (HashMap<String, String>) saved;
+            }
+
+            saved = savedInstanceState.getSerializable(KEY_SELECTED_ROW_ID_MAP);
+            if(saved != null) {
+                selectedRowIdMap = (HashMap<String, Long>) saved;
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(KEY_SELECTED_NUMBER_MAP, selectedNumberMap);
+        outState.putSerializable(KEY_SELECTED_ROW_ID_MAP, selectedRowIdMap);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -84,10 +106,10 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         enterFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedPhoneMap.size() > 0) {
+                if (selectedNumberMap.size() > 0) {
                     int numOfAdded = 0;
                     int numOfNotAdded = 0;
-                    for (Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
+                    for (Map.Entry<String, String> entry : selectedNumberMap.entrySet()) {
                         ContentValues values = new ContentValues();
                         values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, entry.getKey());
                         values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, entry.getValue());
@@ -101,8 +123,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                         }
                     }
                     //Clear buckets
-                    selectedPhoneMap.clear();
-                    selectedPhoneRowIdMap.clear();
+                    selectedNumberMap.clear();
+                    selectedRowIdMap.clear();
 
                     if (numOfAdded > 0)
                         Toast.makeText(getActivity(), numOfAdded + " " + (numOfAdded > 1 ? "phone numbers" : "phone number") + " added", Toast.LENGTH_SHORT).show();
@@ -137,19 +159,6 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
             mainActionBar.setTitle(R.string.title_add_from_call_log);
             mainActionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    Context parentContext;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        parentContext = context;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
     }
 
     @Override
@@ -198,8 +207,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     //Already in blocked numbers
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
                 } else {
-                    //if (selectedPhoneMap.containsKey(phoneNumberStripped)) {
-                    if (selectedPhoneRowIdMap.containsValue(cursor.getLong(cursor.getColumnIndexOrThrow(CallLog.Calls._ID)))) {
+                    //if (selectedNumberMap.containsKey(phoneNumberStripped)) {
+                    if (selectedRowIdMap.containsValue(cursor.getLong(cursor.getColumnIndexOrThrow(CallLog.Calls._ID)))) {
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
                     } else {
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
@@ -337,22 +346,22 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
             return;
         }
 
-        if (selectedPhoneMap.containsKey(phoneNumber)) {
-            if (rowId != selectedPhoneRowIdMap.get(phoneNumber)) {
+        if (selectedNumberMap.containsKey(phoneNumber)) {
+            if (rowId != selectedRowIdMap.get(phoneNumber)) {
                 //Toast.makeText(getActivity(), phoneNumber + " already in the bucket", Toast.LENGTH_SHORT).show();
                 Snackbar.make(getView(), phoneNumber + " already in the bucket", Snackbar.LENGTH_SHORT).show();
                 return;
             } else {
-                selectedPhoneMap.remove(phoneNumber);
-                selectedPhoneRowIdMap.remove(phoneNumber);
+                selectedNumberMap.remove(phoneNumber);
+                selectedRowIdMap.remove(phoneNumber);
                 Log.d(TAG, ">>>>> removed");
                 view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
                 //Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
                 Snackbar.make(getView(), phoneNumber + " removed from the bucket", Snackbar.LENGTH_SHORT).show();
             }
         } else {
-            selectedPhoneMap.put(phoneNumber, displayName);
-            selectedPhoneRowIdMap.put(phoneNumber, rowId);
+            selectedNumberMap.put(phoneNumber, displayName);
+            selectedRowIdMap.put(phoneNumber, rowId);
             Log.d(TAG, ">>>>> added");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
             //Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();

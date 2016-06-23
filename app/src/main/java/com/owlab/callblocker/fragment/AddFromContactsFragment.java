@@ -54,7 +54,9 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     Animation rotateBackwardDisappear;
 
     CallBlockerDbHelper callBlockerDbHelper; //= new CallBlockerDbHelper(getActivity());
-    Map<String, String> selectedPhoneMap = new HashMap<>();
+    HashMap<String, String> selectedPhoneMap = new HashMap<>();
+
+    private static final String KEY_SELECTED_NUMBER_MAP = "selectedNumberMap";
 
     public AddFromContactsFragment() {
         Log.d(TAG, ">>>>> instantiated");
@@ -64,9 +66,22 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) {
+            Object saved = savedInstanceState.getSerializable(KEY_SELECTED_NUMBER_MAP);
+            if(saved != null) {
+                selectedPhoneMap = (HashMap<String, String>) saved;
+            }
+        }
+
         rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
         rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
         callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(KEY_SELECTED_NUMBER_MAP, selectedPhoneMap);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

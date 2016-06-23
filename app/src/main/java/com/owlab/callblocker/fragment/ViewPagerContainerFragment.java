@@ -17,6 +17,7 @@ import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -46,8 +47,12 @@ public class ViewPagerContainerFragment extends Fragment {
 
         FragmentManager fragmentManager = getChildFragmentManager();
 
+        //if(savedInstanceState != null && savedInstanceState.getSerializable("pagerAdapter") != null) {
+        //    myFragmentPagerAdapter = (MyFragmentPagerAdapter)savedInstanceState.getSerializable("pagerAdapter");
+        //} else {
+            myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager, pageCount);
+        //}
 
-        myFragmentPagerAdapter = new MyFragmentPagerAdapter(fragmentManager, pageCount);
         if (viewPager != null) {
             viewPager.setAdapter(myFragmentPagerAdapter);
         }
@@ -78,8 +83,10 @@ public class ViewPagerContainerFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(final Bundle outState) {
-        super.onSaveInstanceState(outState);
         Log.d(TAG, ">>>>> onSaveInstanceState called");
+        //outState.putSerializable("pagerAdapter", myFragmentPagerAdapter);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -97,7 +104,7 @@ public class ViewPagerContainerFragment extends Fragment {
         return null;
     }
 
-    public static class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    public static class MyFragmentPagerAdapter extends FragmentPagerAdapter implements Serializable {
         private static final String TAG = MyFragmentPagerAdapter.class.getSimpleName();
 
         private SparseArrayCompat<Fragment> fragments = new SparseArrayCompat<>();
