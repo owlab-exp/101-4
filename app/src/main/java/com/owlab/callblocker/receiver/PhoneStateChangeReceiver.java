@@ -13,7 +13,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
 import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
 import com.owlab.callblocker.service.CallLogObserverStartService;
 
@@ -33,12 +32,6 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
     public PhoneStateChangeReceiver() {
         Log.d(TAG, ">>>>> instantiated");
     }
-
-    //private static final String[] mProjection = {CallBlockerDb.COLS_BLOCKED_NUMBER._ID, CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE};
-    private static final String[] mProjection = {CallBlockerDb.COLS_BLOCKED_NUMBER._ID, CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER};
-    private static final String mSelectionClause = CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ?" + " AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " = " + 1;
-    //TODO select only active ones
-    private static final String[] mSelectionArgs = {""};
 
     @Override
     protected void onIncomingCallArrived(Context context, String phoneNumber, Date start) {
@@ -150,7 +143,7 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
 
     @Override
     protected void onIncomingCallAnswered(Context context, String phoneNumber, Date start) {
-        Log.d(TAG, ">>>>> Call answered: " + phoneNumber + " at " + start.toString());
+        //Log.d(TAG, ">>>>> Call answered: " + phoneNumber + " at " + start.toString());
 
     }
 
