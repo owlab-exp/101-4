@@ -35,6 +35,7 @@
                     android:id="@+id/add_from_sms_log_row_child_body"
                     android:background="@drawable/sms_message_background"
                     android:layout_width="wrap_content"
+                    android:maxWidth="290dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|left"
                     android:layout_marginTop="7dp"
