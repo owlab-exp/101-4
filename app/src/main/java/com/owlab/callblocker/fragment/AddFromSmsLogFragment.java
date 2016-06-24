@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,8 +43,10 @@ import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
 import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  */
@@ -68,8 +71,11 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     HashMap<String, String> selectedPhoneMap = new HashMap<>();
     HashMap<String, Long> selectedPhoneRowIdMap = new HashMap<>();
 
+    HashSet<Long> recoveredExpandedGroupIdSet;
+
     private static final String KEY_SELECTED_NUMBER_MAP = "selectedPhoneMap";
     private static final String KEY_SELECTED_ROW_ID_MAP = "selectedPhoneRowIdMap";
+    private static final String KEY_EXPANDED_GROUP_ID_SET = "expandedGroupIdSet";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,13 +96,40 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
             if(saved != null) {
                 selectedPhoneRowIdMap = (HashMap<String, Long>) saved;
             }
+
+            saved = savedInstanceState.getSerializable(KEY_EXPANDED_GROUP_ID_SET);
+            if(saved != null) {
+                recoveredExpandedGroupIdSet = (HashSet<Long>) saved;
+            }
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(KEY_SELECTED_NUMBER_MAP, selectedPhoneMap);
+        outState.putSerializable(KEY_SELECTED_ROW_ID_MAP, selectedPhoneRowIdMap);
+
+        BaseExpandableListAdapter bela = (BaseExpandableListAdapter)  expandableListView.getExpandableListAdapter();
+        if(bela != null) {
+            int groupSize = bela.getGroupCount();
+
+            HashSet<Long> expandedGroupIdSet = new HashSet<>();
+            for(int i = 0; i < groupSize; i++) {
+                if(expandableListView.isGroupExpanded(i)) {
+                    expandedGroupIdSet.add(bela.getGroupId(i));
+                }
+            }
+            Log.d(TAG, ">>>>> expandedGroupIdSet size: " + expandedGroupIdSet.size());
+            outState.putSerializable(KEY_EXPANDED_GROUP_ID_SET, expandedGroupIdSet);
+        }
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, ">>>>> onCreateView called");
+        Log.d(TAG, ">>>>> onCreateView called with: " + Objects.toString(savedInstanceState));
         View view = inflater.inflate(R.layout.add_from_sms_log_layout, container, false);
 
         enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
@@ -141,13 +174,6 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
 
         return view;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(KEY_SELECTED_NUMBER_MAP, selectedPhoneMap);
-        outState.putSerializable(KEY_SELECTED_ROW_ID_MAP, selectedPhoneRowIdMap);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -234,6 +260,8 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     private void setupLoader(final View fragmentView) {
         //
         expandableListView = (ExpandableListView) fragmentView.findViewById(R.id.expandable_list_view);
+        //TODO what is this?
+        //expandableListView.setSaveEnabled(true);
         cursorTreeAdapter = new SmsLogSimpleCursorTreeAdapter(
                 getActivity(),
                 R.layout.add_from_sms_log_row_layout,
@@ -405,6 +433,8 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                 //super.onChange(selfChange);
             }
         });
+
+
     }
 
     @Override
@@ -442,13 +472,30 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         int loaderId = loader.getId();
+        Log.d(TAG, ">>>>> onLoaderFinished: loaderId: " + loaderId);
         switch (loaderId) {
             case SMS_LOG_LOADER:
                 cursorTreeAdapter.setGroupCursor(cursor);
+
+                //Now expand groups if needed, that is after onSaveInstanceState.
+                //Log.d(TAG, ">>>>> groupSize: " + cursorTreeAdapter.getGroupCount());
+                if(recoveredExpandedGroupIdSet != null) {
+                    int groupSize = cursorTreeAdapter.getGroupCount();
+                    //Log.d(TAG, ">>>>> groupSize: " + groupSize);
+                    for (int i = 0; i < groupSize; i++) {
+                        //Log.d(TAG, "groupPosition: " + i);
+                        long groupId = cursorTreeAdapter.getGroupId(i);
+                        if (recoveredExpandedGroupIdSet.contains(groupId)) {
+                            //Log.d(TAG, "expanding");
+                            expandableListView.expandGroup(i);
+                        }
+                    }
+                    //reinitialize
+                    recoveredExpandedGroupIdSet = null;
+                }
                 break;
             default:
                 //child loader
-                Log.d(TAG, ">>>>> onLoaderFinished: loaderId: " + loaderId);
                 if(!cursor.isClosed()) {
                     SparseArray<Integer> groupIdPositionMap = cursorTreeAdapter.getGroupIdPositionMap();
                     //Map<Integer, Integer> groupIdPositionMap = cursorTreeAdapter.getGroupIdPositionMap();
@@ -547,19 +594,21 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int flatPosition, long rowId) {
-        //Log.d(TAG, ">>>>> long click fired: position=" + position + ", rowId=" + rowId);
+        Log.d(TAG, ">>>>> long click fired: flatPosition =" + flatPosition + ", rowId=" + rowId);
         //Log.d(TAG, ">>>>> adapterView: " + adapterView.toString());
         //Log.d(TAG, ">>>>> view: " + view.toString());
 
         ExpandableListView localExpandableListView = (ExpandableListView) adapterView;
-        //long packedGroupPosition = localExpandableListView.getExpandableListPosition(position);
-        //Log.d(TAG, ">>>>> packed position: " + packedGroupPosition);
+        long packedGroupPosition = localExpandableListView.getExpandableListPosition(flatPosition);
+        Log.d(TAG, ">>>>> packed position: " + packedGroupPosition);
         int groupPosition = ExpandableListView.getPackedPositionGroup(localExpandableListView.getExpandableListPosition(flatPosition));
-        //Log.d(TAG, ">>>>> group position: " + groupPosition);
+        Log.d(TAG, ">>>>> group position: " + groupPosition);
         if(localExpandableListView.isGroupExpanded(groupPosition)) {
             localExpandableListView.collapseGroup(groupPosition);
+            //expandedGroupIdSet.remove(rowId);
         } else {
             localExpandableListView.expandGroup(groupPosition, true);
+            //expandedGroupIdSet.add(rowId);
         }
 
         return true;
