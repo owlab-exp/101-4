@@ -50,9 +50,7 @@ import java.util.Objects;
 
 /**
  */
-public class AddFromSmsLogFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemLongClickListener, ExpandableListView.OnGroupClickListener {
-    //public class AddFromCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
-//public class AddFromCallLogFragment extends ListFragment {
+public class AddFromSmsLogFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemLongClickListener, ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener {
     public static final String TAG = AddFromSmsLogFragment.class.getSimpleName();
 
     Context parentContext;
@@ -185,8 +183,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
         expandableListView.setOnGroupClickListener(this);
         expandableListView.setOnItemLongClickListener(this);
-        //getListView().setOnItemClickListener(this);
-        //getListView().setOnItemLongClickListener(this);
+        expandableListView.setOnChildClickListener(this);
 
         MainActivity mainActivity = (MainActivity) getActivity();
         ActionBar mainActionBar = mainActivity.getSupportActionBar();
@@ -217,8 +214,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
         expandableListView.setOnGroupClickListener(null);
         expandableListView.setOnItemLongClickListener(null);
-        //getListView().setOnItemClickListener(null);
-        //getListView().setOnItemLongClickListener(null);
+        expandableListView.setOnChildClickListener(null);
     }
 
     final String[] CONTACTS_PROJECTION = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup.PHOTO_THUMBNAIL_URI};
@@ -611,6 +607,12 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
             //expandedGroupIdSet.add(rowId);
         }
 
+        return true;
+    }
+
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+        parent.collapseGroup(groupPosition);
         return true;
     }
 
