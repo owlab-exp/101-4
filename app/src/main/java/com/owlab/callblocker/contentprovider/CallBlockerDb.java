@@ -1,4 +1,4 @@
-package com.owlab.callblocker.content;
+package com.owlab.callblocker.contentprovider;
 
 import android.provider.BaseColumns;
 
@@ -33,7 +33,7 @@ public class CallBlockerDb {
                     COLS_BLOCKED_NUMBER.IS_ACTIVE + TYPE_INTEGER + " DEFAULT 1" + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.CREATED_AT +  TYPE_CURRENT_TIMESTAMP +
                     ");" +
-                    "CREATE UNIQUE INDEX " + COLS_BLOCKED_NUMBER.PHONE_NUMBER + "_idx ON " + TBL_BLOCKED_NUMBER + " (" + COLS_BLOCKED_NUMBER.PHONE_NUMBER + " ASC);"
+                    "CREATE UNIQUE INDEX " + COLS_BLOCKED_NUMBER.PHONE_NUMBER + "_idx ON " + TBL_BLOCKED_NUMBER + " (" + COLS_BLOCKED_NUMBER.PHONE_NUMBER + " );"
             ;
     static final String SQL_DROP_TABLE_BLOCKED_NUMBER =
             "DROP TABLE IF EXISTS " + TBL_BLOCKED_NUMBER;
@@ -52,7 +52,8 @@ public class CallBlockerDb {
                     COLS_BLOCKED_CALL.TYPE + TYPE_INTEGER + SEP_COMMA +
                     COLS_BLOCKED_CALL.DATE + TYPE_TEXT + SEP_COMMA +
                     COLS_BLOCKED_CALL.DURATION + TYPE_TEXT +
-                    ");";
+                    ");" +
+                    "CREATE INDEX compNumberDate_idx ON " + TBL_BLOCKED_CALL + "(" + COLS_BLOCKED_CALL.NUMBER + ", " + COLS_BLOCKED_CALL.DATE + ");";
 
     static final String SQL_DROP_TABLE_BLOCKED_CALL =
             "DROP TABLE IF EXISTS " + TBL_BLOCKED_CALL;

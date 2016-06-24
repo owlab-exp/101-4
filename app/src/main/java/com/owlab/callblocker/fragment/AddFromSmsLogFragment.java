@@ -37,9 +37,9 @@ import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerDb;
-import com.owlab.callblocker.content.CallBlockerDbHelper;
-import com.owlab.callblocker.content.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallBlockerDb;
+import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
+import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;

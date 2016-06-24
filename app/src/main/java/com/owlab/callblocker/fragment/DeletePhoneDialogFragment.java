@@ -15,7 +15,7 @@ import android.view.View;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 
 /**
  * Created by ernest on 5/15/16.

@@ -14,8 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.content.CallBlockerProvider;
-import com.owlab.callblocker.content.CallBlockerDb;
+import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallBlockerDb;
 import com.owlab.callblocker.service.CallLogObserverStartService;
 
 import java.lang.reflect.InvocationTargetException;
@@ -82,10 +82,10 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
             //if (isActive) {
             //if(deleteCallLogOn) {
 
-                Log.d(TAG, ">>>>> starting delete service");
+                Log.d(TAG, ">>>>> starting content observer start service");
                 Intent intent = new Intent(context, CallLogObserverStartService.class);
                 intent.putExtra("phoneNumber", phoneNumber);
-                intent.putExtra("startTime", start.getTime() - (3*1000));
+                intent.putExtra("timeFrom", start.getTime() - (3*1000));
                 intent.putExtra("delete", deleteCallLogOn);
                 context.startService(intent);
 

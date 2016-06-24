@@ -1,6 +1,7 @@
-package com.owlab.callblocker.content;
+package com.owlab.callblocker.contentprovider;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -67,42 +68,13 @@ public class CallBlockerProvider extends ContentProvider {
 
     }
 
+    ContentResolver contentResolver;
+
     @Override
     public boolean onCreate() {
         mCallBlockerDbHelper =  new CallBlockerDbHelper(getContext());
+        contentResolver = getContext().getContentResolver();
         return true;
-    }
-
-    @Nullable
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        //Log.d(TAG, ">>>>> selection: " + selection);
-
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        switch(sURIMatcher.match(uri)) {
-            case BLOCKED_NUMBERS:
-                if (TextUtils.isEmpty(sortOrder)) sortOrder = CallBlockerDb.COLS_BLOCKED_NUMBER.CREATED_AT + " DESC";
-                db = mCallBlockerDbHelper.getReadableDatabase();
-                cursor = db.query(CallBlockerDb.TBL_BLOCKED_NUMBER, projection, selection, selectionArgs, null, null, sortOrder);
-                cursor.setNotificationUri(getContext().getContentResolver(), BLOCKED_NUMBER_URI);
-                //return cursor;
-                break;
-
-            case BLOCKED_CALLS:
-                if (TextUtils.isEmpty(sortOrder)) sortOrder = CallBlockerDb.COLS_BLOCKED_CALL.DATE + " DESC";
-                db = mCallBlockerDbHelper.getReadableDatabase();
-                cursor = db.query(CallBlockerDb.TBL_BLOCKED_CALL, projection, selection, selectionArgs, null, null, sortOrder);
-                cursor.setNotificationUri(getContext().getContentResolver(), BLOCKED_CALL_URI);
-                //return cursor;
-                break;
-
-            default:
-                Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
-                //TODO no supported uri, how to handle?
-        }
-
-        return cursor;
     }
 
     @Nullable
@@ -124,6 +96,38 @@ public class CallBlockerProvider extends ContentProvider {
                 Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
         }
         return type;
+    }
+
+    @Nullable
+    @Override
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        //Log.d(TAG, ">>>>> selection: " + selection);
+
+        SQLiteDatabase db = null;
+        Cursor cursor = null;
+        switch(sURIMatcher.match(uri)) {
+            case BLOCKED_NUMBERS:
+                if (TextUtils.isEmpty(sortOrder)) sortOrder = CallBlockerDb.COLS_BLOCKED_NUMBER.CREATED_AT + " DESC";
+                db = mCallBlockerDbHelper.getReadableDatabase();
+                cursor = db.query(CallBlockerDb.TBL_BLOCKED_NUMBER, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor.setNotificationUri(contentResolver, BLOCKED_NUMBER_URI);
+                //return cursor;
+                break;
+
+            case BLOCKED_CALLS:
+                if (TextUtils.isEmpty(sortOrder)) sortOrder = CallBlockerDb.COLS_BLOCKED_CALL.DATE + " DESC";
+                db = mCallBlockerDbHelper.getReadableDatabase();
+                cursor = db.query(CallBlockerDb.TBL_BLOCKED_CALL, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor.setNotificationUri(contentResolver, BLOCKED_CALL_URI);
+                //return cursor;
+                break;
+
+            default:
+                Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
+                //TODO no supported uri, how to handle?
+        }
+
+        return cursor;
     }
 
     @Nullable
@@ -155,7 +159,7 @@ public class CallBlockerProvider extends ContentProvider {
             //rowId = -1;
         }
 
-        if(rowId > 0) getContext().getContentResolver().notifyChange(uri, null);
+        if(rowId > 0) contentResolver.notifyChange(uri, null);
 
         return resultUri;
     }
@@ -187,7 +191,7 @@ public class CallBlockerProvider extends ContentProvider {
                 Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
         }
 
-        if(rowsDeleted > 0) getContext().getContentResolver().notifyChange(uri, null);
+        if(rowsDeleted > 0) contentResolver.notifyChange(uri, null);
 
         return rowsDeleted;
     }
@@ -208,7 +212,7 @@ public class CallBlockerProvider extends ContentProvider {
                 Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
         }
 
-        if(rowsUpdated > 0) getContext().getContentResolver().notifyChange(uri, null);
+        if(rowsUpdated > 0) contentResolver.notifyChange(uri, null);
 
         return rowsUpdated;
     }

@@ -1,4 +1,4 @@
-package com.owlab.callblocker.content;
+package com.owlab.callblocker.contentprovider;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CallBlockerDbHelper extends SQLiteOpenHelper {
     private static final String TAG = CallBlockerDbHelper.class.getSimpleName();
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "CallBlocker.db";
 
     public CallBlockerDbHelper(Context context) {
@@ -40,8 +40,10 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
     //Several helper methods for other use
     public boolean isBlockedNumber(String phoneNumber) {
         //Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
+        boolean result = false;
+
         if(phoneNumber == null) {
-            return false;
+            return result;
         }
 
         String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
@@ -56,8 +58,33 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
                 null,
                 null);
 
-        boolean result = false;
         //Log.d(TAG, ">>>>> count: " + cursor.getCount());
+        if(cursor != null && cursor.getCount() > 0) {
+            result = true;
+        }
+
+        db.close();
+
+        return result;
+    }
+
+    public boolean logExists(String phoneNumber, String date) {
+        boolean result = false;
+
+        if(phoneNumber == null || date == null) {
+            return result;
+        }
+
+        String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(CallBlockerDb.TBL_BLOCKED_CALL,
+                new String[]{CallBlockerDb.COLS_BLOCKED_CALL._ID},
+                CallBlockerDb.COLS_BLOCKED_CALL.NUMBER + " = ? AND " + CallBlockerDb.COLS_BLOCKED_CALL.DATE + " = ?",
+                new String[]{purePhoneNumber, date},
+                null,
+                null,
+                null);
         if(cursor != null && cursor.getCount() > 0) {
             result = true;
         }

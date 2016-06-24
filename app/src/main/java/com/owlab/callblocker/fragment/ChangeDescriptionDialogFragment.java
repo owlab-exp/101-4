@@ -16,8 +16,8 @@ import android.widget.EditText;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.content.CallBlockerProvider;
-import com.owlab.callblocker.content.CallBlockerDb;
+import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallBlockerDb;
 
 /**
  * Created by ernest on 5/15/16.
