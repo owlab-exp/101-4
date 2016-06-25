@@ -10,8 +10,22 @@
             android:title="Show statusbar icon" />
     </PreferenceCategory>
     <PreferenceCategory
+        android:key="settings_additional_blocking"
+        android:title="ADDITIONAL BLOCKING">
+        <SwitchPreference
+            android:key="@string/settings_key_block_hidden_number"
+            android:defaultValue="false"
+            android:title="From hidden number"
+            android:summary="Block incoming calls having no number"/>
+        <SwitchPreference
+            android:key="@string/settings_key_block_unknown_number"
+            android:defaultValue="false"
+            android:title="From unknown number"
+            android:summary="Block all numbers not in contacts"/>
+    </PreferenceCategory>
+    <PreferenceCategory
         android:key="settings_category_call_blocking_setting"
-        android:title="CALL BLOCKING SETTINGS">
+        android:title="CALL BLOCKING SETTING">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/settings_key_suppress_ringing"

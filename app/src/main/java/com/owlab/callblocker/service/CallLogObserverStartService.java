@@ -29,10 +29,11 @@ public class CallLogObserverStartService extends Service {
         Log.d(TAG, ">>>>> starting...");
 
         //callLogObserver = new CallLogObserver(new Handler(), getBaseContext());
-        String phoneNumber = intent.getExtras().getString("phoneNumber");
-        long timeFrom = intent.getExtras().getLong("timeFrom");
-        boolean delete = intent.getExtras().getBoolean("delete");
-        callLogObserver = new CallLogObserver(new Handler(), getBaseContext(), this, phoneNumber, timeFrom, delete);
+        //String phoneNumber = intent.getExtras().getString(CONS.INTENT_KEY_PHONE_NUMBER);
+        //long timeFrom = intent.getExtras().getLong(CONS.INTENT_KEY_TIME_FROM);
+        //boolean delete = intent.getExtras().getBoolean(CONS.INTENT_KEY_SHOULD_DELETE);
+        //callLogObserver = new CallLogObserver(new Handler(), getBaseContext(), this, phoneNumber, timeFrom, delete);
+        callLogObserver = new CallLogObserver(new Handler(), this, intent.getExtras());
         Log.d(TAG, ">>>>> Uri to be registered: " + CallLog.Calls.CONTENT_URI);
         getBaseContext().getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, callLogObserver);
         Toast.makeText(getBaseContext(), "Call log cleansing service started", Toast.LENGTH_SHORT).show();

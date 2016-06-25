@@ -9,12 +9,14 @@ import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.contentprovider.CallBlockerDb;
 import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
 import com.owlab.callblocker.contentprovider.CallBlockerProvider;
@@ -37,16 +39,22 @@ public class CallLogObserver extends ContentObserver {
     private long timeFrom;
     private boolean delete;
 
-    public CallLogObserver(Handler handler, Context context, Service starter, String phoneNumber, long timeFrom, boolean delete) {
+    //public CallLogObserver(Handler handler, Context context, Service starter, String phoneNumber, long timeFrom, boolean delete) {
+    //public CallLogObserver(Handler handler, Service starter, String phoneNumber, long timeFrom, boolean delete) {
+    public CallLogObserver(Handler handler, Service starter, Bundle args) {
+
         super(handler);
-        this.context = context;
+        this.context = starter.getBaseContext();
         this.contentResolver = context.getContentResolver();
         this.callBlockerDbHelper = new CallBlockerDbHelper(context);
         this.starter = starter;
 
-        this.phoneNumber = phoneNumber;
-        this.timeFrom = timeFrom;
-        this.delete = delete;
+        this.phoneNumber = args.getString(CONS.INTENT_KEY_PHONE_NUMBER);
+        this.timeFrom = args.getLong(CONS.INTENT_KEY_TIME_FROM);
+        this.delete = args.getBoolean(CONS.INTENT_KEY_SHOULD_DELETE);
+        //this.phoneNumber = phoneNumber;
+        //this.timeFrom = timeFrom;
+        //this.delete = delete;
         //Log.d(TAG, ">>>>> instantiated, numOfInstance: " + ++numOfInstance);
     }
 

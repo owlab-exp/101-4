@@ -5,13 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
 import com.owlab.callblocker.service.CallLogObserverStartService;
@@ -28,22 +32,68 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
 
     private static boolean mIsRingerChanged = false;
     private static int mLastRingerMode = 0;
+    SharedPreferences sharedPreferences;
 
     public PhoneStateChangeReceiver() {
         Log.d(TAG, ">>>>> instantiated");
     }
 
     @Override
-    protected void onIncomingCallArrived(Context context, String phoneNumber, Date start) {
-        Log.d(TAG, ">>>>> Call arrived: " + phoneNumber + " at " + start.toString());
+    protected void onIncomingCallArrived(Context context, String phoneNumber, Date fromTime) {
+        Log.d(TAG, ">>>>> Call arrived: " + phoneNumber + " at " + fromTime.toString());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isBlockingOn = sharedPreferences.getBoolean(context.getString(R.string.pref_key_blocking_on), false);
         if (!isBlockingOn) {
             Log.d(TAG, ">>>>> preference - blocking - off, do nothing");
             return;
         }
 
+        boolean blockHiddenNumberOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_block_hidden_number), false);
+        boolean blockUnknownNumberOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_block_unknown_number), false)
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+
+        if(blockHiddenNumberOn) {
+            if(phoneNumber == null || phoneNumber.isEmpty()) {
+                blockCall(context, "", fromTime);
+                return;
+            }
+        }
+
+        if(phoneNumber != null && !phoneNumber.isEmpty()) {
+            if(blockUnknownNumberOn && !isInContacts(context, phoneNumber)) {
+                blockCall(context, phoneNumber, fromTime);
+                return;
+            }
+        }
+
+        CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(context);
+        if (dbHelper.isActiveBlockedNumber(phoneNumber)) {
+            blockCall(context, phoneNumber, fromTime);
+            return;
+        } else {
+            Toast.makeText(context, "the incoming number (" + phoneNumber + ") is not subject to be filtered", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private static final String[] contactsProjection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
+    private boolean isInContacts(Context context, String phoneNumber) {
+        boolean result = false;
+
+        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        //Log.d(TAG, ">>>>> uri: " + uri.toString());
+        Cursor contactsCursor = context.getContentResolver().query(uri, contactsProjection, null, null, null);
+        if (contactsCursor != null) {
+            if (contactsCursor.getCount() > 0) {
+                result = true;
+            }
+            contactsCursor.close();
+        }
+
+        return result;
+    }
+
+    private void blockCall(Context context, String phoneNumber, Date fromTime) {
         boolean suppressRingingOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_ringing), false);
         //boolean suppressCallNotificationOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_call_notification), false);
         boolean dismissCallOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_dismiss_call), false);
@@ -52,39 +102,21 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
 
-        // Determine if the incoming number is registered and active in the blocking db
-        // TODO: is this needed? if the passed phone number is a pure form already, then this will not be needed
-        //String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
-        //mSelectionArgs[0] = purePhoneNumber;
-        //Cursor cursor = context.getContentResolver().query(CallBlockerProvider.BLOCKED_NUMBER_URI, mProjection, mSelectionClause, mSelectionArgs, null);
-        //if (cursor != null && cursor.getCount() > 0) {
 
-        //First suppress ringing, quite ringer
+        Log.d(TAG, ">>>>> starting content observer start service");
+        Intent intent = new Intent(context, CallLogObserverStartService.class);
+        intent.putExtra(CONS.INTENT_KEY_PHONE_NUMBER, phoneNumber);
+        intent.putExtra(CONS.INTENT_KEY_TIME_FROM, fromTime.getTime() - (3 * 1000));
+        intent.putExtra(CONS.INTENT_KEY_SHOULD_DELETE, deleteCallLogOn);
+        context.startService(intent);
 
-        CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(context);
-        if (dbHelper.isActiveBlockedNumber(phoneNumber)) {
+        if (suppressRingingOn) {
+            suppressRinging(context);
+        }
 
-            Log.d(TAG, ">>>>> starting content observer start service");
-            Intent intent = new Intent(context, CallLogObserverStartService.class);
-            intent.putExtra("phoneNumber", phoneNumber);
-            intent.putExtra("timeFrom", start.getTime() - (3 * 1000));
-            intent.putExtra("delete", deleteCallLogOn);
-            context.startService(intent);
-
-            if (suppressRingingOn) {
-                suppressRinging(context);
-            }
-
-            if (dismissCallOn) {
-                //This should be dismissed
-                dismissCall(context);
-            }
-
-            //} else {
-            //    Toast.makeText(context, "the incoming number (" + purePhoneNumber + ") is inactive filtering subject", Toast.LENGTH_SHORT).show();
-            //}
-        } else {
-            Toast.makeText(context, "the incoming number (" + phoneNumber + ") is not subject to be filtered", Toast.LENGTH_SHORT).show();
+        if (dismissCallOn) {
+            //This should be dismissed
+            dismissCall(context);
         }
     }
 
@@ -143,32 +175,20 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
 
     @Override
     protected void onIncomingCallAnswered(Context context, String phoneNumber, Date start) {
-        //Log.d(TAG, ">>>>> Call answered: " + phoneNumber + " at " + start.toString());
-
+        Log.d(TAG, ">>>>> Call answered: " + phoneNumber + " at " + start.toString());
     }
 
     @Override
     protected void onIncomingCallEnded(Context context, String phoneNumber, Date start, Date end) {
-        //Log.d(TAG, ">>>>> Call ended: " + phoneNumber + ", from " + start.toString() + " to " + end.toString());
+        Log.d(TAG, ">>>>> Call ended: " + phoneNumber + ", from " + start.toString() + " to " + end.toString());
         releaseRinging(context);
 
-        //if (mIsRingerChanged) {
-        //    AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        //    am.setRingerMode(mLastRingerMode);
-        //    mIsRingerChanged = false;
-        //    Toast.makeText(context, "ringer mode restored", Toast.LENGTH_SHORT).show();
-        //}
     }
 
     @Override
     protected void onIncomingCallMissed(Context context, String phoneNumber, Date start) {
-        //Log.d(TAG, ">>>>> Call missed: " + phoneNumber + " at " + start.toString());
+        Log.d(TAG, ">>>>> Call missed: " + phoneNumber + " at " + start.toString());
         releaseRinging(context);
-        //if (mIsRingerChanged) {
-        //    AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        //    am.setRingerMode(mLastRingerMode);
-        //    mIsRingerChanged = false;
-        //    Toast.makeText(context, "ringer mode restored", Toast.LENGTH_SHORT).show();
-        //}
+
     }
 }

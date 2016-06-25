@@ -3,7 +3,11 @@
     <string name="pref_key_blocking_on">pref_key_blocking_on</string>
 
     <string name="settings_key_show_app_notification_icon">settings_key_show_app_notification_icon</string>
+    <!-- additional call blocking -->
+    <string name="settings_key_block_hidden_number">settings_key_block_hidden_number</string>
+    <string name="settings_key_block_unknown_number">settings_key_block_unknown_number</string>
 
+    <!-- call blockking mechanism -->
     <string name="settings_key_suppress_ringing">settings_key_suppress_ringing</string>
     <!--
     <string name="settings_key_suppress_call_notification">settings_key_suppress_call_notification</string>
