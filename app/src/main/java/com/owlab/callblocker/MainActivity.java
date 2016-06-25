@@ -29,6 +29,8 @@ import com.owlab.callblocker.fragment.SettingsFragment;
 import com.owlab.callblocker.fragment.ViewPagerContainerFragment;
 import com.owlab.callblocker.service.CallBlockerIntentService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -64,20 +66,39 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
+                PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            List<String> neededPermissionList = new ArrayList<>();
+            boolean shouldShowRequestPermissionRationale = false;
+            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+                    shouldShowRequestPermissionRationale = true;
+                }
+                neededPermissionList.add(Manifest.permission.READ_CONTACTS);
+            }
+            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+                    shouldShowRequestPermissionRationale = true;
+                }
+                neededPermissionList.add(Manifest.permission.CALL_PHONE);
+            }
+
+            final String[] neededPermissions = new String[neededPermissionList.size()];
+            neededPermissionList.toArray(neededPermissions);
+            if(shouldShowRequestPermissionRationale) {
+
                 FUNS.showMessageWithOKCancel(
                         this,
-                        "This App need REAT CONTACTS permission to view blocked calls",
+                        "This App need permissions to view blocked calls and make call on the blocked call log",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
+                                ActivityCompat.requestPermissions(MainActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
                             }
                         },
                         null);
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
+                ActivityCompat.requestPermissions(this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
             }
         } else {
             if(!recovered)
@@ -280,7 +301,8 @@ public class MainActivity extends AppCompatActivity {
         boolean permissionCallPhoneGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
         boolean permissionReadCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
         boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
-        boolean permissionReadBlockedCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionReadBlockedCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
         //boolean permissionReadContactsGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         //boolean permissionWriteContactsGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
 
@@ -293,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                     nextFragmentTag = ViewPagerContainerFragment.TAG;
                     onRequestPermissionsResultCalled = true;
                 } else {
-                    Toast.makeText(this, "Lack of permission", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Lack of permissions", Toast.LENGTH_SHORT).show();
                     this.finish();
                 }
                 break;

@@ -1,8 +1,10 @@
 package com.owlab.callblocker.fragment;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -339,10 +342,31 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
         if(phoneNumberStripped.isEmpty()) {
             Toast.makeText(getActivity(), "Empty number", Toast.LENGTH_SHORT).show();
         } else {
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + phoneNumberStripped));
-            startActivity(callIntent);
+            //Permission check is performed in the main activity before this view shown
+            if (PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                //if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CALL_PHONE)) {
+                //    FUNS.showMessageWithOKCancel(
+                //            getActivity(),
+                //            "This App need CALL PHONE permission to make a call",
+                //            new DialogInterface.OnClickListener() {
+                //                @Override
+                //                public void onClick(DialogInterface dialogInterface, int i) {
+                //                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_MAKE_CALL);
+                //                }
+                //            },
+                //            null);
+                //} else {
+                //    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_MAKE_CALL);
+                //}
+                Toast.makeText(getActivity(), "No PHONE CALL permission", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + phoneNumberStripped));
+                startActivity(callIntent);
+            }
         }
         return true;
     }
+
+
 }
