@@ -2,6 +2,7 @@ package com.owlab.callblocker.fragment;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -41,7 +42,7 @@ import java.util.Objects;
  * List up blocked call log
  * Each row is expanded if clicked,to show "call" and "delete" button
  */
-public class BlockedCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
+public class BlockedCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     public static final String TAG = BlockedCallLogFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
@@ -162,6 +163,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
         Log.d(TAG, ">>>>> onResume called");
 
         getListView().setOnItemClickListener(this);
+        getListView().setOnItemLongClickListener(this);
     }
 
     @Override
@@ -171,6 +173,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
         Log.d(TAG, ">>>>> onPause called");
         //enterFab.startAnimation(rotateBackwardDisappear);
         getListView().setOnItemClickListener(null);
+        getListView().setOnItemLongClickListener(null);
     }
 
     final String[] FROM_COLUMNS = {
@@ -312,15 +315,6 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
-        //Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
-        TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_number);
-        TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_name);
-        //String displayName = infoView.getText().toString();
-        //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
-        //String detail = detailView.getText().toString();
-        String phoneNumberRead = numberView.getText().toString();
-        String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
-        String displayName = nameView.getText().toString();
 
         if (selectedRowIdSet.contains(rowId)) {
 
@@ -335,5 +329,20 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
             Toast.makeText(getActivity(), "Call added to the bucket", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long rowId) {
+        TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_number);
+        String phoneNumberRead = numberView.getText().toString();
+        String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+        if(phoneNumberStripped.isEmpty()) {
+            Toast.makeText(getActivity(), "Empty number", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + phoneNumberStripped));
+            startActivity(callIntent);
+        }
+        return true;
     }
 }
