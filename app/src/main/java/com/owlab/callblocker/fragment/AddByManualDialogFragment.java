@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
 import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 import com.owlab.callblocker.contentprovider.CallBlockerDb;
 
@@ -86,24 +87,29 @@ public class AddByManualDialogFragment extends DialogFragment {
                     public void onClick(View view) {
                         //Log.d(TAG, ">>> clicked");
                         EditText phoneNumberText = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_phone_number);
+                        String phoneNumber = phoneNumberText.getText().toString().trim();
                         EditText displayNameET = (EditText)alertDialog.findViewById(R.id.add_phone_dialog_description);
-                        if(phoneNumberText.getText().toString().trim().isEmpty()) {
+                        if(phoneNumber.isEmpty()) {
                             Snackbar.make(getView(), "Empty phone number", Snackbar.LENGTH_SHORT).show();
                         } else {
                             alertDialog.dismiss();
-                            //mAddItemDialogListener.onAddItemDialogAddClick(AddItemDialogFragment.this);
-                            ContentValues values = new ContentValues();
-                            String compactPhoneNumber = phoneNumberText.getText().toString().replaceAll("[^\\d]", "");
-                            values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, compactPhoneNumber);
-                            values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, displayNameET.getText().toString());
-                            Uri newUri = getTargetFragment().getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
-                            Log.d(TAG, ">>> newUri: " + newUri.toString());
-                            Log.d(TAG, ">>> newUri.getLastPathSegment: " + newUri.getLastPathSegment());
-                            if(Long.parseLong(newUri.getLastPathSegment()) > 0)
-                                Snackbar.make(getTargetFragment().getView(), compactPhoneNumber + " added", Snackbar.LENGTH_SHORT).show();
-                            else
-                                Snackbar.make(getTargetFragment().getView(), "Add failed, duplicate?", Snackbar.LENGTH_SHORT).show();
-
+                            CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(getActivity());
+                            if(dbHelper.isBlockedNumber(phoneNumber)) {
+                                Snackbar.make(getTargetFragment().getView(), "The phone number is already in the list", Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                //mAddItemDialogListener.onAddItemDialogAddClick(AddItemDialogFragment.this);
+                                ContentValues values = new ContentValues();
+                                String compactPhoneNumber = phoneNumberText.getText().toString().replaceAll("[^\\d]", "");
+                                values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, compactPhoneNumber);
+                                values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, displayNameET.getText().toString());
+                                Uri newUri = getTargetFragment().getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
+                                Log.d(TAG, ">>> newUri: " + newUri.toString());
+                                Log.d(TAG, ">>> newUri.getLastPathSegment: " + newUri.getLastPathSegment());
+                                if (Long.parseLong(newUri.getLastPathSegment()) > 0)
+                                    Snackbar.make(getTargetFragment().getView(), compactPhoneNumber + " added", Snackbar.LENGTH_SHORT).show();
+                                else
+                                    Snackbar.make(getTargetFragment().getView(), "Add failed, duplicate?", Snackbar.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
