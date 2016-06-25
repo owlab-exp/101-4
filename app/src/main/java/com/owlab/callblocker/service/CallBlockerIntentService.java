@@ -52,6 +52,7 @@ public class CallBlockerIntentService extends IntentService {
         super(TAG);
     }
 
+    //Static methods for others
     public static void startActionWhenBootBootCompleted(Context context) {
         Intent intent = new Intent(context, CallBlockerIntentService.class);
         intent.setAction(ACTION_WHEN_BOOT_COMPLETED);
@@ -98,22 +99,22 @@ public class CallBlockerIntentService extends IntentService {
             handleActionStatusbarNotificationOn(true);
         } else if (intent.getAction().equals(ACTION_STATUSBAR_NOTIFICATION_OFF)) {
             handleActionStatusbarNotificationOff();
-        } else if (intent.getAction().equals(ACTION_SUPPRESS_RINGING_ON)) {
-            handleActionQuietRingerOn();
-        } else if (intent.getAction().equals(ACTION_SUPPRESS_RINGING_OFF)) {
-            handleActionQuietRingerOff();
-        } else if (intent.getAction().equals(ACTION_SUPPRESS_CALL_NOTIFICATION_ON)) {
-            handleActionSuppressCallNotificationOn();
-        } else if (intent.getAction().equals(ACTION_SUPPRESS_CALL_NOTIFICATION_OFF)) {
-            handleActionSuppressCallNotificationOff();
-        } else if (intent.getAction().equals(ACTION_DISMISS_CALL_ON)) {
-            handleActionDismissCallOn();
-        } else if (intent.getAction().equals(ACTION_DISMISS_CALL_OFF)) {
-            handleActionDismissCallOff();
-        } else if (intent.getAction().equals(ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_ON)) {
-            handleActionSuppressHeadsUpNotificationOn();
-        } else if (intent.getAction().equals(ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_OFF)) {
-            handleActionSuppressHeadsUpNotificationOff();
+        //} else if (intent.getAction().equals(ACTION_SUPPRESS_RINGING_ON)) {
+        //    handleActionQuietRingerOn();
+        //} else if (intent.getAction().equals(ACTION_SUPPRESS_RINGING_OFF)) {
+        //    handleActionQuietRingerOff();
+        //} else if (intent.getAction().equals(ACTION_SUPPRESS_CALL_NOTIFICATION_ON)) {
+        //    handleActionSuppressCallNotificationOn();
+        //} else if (intent.getAction().equals(ACTION_SUPPRESS_CALL_NOTIFICATION_OFF)) {
+        //    handleActionSuppressCallNotificationOff();
+        //} else if (intent.getAction().equals(ACTION_DISMISS_CALL_ON)) {
+        //    handleActionDismissCallOn();
+        //} else if (intent.getAction().equals(ACTION_DISMISS_CALL_OFF)) {
+        //    handleActionDismissCallOff();
+        //} else if (intent.getAction().equals(ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_ON)) {
+        //    handleActionSuppressHeadsUpNotificationOn();
+        //} else if (intent.getAction().equals(ACTION_SUPPRESS_HEADS_UP_NOTIFICATION_OFF)) {
+        //    handleActionSuppressHeadsUpNotificationOff();
         } else if (intent.getAction().equals(ACTION_BLOCKING_OFF)) {
             handleActionBlockingOff((ResultReceiver)intent.getParcelableExtra("receiver"));
         }
@@ -207,13 +208,13 @@ public class CallBlockerIntentService extends IntentService {
         sharedPreferences.edit().putBoolean(getString(R.string.status_key_notification_icon_shown), false).commit();
     }
 
-    private void handleActionQuietRingerOn() {}
-    private void handleActionQuietRingerOff() {}
-    private void handleActionSuppressCallNotificationOn() {}
-    private void handleActionSuppressCallNotificationOff() {}
-    private void handleActionDismissCallOn() {}
-    private void handleActionDismissCallOff() {}
-    private void handleActionSuppressHeadsUpNotificationOn() {}
-    private void handleActionSuppressHeadsUpNotificationOff() {}
+    //private void handleActionQuietRingerOn() {}
+    //private void handleActionQuietRingerOff() {}
+    //private void handleActionSuppressCallNotificationOn() {}
+    //private void handleActionSuppressCallNotificationOff() {}
+    //private void handleActionDismissCallOn() {}
+    //private void handleActionDismissCallOff() {}
+    //private void handleActionSuppressHeadsUpNotificationOn() {}
+    //private void handleActionSuppressHeadsUpNotificationOff() {}
 
 }

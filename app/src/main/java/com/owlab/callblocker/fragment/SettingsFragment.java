@@ -105,5 +105,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             CheckBoxPreference checkBoxPreference = (CheckBoxPreference)preference;
             checkBoxPreference.setChecked(sharedPreferences.getBoolean(key, false));
         }
+
+        if(preference instanceof SwitchPreference) {
+            SwitchPreference switchPreference = (SwitchPreference) preference;
+            switchPreference.setChecked(sharedPreferences.getBoolean(key, false));
+        }
     }
 }
