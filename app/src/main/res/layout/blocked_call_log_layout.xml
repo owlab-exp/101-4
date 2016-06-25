@@ -27,7 +27,6 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <!--
     <android.support.design.widget.FloatingActionButton
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fab_done"
@@ -36,10 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_done_white_48dp"
-        app:backgroundTint="@android:color/holo_purple"
+        android:src="@drawable/fab_delete_48"
+        app:backgroundTint="@color/colorAccent"
         />
-        -->
 </android.support.design.widget.CoordinatorLayout>
 <!-- // reserve
         android:layout_margin="@dimen/fab_margin"

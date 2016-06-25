@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class CallBlockerDbHelper extends SQLiteOpenHelper {
     private static final String TAG = CallBlockerDbHelper.class.getSimpleName();
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4; //20160625
     public static final String DATABASE_NAME = "CallBlocker.db";
 
     public CallBlockerDbHelper(Context context) {
@@ -52,7 +52,7 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(CallBlockerDb.TBL_BLOCKED_NUMBER,
                 new String[]{CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER},
-                CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ? ",
+                CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ? AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0",
                 new String[]{purePhoneNumber},
                 null,
                 null,
@@ -68,7 +68,7 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    private static String selectionOfActiveBlockedNumber = CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ? AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " > 0";
+    private static String selectionOfActiveBlockedNumber = CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ? AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " > 0 AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0";
 
     public boolean isActiveBlockedNumber(String phoneNumber) {
         //Log.d(TAG, ">>> phoneNumber: " + phoneNumber);

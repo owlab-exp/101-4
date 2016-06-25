@@ -176,8 +176,12 @@ public class CallBlockerProvider extends ContentProvider {
                 if(TextUtils.isEmpty(selection)) {
                     rowsDeleted = db.delete(CallBlockerDb.TBL_BLOCKED_NUMBER, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + "=" + id, null);
                 } else {
+                    //TODO Meaningfull?
                     rowsDeleted = db.delete(CallBlockerDb.TBL_BLOCKED_NUMBER, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + "=" + id + " and " + selection, selectionArgs);
                 }
+                break;
+            case BLOCKED_NUMBERS:
+                rowsDeleted = db.delete(CallBlockerDb.TBL_BLOCKED_NUMBER, selection, selectionArgs);
                 break;
             case BLOCKED_CALL_ID:
                 id = uri.getLastPathSegment();
@@ -186,6 +190,9 @@ public class CallBlockerProvider extends ContentProvider {
                 } else {
                     rowsDeleted = db.delete(CallBlockerDb.TBL_BLOCKED_CALL, CallBlockerDb.COLS_BLOCKED_CALL._ID + "=" + id + " and " + selection, selectionArgs);
                 }
+                break;
+            case BLOCKED_CALLS:
+                rowsDeleted = db.delete(CallBlockerDb.TBL_BLOCKED_CALL, selection, selectionArgs);
                 break;
             default:
                 Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());

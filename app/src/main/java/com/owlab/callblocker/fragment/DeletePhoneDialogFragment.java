@@ -3,9 +3,8 @@ package com.owlab.callblocker.fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -15,6 +14,7 @@ import android.view.View;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.Utils;
+import com.owlab.callblocker.contentprovider.CallBlockerDb;
 import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 
 /**
@@ -75,10 +75,33 @@ public class DeletePhoneDialogFragment extends DialogFragment {
                         //mDeleteItemDialogListener.onDeleteItemConirmClick(_id);
                         dialog.dismiss();
                         //TODO not need uri encoding of _id?
-                        Uri deleteUri = ContentUris.withAppendedId(CallBlockerProvider.BLOCKED_NUMBER_URI, _id);
-                        int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(deleteUri, null, null);
-                        if(deleteCount > 0)
-                        Snackbar.make(getTargetFragment().getView(), phoneNumber + " is deleted", Snackbar.LENGTH_SHORT).show();
+                        //Uri deleteUri = ContentUris.withAppendedId(CallBlockerProvider.BLOCKED_NUMBER_URI, _id);
+                        //int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(deleteUri, null, null);
+                        final ContentValues values = new ContentValues();
+                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED, 1);
+                        int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_NUMBER_URI, values, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id, null);
+                        values.clear();
+
+                        if (updateCount > 0) {
+                            Snackbar snackbar = Snackbar.make(getTargetFragment().getView(), phoneNumber + " is deleted", Snackbar.LENGTH_LONG);
+                            snackbar.setCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                    super.onDismissed(snackbar, event);
+                                    if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                                        getTargetFragment().getActivity().getContentResolver().delete(CallBlockerProvider.BLOCKED_NUMBER_URI, CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " > 0", null);
+                                    }
+                                }
+                            });
+                            snackbar.setAction("Undo", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED, 0);
+                                    int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_NUMBER_URI, values, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id, null);
+                                }
+                            });
+                            snackbar.show();
+                        }
                     }
                 })
                 .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {

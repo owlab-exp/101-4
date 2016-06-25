@@ -18,6 +18,7 @@ public class CallBlockerDb {
         public static final String DISPLAY_NAME = "display_name";
         public static final String IS_ACTIVE = "is_active";
         public static final String CREATED_AT = "created_at";
+        public static final String MARK_DELETED = "mark_deleted";
     }
 
     private static final String TYPE_TEXT = " TEXT";
@@ -31,7 +32,8 @@ public class CallBlockerDb {
                     COLS_BLOCKED_NUMBER.PHONE_NUMBER + TYPE_TEXT + " NOT NULL UNIQUE" + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.DISPLAY_NAME + TYPE_TEXT + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.IS_ACTIVE + TYPE_INTEGER + " DEFAULT 1" + SEP_COMMA +
-                    COLS_BLOCKED_NUMBER.CREATED_AT +  TYPE_CURRENT_TIMESTAMP +
+                    COLS_BLOCKED_NUMBER.CREATED_AT +  TYPE_CURRENT_TIMESTAMP + SEP_COMMA +
+                    COLS_BLOCKED_NUMBER.MARK_DELETED +  TYPE_INTEGER + " DEFAULT 0" +
                     ");" +
                     "CREATE UNIQUE INDEX " + COLS_BLOCKED_NUMBER.PHONE_NUMBER + "_idx ON " + TBL_BLOCKED_NUMBER + " (" + COLS_BLOCKED_NUMBER.PHONE_NUMBER + " );"
             ;
@@ -43,6 +45,7 @@ public class CallBlockerDb {
         public static final String TYPE = "call_type"; //int - CallLog.Calls.TYPE
         public static final String DATE = "call_date"; //long type string - CallLog.Calls.DATE
         public static final String DURATION = "call_duration"; //int type string - CallLog.Calls.DURATION
+        public static final String MARK_DELETED = "mark_deleted";
     }
 
     static final String SQL_CREATE_TABLE_BLOCKED_CALL =
@@ -51,7 +54,8 @@ public class CallBlockerDb {
                     COLS_BLOCKED_CALL.NUMBER + TYPE_TEXT + SEP_COMMA +
                     COLS_BLOCKED_CALL.TYPE + TYPE_INTEGER + SEP_COMMA +
                     COLS_BLOCKED_CALL.DATE + TYPE_TEXT + SEP_COMMA +
-                    COLS_BLOCKED_CALL.DURATION + TYPE_TEXT +
+                    COLS_BLOCKED_CALL.DURATION + TYPE_TEXT + SEP_COMMA +
+                    COLS_BLOCKED_CALL.MARK_DELETED +  TYPE_INTEGER + " DEFAULT 0" +
                     ");" +
                     "CREATE INDEX compNumberDate_idx ON " + TBL_BLOCKED_CALL + "(" + COLS_BLOCKED_CALL.NUMBER + ", " + COLS_BLOCKED_CALL.DATE + ");";
 

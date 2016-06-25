@@ -147,14 +147,14 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                 displayNameTV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View descriptionView) {
-                        ChangeDescriptionDialogFragment changeDescriptionDialogFragment = new ChangeDescriptionDialogFragment();
+                        ChangeDisplayNameDialogFragment changeDisplayNameDialogFragment = new ChangeDisplayNameDialogFragment();
                         Bundle argument = new Bundle();
                         argument.putInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID, _id);
                         argument.putString(CONS.ARG_KEY_BLOCKED_NUMBER, phoneNumber);
                         argument.putString(CONS.ARG_KEY_DISPLAY_NAME, displayName);
-                        changeDescriptionDialogFragment.setArguments(argument);
-                        changeDescriptionDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
-                        changeDescriptionDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_change_description_diag");
+                        changeDisplayNameDialogFragment.setArguments(argument);
+                        changeDisplayNameDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
+                        changeDisplayNameDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_change_description_diag");
                     }
                 });
 
@@ -214,7 +214,8 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                         , CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME
                         , CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE
                 };
-                cursorLoader = new CursorLoader(this.getActivity(), CallBlockerProvider.BLOCKED_NUMBER_URI, projection, null, null, null);
+                String selection = CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0";
+                cursorLoader = new CursorLoader(this.getActivity(), CallBlockerProvider.BLOCKED_NUMBER_URI, projection, selection, null, null);
                 break;
         }
         return cursorLoader;

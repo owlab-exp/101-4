@@ -22,8 +22,8 @@ import com.owlab.callblocker.contentprovider.CallBlockerDb;
 /**
  * Created by ernest on 5/15/16.
  */
-public class ChangeDescriptionDialogFragment extends DialogFragment {
-    public static final String TAG = ChangeDescriptionDialogFragment.class.getSimpleName();
+public class ChangeDisplayNameDialogFragment extends DialogFragment {
+    public static final String TAG = ChangeDisplayNameDialogFragment.class.getSimpleName();
 
     //public interface UpdateDescriptionDialogListener {
     //    public void onUpdateDescriptionCancelClick();
