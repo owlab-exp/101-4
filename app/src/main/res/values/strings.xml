@@ -10,4 +10,8 @@
     <string name="fab_label_add_from_contacts">Add from Contacts</string>
     <string name="fab_label_add_by_manual">Add by Manual</string>
 
+    <string-array name="match_methods">
+        <item>Exact match</item>
+        <item>Start with</item>
+    </string-array>
 </resources>

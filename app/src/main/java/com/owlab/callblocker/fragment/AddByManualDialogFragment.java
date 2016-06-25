@@ -13,13 +13,15 @@ import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.contentprovider.CallBlockerDb;
 import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
 import com.owlab.callblocker.contentprovider.CallBlockerProvider;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
 
 /**
  * Created by ernest on 5/15/16.
@@ -80,6 +82,11 @@ public class AddByManualDialogFragment extends DialogFragment {
                 final AlertDialog alertDialog = (AlertDialog)dialog;
                 EditText phoneNumberEditText = (EditText) alertDialog.findViewById(R.id.add_phone_dialog_phone_number);
                 phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
+                Spinner spinner = (Spinner) alertDialog.findViewById(R.id.add_phone_dialog_match_method);
+                ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.match_methods, android.R.layout.simple_spinner_item);
+                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(spinnerAdapter);
 
                 Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 positiveButton.setOnClickListener(new View.OnClickListener() {
