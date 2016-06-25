@@ -2,6 +2,7 @@ package com.owlab.callblocker.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
@@ -34,6 +35,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         CheckBoxPreference showNotificationIcon = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_show_app_notification_icon));
         showNotificationIcon.setOnPreferenceChangeListener(new FUNS.ShowBlockingNotificationIconPrefChangeListener(getActivity()));
+
+        SwitchPreference blockHiddenNumberPref = (SwitchPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_block_hidden_number));
+        blockHiddenNumberPref.setOnPreferenceChangeListener(new FUNS.BlockHiddenNumberPrefChangeListener(getActivity()));
+
+        SwitchPreference blockUnknownNumberPref = (SwitchPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_block_unknown_number));
+        blockUnknownNumberPref.setOnPreferenceChangeListener(new FUNS.BlockUnknownNumberPrefChangeListener(getActivity()));
 
         CheckBoxPreference suppressRingingPref = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_suppress_ringing));
         suppressRingingPref.setOnPreferenceChangeListener(new FUNS.SuppressRingingPrefChangeListener(getActivity()));

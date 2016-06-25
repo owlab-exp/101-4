@@ -302,6 +302,10 @@ public class MainActivity extends AppCompatActivity {
         boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
         boolean permissionReadBlockedCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
                 && PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionBlockHiddenNumberGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionBlockUnknownNumberGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+                ;
         //boolean permissionReadContactsGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         //boolean permissionWriteContactsGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
 
@@ -324,6 +328,12 @@ public class MainActivity extends AppCompatActivity {
 
                 boolean canStart = true;
 
+                if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_block_hidden_number), false) && !permissionBlockHiddenNumberGranted) {
+                    canStart = false;
+                }
+                if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_block_unknown_number), false) && !permissionBlockUnknownNumberGranted) {
+                    canStart = false;
+                }
                 if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_suppress_ringing), false) && !permissionReadPhoneStateGranted) {
                     canStart = false;
                 }
@@ -353,6 +363,24 @@ public class MainActivity extends AppCompatActivity {
                     });
                     mainActivity.setMainOnOffSwitch(true);
                     Toast.makeText(mainActivity, "Blocking ON", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_BLOCK_HIDDEN_NUMBER:
+                if (permissionBlockHiddenNumberGranted) {
+                    sharedPreferences.edit().putBoolean(this.getString(R.string.settings_key_block_hidden_number), true).commit();
+                } else {
+                    sharedPreferences.edit().putBoolean(this.getString(R.string.settings_key_block_hidden_number), false).commit();
+                }
+
+                break;
+
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_BLOCK_UNKNOWN_NUMBER:
+                if (permissionBlockUnknownNumberGranted) {
+                    sharedPreferences.edit().putBoolean(this.getString(R.string.settings_key_block_unknown_number), true).commit();
+                } else {
+                    sharedPreferences.edit().putBoolean(this.getString(R.string.settings_key_block_unknown_number), false).commit();
                 }
 
                 break;

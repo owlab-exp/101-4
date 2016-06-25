@@ -7,13 +7,15 @@ public final class CONS {
     public static final int STATUSBAR_NOTIFICATION_ID = 111;
 
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_BLOCKING = 0;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_RINGING = 1;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_DISMISS_CALL = 2;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG = 3;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG = 4;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_SMS_LOG = 5;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS = 6;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS = 7;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_BLOCK_HIDDEN_NUMBER = 5;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_BLOCK_UNKNOWN_NUMBER = 7;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_SUPPRESS_RINGING = 10;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_DISMISS_CALL = 13;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_DELETE_CALL_LOG = 15;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG = 20;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_SMS_LOG = 25;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS = 30;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS = 35;
 
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAIL = -1;
