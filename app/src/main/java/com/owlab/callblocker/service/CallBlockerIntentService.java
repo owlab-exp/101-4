@@ -210,12 +210,14 @@ public class CallBlockerIntentService extends IntentService {
         //}
 
         //Otherwise show notification icon
-        //Intent intent = new Intent(getBaseContext(), MainActivity.class);
-        Intent intent = new Intent(getBaseContext(), CallBlockerIntentService.class);
-        intent.setAction(ACTION_STATUSBAR_NOTIFICATION_COUNTER_CLEAR);
-        PendingIntent pendingIntent = PendingIntent.getService(getBaseContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        //intent.putExtra("some data", "txt");
-        //Random generator = new Random();
+        Intent startServiceIntent = new Intent(getBaseContext(), CallBlockerIntentService.class);
+        startServiceIntent.setAction(ACTION_STATUSBAR_NOTIFICATION_COUNTER_CLEAR);
+        PendingIntent clearCountPendingIntent = PendingIntent.getService(getBaseContext(), 0, startServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent openMainActivityIntent = new Intent(getApplication(), MainActivity.class);
+        openMainActivityIntent.setAction("OPEN_BLOCKED_CALL_LOG");
+        openMainActivityIntent.putExtra("pageNo", 1);
+
         int count = sharedPreferences.getInt(getString(R.string.status_key_notification_count), 0);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -223,9 +225,9 @@ public class CallBlockerIntentService extends IntentService {
                 .setSmallIcon(R.drawable.ic_call_blocker_48)
                 .setContentTitle("Call Quieter")
                 .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " blocked")
-                .addAction(R.drawable.ic_clear_24, "Clear count", pendingIntent)
+                .addAction(R.drawable.ic_clear_24, "Clear count", clearCountPendingIntent)
                 .setOngoing(true)
-                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, new Intent(getApplication(), MainActivity.class), 0));
+                .setContentIntent(PendingIntent.getActivity(getApplication(), 0, openMainActivityIntent, 0));
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(CONS.STATUSBAR_NOTIFICATION_ID, notificationBuilder.build());

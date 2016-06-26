@@ -11,6 +11,7 @@ import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -131,8 +132,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPostResume() {
         super.onPostResume();
-        Log.d(TAG, "onActivityResultCalled = " + onActivityResultCalled);
-        Log.d(TAG, "onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
+        Log.d(TAG, ">>>>> onPostResume");
+        Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
+        Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
 
         if(onActivityResultCalled) {
             showFragmentAfterOnActivityResult(nextFragmentTag);
@@ -143,6 +145,44 @@ public class MainActivity extends AppCompatActivity {
             showFragmentAfterOnRequestPermissionsResult(nextFragmentTag);
             onRequestPermissionsResultCalled = false;
         }
+
+        Intent intent = getIntent();
+        Log.d(TAG, ">>>>> intent: " + intent.toString());
+        if(intent != null && "OPEN_BLOCKED_CALL_LOG".equals(intent.getAction())) {
+            int pageNo = intent.getIntExtra("pageNo", 0);
+            Log.d(TAG, ">>>>> pageNo: " + pageNo);
+
+            ViewPagerContainerFragment viewPagerContainerFragment = (ViewPagerContainerFragment) getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
+            Log.d(TAG, ">>>>> pager fragment visible? " + (viewPagerContainerFragment != null ? viewPagerContainerFragment.isVisible() : null));
+            if(viewPagerContainerFragment == null) {
+                Log.d(TAG, ">>>>> pager fragment is null");
+
+                //This is not possible
+                // 1. the notification action - origin of this action
+                // 2. the view pager container fragment is the default fragment in the MainActivity, thus it is always not null, if this App started, even just before.
+                return;
+            }
+            if(viewPagerContainerFragment != null) {
+                Log.d(TAG, ">>>>> pager fragment is not null");
+                if(viewPagerContainerFragment.isVisible()) {
+                    Log.d(TAG, ">>>>> pager fragment is visible");
+                    viewPagerContainerFragment.setPage(pageNo);
+                } else {
+                    Log.d(TAG, ">>>>> pager fragment is invisible");
+                    //Need to back to the view pager fragment
+                    getSupportFragmentManager().popBackStack(ViewPagerContainerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    viewPagerContainerFragment.setPage(pageNo);
+
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Log.d(TAG, ">>>>> new intent: " + intent.toString());
+        //forward for further processing in onPostResume
+        setIntent(intent);
     }
 
     @Override

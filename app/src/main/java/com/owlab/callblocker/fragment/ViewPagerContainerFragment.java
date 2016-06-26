@@ -79,6 +79,19 @@ public class ViewPagerContainerFragment extends Fragment {
                 mainMenu.findItem(R.id.menuitem_settings).setEnabled(true);
             }
         }
+
+        ////To handle request for certain page when open
+        //Bundle args = getArguments();
+        //int pageNo = 0;
+        //if(args != null && (pageNo = args.getInt("pageNo")) > 0) {
+        //    viewPager.setCurrentItem(pageNo);
+        //}
+    }
+
+    public void setPage(int pageIndex) {
+        if(viewPager != null) {
+            viewPager.setCurrentItem(pageIndex);
+        }
     }
 
     @Override
@@ -94,14 +107,6 @@ public class ViewPagerContainerFragment extends Fragment {
         super.onPause();
 
         Log.d(TAG, ">>>>> onPause called");
-    }
-
-    public Fragment getCurrentPageFragment() {
-        if(viewPager != null) {
-            int currentItem = viewPager.getCurrentItem();
-            return myFragmentPagerAdapter.getFragment(currentItem);
-        }
-        return null;
     }
 
     public static class MyFragmentPagerAdapter extends FragmentPagerAdapter implements Serializable {
