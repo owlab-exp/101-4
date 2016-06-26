@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -34,10 +36,16 @@ public class AddByManualFragment extends Fragment {
     RadioGroup matchMethodRG;
     private FloatingActionButton doneFab;
 
+    Animation rotateForwardAppear;
+    Animation rotateBackwardDisappear;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View fragmentView = inflater.inflate(R.layout.add_by_manual_layout, container, false);
+
+        rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
+        rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
 
         matchMethodRG = (RadioGroup) fragmentView.findViewById(R.id.radio_group_match_method);
         phoneNumberET = (EditText) fragmentView.findViewById(R.id.add_by_manual_phone_number);
@@ -112,11 +120,19 @@ public class AddByManualFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        doneFab.startAnimation(rotateForwardAppear);
         MainActivity mainActivity = (MainActivity)getActivity();
         ActionBar mainActionBar = mainActivity.getSupportActionBar();
         if(mainActionBar != null) {
             mainActionBar.setTitle(R.string.title_add_by_manual);
             mainActionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        doneFab.startAnimation(rotateBackwardDisappear);
     }
 }

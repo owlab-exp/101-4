@@ -15,7 +15,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="35dp"
             android:layout_marginLeft="35dp"
-            android:layout_marginRight="70dp"
+            android:layout_marginRight="35dp"
             android:layout_marginBottom="60dp"
             android:stretchColumns="*"
             >
@@ -46,14 +46,14 @@
                         android:id="@+id/match_method_exact"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Exact"
+                        android:text="EXACT"
                         />
 
                     <RadioButton
                         android:id="@+id/match_method_starts_with"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Starts with" />
+                        android:text="STARTS WITH" />
                 </RadioGroup>
 
             </TableRow>
