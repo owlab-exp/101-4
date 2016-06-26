@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -181,10 +182,17 @@ public class CallBlockerIntentService extends IntentService {
         }
 
         //Otherwise show notification icon
+        //Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        //intent.putExtra("some data", "txt");
+        //Random generator = new Random();
+        int count = sharedPreferences.getInt(getString(R.string.status_key_notification_count), 0);
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setSmallIcon(R.drawable.ic_call_blocker_48)
                 .setContentTitle("Call Quieter")
-                .setContentText("Call Quieter is running")
+                .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " blocked")
+                .addAction(R.drawable.ic_clear_24, "Clear count", null)
                 .setOngoing(true)
                 .setContentIntent(PendingIntent.getActivity(getApplication(), 0, new Intent(getApplication(), MainActivity.class), 0));
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

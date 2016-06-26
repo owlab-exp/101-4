@@ -18,5 +18,6 @@
     <string name="settings_key_suppress_headsup_notification">settings_key_suppress_headsup_notification</string>
     -->
 
+    <string name="status_key_notification_count">status_key_notification_count</string>
     <string name="status_key_notification_icon_shown">status_key_show_notification_icon</string>
 </resources>
