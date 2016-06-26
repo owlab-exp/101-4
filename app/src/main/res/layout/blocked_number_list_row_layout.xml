@@ -39,7 +39,7 @@
                     android:layout_marginLeft="3dp"
                     android:textColor="@color/colorAccentGrey"
                     android:textSize="12dp"
-                    android:text="Starts with"/>
+                    android:text="STARTS WITH"/>
             </LinearLayout>
 
             <TextView xmlns:android="http://schemas.android.com/apk/res/android"

@@ -12,31 +12,30 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="35dp"
             android:layout_marginLeft="35dp"
             android:layout_marginRight="35dp"
-            android:layout_marginBottom="60dp"
-            android:stretchColumns="*"
-            >
+            android:layout_marginTop="35dp"
+            android:stretchColumns="*">
+            <!--
+            android:gravity="center"
+            -->
 
             <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/listPreferredItemHeight"
-                >
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeight">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
                     android:layout_column="0"
+                    android:layout_gravity="center_vertical|right"
                     android:text="Match method"
-                    android:textAppearance="?android:attr/textAppearance"
-                    />
+                    android:maxLength="20"
+                    android:textAppearance="?android:attr/textAppearance" />
 
                 <RadioGroup
                     android:id="@+id/radio_group_match_method"
-                    android:layout_width="wrap_content"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_column="1"
                     android:checkedButton="@+id/match_method_exact"
@@ -46,8 +45,7 @@
                         android:id="@+id/match_method_exact"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EXACT"
-                        />
+                        android:text="EXACT" />
 
                     <RadioButton
                         android:id="@+id/match_method_starts_with"
@@ -57,25 +55,24 @@
                 </RadioGroup>
 
             </TableRow>
+
             <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/listPreferredItemHeight"
-                >
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/listPreferredItemHeight">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
                     android:layout_column="0"
-                    android:textAppearance="?android:attr/textAppearance"
-                    android:text="Phone number" />
+                    android:layout_gravity="center_vertical|right"
+                    android:text="Phone number"
+                    android:maxLength="20"
+                    android:textAppearance="?android:attr/textAppearance" />
 
                 <EditText
                     android:id="@+id/add_by_manual_phone_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/linearLayout"
-                    android:layout_centerHorizontal="true"
                     android:layout_column="1"
                     android:inputType="phone"
                     android:singleLine="true">
@@ -85,22 +82,22 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/listPreferredItemHeight"
-                >
+                android:layout_width="100dp"
+                android:layout_height="?android:attr/listPreferredItemHeight">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
                     android:layout_column="0"
-                    android:textAppearance="?android:attr/textAppearance"
-                    android:text="Display name" />
+                    android:maxLength="20"
+                    android:layout_gravity="center_vertical|right"
+                    android:text="Display name"
+                    android:textAppearance="?android:attr/textAppearance" />
 
                 <EditText
+                    android:id="@+id/add_by_manual_display_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/add_by_manual_display_name"
                     android:layout_column="1"
                     android:inputType="text"
                     android:singleLine="true" />
