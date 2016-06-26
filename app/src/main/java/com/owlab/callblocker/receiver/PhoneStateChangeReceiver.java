@@ -94,6 +94,8 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
     }
 
     private void blockCall(Context context, String phoneNumber, Date fromTime) {
+        int blockedCount = sharedPreferences.getInt(context.getString(R.string.status_key_notification_count), 0);
+
         boolean suppressRingingOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_ringing), false);
         //boolean suppressCallNotificationOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_suppress_call_notification), false);
         boolean dismissCallOn = sharedPreferences.getBoolean(context.getString(R.string.settings_key_dismiss_call), false);
@@ -118,6 +120,8 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
             //This should be dismissed
             dismissCall(context);
         }
+
+        sharedPreferences.edit().putInt(context.getString(R.string.status_key_notification_count), ++blockedCount);
     }
 
     private void suppressRinging(Context context) {
