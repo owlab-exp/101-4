@@ -32,12 +32,6 @@
         -->
     </style>
 
-    <style name="AddDialog" parent="@android:style/Theme.DeviceDefault.Dialog"></style>
-
-    <style name="ChangeDialog" parent="@android:style/Theme.DeviceDefault.Dialog"></style>
-
-    <style name="DeleteDialog" parent="@android:style/Theme.DeviceDefault.Dialog"></style>
-
     <style name="AppTheme.NoActionBar.Translucent">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:background">@android:color/transparent</item>

@@ -1,6 +1,5 @@
 package com.owlab.callblocker.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
@@ -23,30 +22,13 @@ import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 public class DeletePhoneDialogFragment extends DialogFragment {
     public static final String TAG = DeletePhoneDialogFragment.class.getSimpleName();
 
-    //public interface DeleteItemDialogListener {
-    //    public void onDeleteItemCancelClick();
-    //    public void onDeleteItemConirmClick(int _id);
-    //}
-
-    //DeleteItemDialogListener mDeleteItemDialogListener;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        //try {
-        //    mDeleteItemDialogListener = (DeleteItemDialogListener) getTargetFragment();
-        //} catch (ClassCastException e) {
-        //    throw new ClassCastException(activity.toString() + " must implement DeleteItemDialogListener");
-        //}
-    }
-
     AlertDialog deleteFilteredItemDialog;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         //Log.d(TAG, ">>> target fragment: " + getTargetFragment());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.DeleteDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         //final EditTextAddNumberDialogFragment input = new EditText(getActivity());
         Bundle arguments = getArguments();
@@ -66,9 +48,9 @@ public class DeletePhoneDialogFragment extends DialogFragment {
         deleteFilteredItemDialog = builder
                 //.setView(diagView)
                 //.setParentView(input)
-                .setIcon(R.drawable.ic_warning_48)
-                .setTitle("Delete?")
-                .setMessage(phoneNumber + "\n" + displayName)
+                //.setIcon(R.drawable.ic_warning_48)
+                .setTitle("You are about to delete")
+                .setMessage(phoneNumber + " (" + displayName + ")")
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

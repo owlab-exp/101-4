@@ -15,9 +15,8 @@ import android.widget.EditText;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.Utils;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 import com.owlab.callblocker.contentprovider.CallBlockerDb;
+import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 
 /**
  * Created by ernest on 5/15/16.
@@ -48,7 +47,7 @@ public class ChangeDisplayNameDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Log.d(TAG, ">>> target fragment: " + getTargetFragment());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.ChangeDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         //final EditTextAddNumberDialogFragment input = new EditText(getActivity());
         Bundle arguments = getArguments();
@@ -56,7 +55,7 @@ public class ChangeDisplayNameDialogFragment extends DialogFragment {
         final String phoneNumber = arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER);
         final String displayName = arguments.getString(CONS.ARG_KEY_DISPLAY_NAME);
 
-        View diagView = inflater.inflate(R.layout.change_description_dialog_layout, null);
+        View diagView = inflater.inflate(R.layout.change_display_name_dialog_layout, null);
         //TextView phoneNumberTextView = (TextView) diagView.findViewById(R.id.updateDialog_textView_phoneNumber);
         final EditText displayNameET = (EditText) diagView.findViewById(R.id.change_description_dialog_description);
 
@@ -70,9 +69,9 @@ public class ChangeDisplayNameDialogFragment extends DialogFragment {
         updateDescriptionDialog = builder
                 .setView(diagView)
                 //.setParentView(input)
-                .setIcon(R.drawable.ic_edit_48)
+                //.setIcon(R.drawable.ic_edit_48)
                 .setTitle("Change display name")
-                .setMessage(Utils.formatPhoneNumber(phoneNumber))
+                //.setMessage(Utils.formatPhoneNumber(phoneNumber))
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
