@@ -2,6 +2,8 @@ package com.owlab.callblocker.contentprovider;
 
 import android.provider.BaseColumns;
 
+import com.owlab.callblocker.CONS;
+
 /**
  * Created by ernest on 5/17/16.
  * TODO save and restore phone numbers to block
@@ -16,6 +18,7 @@ public class CallBlockerDb {
 
         public static final String PHONE_NUMBER = "phone_number";
         public static final String DISPLAY_NAME = "display_name";
+        public static final String MATCH_METHOD = "match_method";
         public static final String IS_ACTIVE = "is_active";
         public static final String CREATED_AT = "created_at";
         public static final String MARK_DELETED = "mark_deleted";
@@ -31,6 +34,7 @@ public class CallBlockerDb {
                     COLS_BLOCKED_NUMBER._ID + " INTEGER PRIMARY KEY" + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.PHONE_NUMBER + TYPE_TEXT + " NOT NULL UNIQUE" + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.DISPLAY_NAME + TYPE_TEXT + SEP_COMMA +
+                    COLS_BLOCKED_NUMBER.MATCH_METHOD + TYPE_INTEGER + " DEFAULT " + CONS.MATCH_METHOD_EXACT + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.IS_ACTIVE + TYPE_INTEGER + " DEFAULT 1" + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.CREATED_AT +  TYPE_CURRENT_TIMESTAMP + SEP_COMMA +
                     COLS_BLOCKED_NUMBER.MARK_DELETED +  TYPE_INTEGER + " DEFAULT 0" +

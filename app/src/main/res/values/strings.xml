@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="fab_label_add_from_call_log">Add from Call log</string>
     <string name="title_settings">Settings</string>
+    <string name="title_add_by_manual">Add by manual</string>
     <string name="title_add_from_contacts">Add from contacts</string>
     <string name="title_add_from_call_log">Add from call log</string>
     <string name="title_add_from_sms_log">Add from SMS log</string>
@@ -10,7 +11,7 @@
     <string name="fab_label_add_from_contacts">Add from Contacts</string>
     <string name="fab_label_add_by_manual">Add by Manual</string>
 
-    <string-array name="match_methods">
+    <string-array name="spinner_match_method_items">
         <item>Exact match</item>
         <item>Start with</item>
     </string-array>

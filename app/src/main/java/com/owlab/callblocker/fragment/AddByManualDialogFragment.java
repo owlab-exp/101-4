@@ -84,7 +84,7 @@ public class AddByManualDialogFragment extends DialogFragment {
                 phoneNumberEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
                 Spinner spinner = (Spinner) alertDialog.findViewById(R.id.add_phone_dialog_match_method);
-                ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.match_methods, android.R.layout.simple_spinner_item);
+                ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.spinner_match_method_items, android.R.layout.simple_spinner_item);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(spinnerAdapter);
 

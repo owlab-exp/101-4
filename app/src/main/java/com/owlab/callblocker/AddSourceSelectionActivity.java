@@ -16,7 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.owlab.callblocker.fragment.AddByManualDialogFragment;
+import com.owlab.callblocker.fragment.AddByManualFragment;
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
 import com.owlab.callblocker.fragment.AddFromContactsFragment;
 import com.owlab.callblocker.fragment.AddFromSmsLogFragment;
@@ -213,7 +213,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddByManualDialogFragment.TAG);
+                intent.putExtra(CONS.INTENT_KEY_TARGET_FRAGMENT, AddByManualFragment.TAG);
                 setResult(RESULT_OK, intent);
                 finish();
             }

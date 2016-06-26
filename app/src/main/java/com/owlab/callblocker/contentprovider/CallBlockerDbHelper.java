@@ -5,13 +5,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.owlab.callblocker.CONS;
+
 /**
  * Created by ernest on 5/17/16.
  */
 public class CallBlockerDbHelper extends SQLiteOpenHelper {
     private static final String TAG = CallBlockerDbHelper.class.getSimpleName();
 
-    public static final int DATABASE_VERSION = 4; //20160625
+    public static final int DATABASE_VERSION = 5; //20160625
     public static final String DATABASE_NAME = "CallBlocker.db";
 
     public CallBlockerDbHelper(Context context) {
@@ -28,7 +30,6 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(CallBlockerDb.SQL_DROP_TABLE_BLOCKED_NUMBER);
         db.execSQL(CallBlockerDb.SQL_DROP_TABLE_BLOCKED_CALL);
-        onCreate(db);
     }
 
     @Override
@@ -68,9 +69,13 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    private static String selectionOfActiveBlockedNumber = CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ? AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " > 0 AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0";
+    private static String selectionOfActiveBlockedNumberExact =
+            CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ?" +
+                    " AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " > 0" +
+                    " AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD + " = " + CONS.MATCH_METHOD_EXACT +
+                    " AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0";
 
-    public boolean isActiveBlockedNumber(String phoneNumber) {
+    public boolean isActiveBlockedNumberExact(String phoneNumber) {
         //Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
         boolean result = false;
 
@@ -85,7 +90,7 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(CallBlockerDb.TBL_BLOCKED_NUMBER,
                 new String[]{CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER},
                 //CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ? AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " > 0",
-                selectionOfActiveBlockedNumber,
+                selectionOfActiveBlockedNumberExact,
                 new String[]{purePhoneNumber},
                 null,
                 null,
@@ -98,6 +103,50 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
 
         db.close();
 
+        return result;
+    }
+
+    private static String selectionOfActiveBlockedNumberStartsWith =
+            //CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER + " = ?" +
+                    CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " > 0" +
+                    " AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD + " = " + CONS.MATCH_METHOD_STARTS_WITH +
+                    " AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0";
+
+    public boolean isActiveBlockedNumberStartsWith(String phoneNumber) {
+
+        boolean result = false;
+
+        //Weird code
+        if(phoneNumber == null ) {
+            return result;
+        }
+
+        String pureNumber = phoneNumber.replaceAll("[^\\d]", "");
+
+        if(pureNumber.isEmpty()) {
+            return result;
+        }
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(CallBlockerDb.TBL_BLOCKED_NUMBER,
+                new String[]{CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER},
+                selectionOfActiveBlockedNumberStartsWith,
+                null,
+                null,
+                null,
+                null);
+
+        if(cursor != null && cursor.moveToFirst()) {
+            do {
+                String startWith = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER));
+                if(phoneNumber.startsWith(startWith)) {
+                    result = true;
+                    break;
+                }
+            } while(cursor.moveToNext());
+        }
+
+        db.close();
         return result;
     }
 

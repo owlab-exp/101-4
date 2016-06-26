@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -107,6 +108,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
             CallBlockerDb.COLS_BLOCKED_NUMBER._ID
             , CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER
             , CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME
+            , CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD
             , CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE
             //, CallBlockerDb.COLS_BLOCKED_NUMBER.CREATED_AT
     };
@@ -134,7 +136,14 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                 final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER._ID));
                 final String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER));
                 final String displayName = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME));
+                final int matchMethod = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD));
                 final boolean checkedRead = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE)) > 0;
+
+                LinearLayout nonExactMatchLayout = (LinearLayout) view.findViewById(R.id.phone_number_list_row_non_exact_match);
+                switch(matchMethod) {
+                    case CONS.MATCH_METHOD_EXACT: nonExactMatchLayout.setVisibility(View.INVISIBLE); break;
+                    case CONS.MATCH_METHOD_STARTS_WITH: nonExactMatchLayout.setVisibility(View.VISIBLE); break;
+                }
 
                 TextView phoneNumberTV = (TextView) view.findViewById(R.id.phone_number_list_row_phone_number);
                 phoneNumberTV.setText(Utils.formatPhoneNumber(phoneNumber));
@@ -212,6 +221,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                         CallBlockerDb.COLS_BLOCKED_NUMBER._ID
                         , CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER
                         , CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME
+                        , CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD
                         , CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE
                 };
                 String selection = CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0";

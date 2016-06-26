@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +20,7 @@ import android.view.MenuItem;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.owlab.callblocker.fragment.AddByManualDialogFragment;
+import com.owlab.callblocker.fragment.AddByManualFragment;
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
 import com.owlab.callblocker.fragment.AddFromContactsFragment;
 import com.owlab.callblocker.fragment.AddFromSmsLogFragment;
@@ -31,7 +30,6 @@ import com.owlab.callblocker.service.CallBlockerIntentService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Top most setting element is "SERVICE ON/OFF"
@@ -267,14 +265,18 @@ public class MainActivity extends AppCompatActivity {
                     .addToBackStack(ViewPagerContainerFragment.TAG)
                     .replace(R.id.fragment_container, fragment != null ? fragment : new AddFromContactsFragment(), AddFromContactsFragment.TAG)
                     .commit();
-        } else if (AddByManualDialogFragment.TAG.equals(tag)) {
-            Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
-            Fragment currentPageFragment = ((ViewPagerContainerFragment) viewPagerContainerFragment).getCurrentPageFragment();
-            Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
-            DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
-            //addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
-            addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment : viewPagerContainerFragment, 0);
-            addByManualDialogFragment.show(getSupportFragmentManager(), AddByManualDialogFragment.TAG);
+        } else if (AddByManualFragment.TAG.equals(tag)) {
+            getSupportFragmentManager().beginTransaction()
+                    .addToBackStack(ViewPagerContainerFragment.TAG)
+                    .replace(R.id.fragment_container, fragment != null ? fragment : new AddByManualFragment(), AddByManualFragment.TAG)
+                    .commit();
+            //Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
+            //Fragment currentPageFragment = ((ViewPagerContainerFragment) viewPagerContainerFragment).getCurrentPageFragment();
+            //Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
+            //DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
+            ////addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
+            //addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment : viewPagerContainerFragment, 0);
+            //addByManualDialogFragment.show(getSupportFragmentManager(), AddByManualDialogFragment.TAG);
         }
     }
 

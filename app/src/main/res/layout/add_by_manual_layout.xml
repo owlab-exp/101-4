@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.AddByManualFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="70dp"
+            android:layout_marginBottom="60dp"
+            android:stretchColumns="*"
+            >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_column="0"
+                    android:text="Match method"
+                    android:textAppearance="?android:attr/textAppearance"
+                    />
+
+                <RadioGroup
+                    android:id="@+id/radio_group_match_method"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:checkedButton="@+id/match_method_exact"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/match_method_exact"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Exact"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/match_method_starts_with"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Starts with" />
+                </RadioGroup>
+
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_column="0"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:text="Phone number" />
+
+                <EditText
+                    android:id="@+id/add_by_manual_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linearLayout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_column="1"
+                    android:inputType="phone"
+                    android:singleLine="true">
+
+                    <requestFocus />
+                </EditText>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/listPreferredItemHeight"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_column="0"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:text="Display name" />
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/add_by_manual_display_name"
+                    android:layout_column="1"
+                    android:inputType="text"
+                    android:singleLine="true" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <RelativeLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:layout_alignParentBottom="true"
+            android:background="#e8ddcb"></RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fab_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_done_white_48dp"
+        app:backgroundTint="@color/colorAccent"
+        app:fabSize="normal" />
+</android.support.design.widget.CoordinatorLayout><!-- // reserve
+        android:layout_margin="@dimen/fab_margin"
+                        android:onClick="onRadioButtonClikced"
+-->

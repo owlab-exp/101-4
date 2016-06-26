@@ -11,15 +11,49 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/phone_number_list_row_phone_number"
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="7dp"
+            android:layout_weight="1.2">
+
+            <LinearLayout
+                android:id="@+id/phone_number_list_row_non_exact_match"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/phone_number_list_row_phone_number"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_tag_14" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="3dp"
+                    android:textColor="@color/colorAccentGrey"
+                    android:textSize="12dp"
+                    android:text="Starts with"/>
+            </LinearLayout>
+
+            <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/phone_number_list_row_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:text="Sample"
+                android:textAppearance="?android:attr/textAppearanceListItem" />
+            <!--
             android:layout_weight="1.2"
-            android:clickable="false"
-            android:gravity="center_vertical|left"
-            android:textAppearance="?android:attr/textAppearanceListItem" />
+            -->
+        </RelativeLayout>
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/phone_number_list_row_display_name"
@@ -39,8 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginRight="7dp"
-            android:clickable="true"
-            />
+            android:clickable="true" />
 
         <ImageView
             android:id="@+id/phone_number_list_row_delete_icon"

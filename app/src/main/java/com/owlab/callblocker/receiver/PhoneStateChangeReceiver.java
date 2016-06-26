@@ -68,7 +68,7 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         }
 
         CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(context);
-        if (dbHelper.isActiveBlockedNumber(phoneNumber)) {
+        if(dbHelper.isActiveBlockedNumberStartsWith(phoneNumber) || dbHelper.isActiveBlockedNumberExact(phoneNumber)) {
             blockCall(context, phoneNumber, fromTime);
             return;
         } else {
