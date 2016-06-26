@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.owlab.callblocker.CONS;
 
@@ -103,6 +104,7 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
 
         db.close();
 
+        Log.d(TAG, ">>>>> result: " + result);
         return result;
     }
 
@@ -138,8 +140,9 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
 
         if(cursor != null && cursor.moveToFirst()) {
             do {
-                String startWith = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER));
-                if(phoneNumber.startsWith(startWith)) {
+                String startsWith = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER));
+                Log.d(TAG, ">>>>> startsWith: " + startsWith);
+                if(phoneNumber.startsWith(startsWith)) {
                     result = true;
                     break;
                 }
