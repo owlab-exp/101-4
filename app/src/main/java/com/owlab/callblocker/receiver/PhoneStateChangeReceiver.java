@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
+import com.owlab.callblocker.service.CallBlockerIntentService;
 import com.owlab.callblocker.service.CallLogObserverStartService;
 
 import java.lang.reflect.InvocationTargetException;
@@ -121,7 +122,12 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
             dismissCall(context);
         }
 
-        sharedPreferences.edit().putInt(context.getString(R.string.status_key_notification_count), ++blockedCount);
+        sharedPreferences.edit().putInt(context.getString(R.string.status_key_notification_count), ++blockedCount).commit();
+        //Update block counter in notification
+        CallBlockerIntentService.startActionStatusbarNotificationCounterUpdate(context);
+
+        //blockedCount = sharedPreferences.getInt(context.getString(R.string.status_key_notification_count), 0);
+        //Log.d(TAG, ">>>>> count: " + blockedCount);
     }
 
     private void suppressRinging(Context context) {
