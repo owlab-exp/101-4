@@ -57,6 +57,9 @@
         <item name="android:windowExitTransition">@android:transition/fade</item>
         <item name="android:animationDuration">@android:integer/config_shortAnimTime</item>
     </style>
+    <style name="SplashTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
 </resources>
 <!-- // reserve
         <item name="android:background">@android:color/transparent</item>
