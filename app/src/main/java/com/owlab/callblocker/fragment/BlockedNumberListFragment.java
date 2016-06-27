@@ -156,14 +156,14 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                 displayNameTV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View descriptionView) {
-                        ChangeDisplayNameDialogFragment changeDisplayNameDialogFragment = new ChangeDisplayNameDialogFragment();
+                        EditDisplayNameDialogFragment editDisplayNameDialogFragment = new EditDisplayNameDialogFragment();
                         Bundle argument = new Bundle();
                         argument.putInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID, _id);
                         argument.putString(CONS.ARG_KEY_BLOCKED_NUMBER, phoneNumber);
                         argument.putString(CONS.ARG_KEY_DISPLAY_NAME, displayName);
-                        changeDisplayNameDialogFragment.setArguments(argument);
-                        changeDisplayNameDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
-                        changeDisplayNameDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_change_description_diag");
+                        editDisplayNameDialogFragment.setArguments(argument);
+                        editDisplayNameDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
+                        editDisplayNameDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_change_description_diag");
                     }
                 });
 
@@ -193,7 +193,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                 deleteIconView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        DialogFragment deletePhoneDialogFragment = new DeletePhoneDialogFragment();
+                        DialogFragment deletePhoneDialogFragment = new DeleteDialogFragment();
                         Bundle argument = new Bundle();
                         argument.putInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID, _id);
                         argument.putString(CONS.ARG_KEY_BLOCKED_NUMBER, phoneNumber);

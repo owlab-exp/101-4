@@ -19,8 +19,8 @@ import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 /**
  * Created by ernest on 5/15/16.
  */
-public class DeletePhoneDialogFragment extends DialogFragment {
-    public static final String TAG = DeletePhoneDialogFragment.class.getSimpleName();
+public class DeleteDialogFragment extends DialogFragment {
+    public static final String TAG = DeleteDialogFragment.class.getSimpleName();
 
     AlertDialog deleteFilteredItemDialog;
 
@@ -36,7 +36,7 @@ public class DeletePhoneDialogFragment extends DialogFragment {
         final String phoneNumber = Utils.formatPhoneNumber(arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER));
         final String displayName = arguments.getString(CONS.ARG_KEY_DISPLAY_NAME);
 
-        View diagView = inflater.inflate(R.layout.delete_phone_dialog_layout, null);
+        View diagView = inflater.inflate(R.layout.delete_dialog_layout, null);
         //TextView phoneNumberTextView = (TextView) diagView.findViewById(R.id.deleteDialog_textView_phoneNumber);
         //TextView descriptionTextView = (TextView) diagView.findViewById(R.id.deleteDialog_textView_description);
 
@@ -49,8 +49,8 @@ public class DeletePhoneDialogFragment extends DialogFragment {
                 //.setView(diagView)
                 //.setParentView(input)
                 //.setIcon(R.drawable.ic_warning_48)
-                .setTitle("You are about to delete")
-                .setMessage(phoneNumber + " (" + displayName + ")")
+                .setTitle("Confirm")
+                .setMessage(phoneNumber + (displayName.isEmpty() ? "" : "(" + displayName + ")") + " will be deleted")
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {

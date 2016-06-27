@@ -3,29 +3,29 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="30sp"
+    android:paddingTop="20sp"
+    android:paddingRight="20sp"
+    android:paddingLeft="20sp"
     >
     <!--
     <TextView
-        android:id="@+id/deleteDialog_textView_phoneNumber"
+    android:theme="@android:style/Theme.Dialog"
+        android:id="@+id/updateDialog_textView_phoneNumber"
         android:inputType="phone"
+        android:hint="Phone number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="16dp"
-        android:clickable="false"
-        style="@android:style/Widget.TextView"
-        />
-    <TextView
-        android:id="@+id/deleteDialog_textView_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="16dp"
+        style="@android:style/Widget.EditText"
         />
         -->
+    <EditText
+        android:id="@+id/edit_description_dialog_description"
+        android:inputType="text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 </LinearLayout>

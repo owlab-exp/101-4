@@ -21,8 +21,8 @@ import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 /**
  * Created by ernest on 5/15/16.
  */
-public class ChangeDisplayNameDialogFragment extends DialogFragment {
-    public static final String TAG = ChangeDisplayNameDialogFragment.class.getSimpleName();
+public class EditDisplayNameDialogFragment extends DialogFragment {
+    public static final String TAG = EditDisplayNameDialogFragment.class.getSimpleName();
 
     //public interface UpdateDescriptionDialogListener {
     //    public void onUpdateDescriptionCancelClick();
@@ -55,9 +55,9 @@ public class ChangeDisplayNameDialogFragment extends DialogFragment {
         final String phoneNumber = arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER);
         final String displayName = arguments.getString(CONS.ARG_KEY_DISPLAY_NAME);
 
-        View diagView = inflater.inflate(R.layout.change_display_name_dialog_layout, null);
+        View diagView = inflater.inflate(R.layout.edit_display_name_dialog_layout, null);
         //TextView phoneNumberTextView = (TextView) diagView.findViewById(R.id.updateDialog_textView_phoneNumber);
-        final EditText displayNameET = (EditText) diagView.findViewById(R.id.change_description_dialog_description);
+        final EditText displayNameET = (EditText) diagView.findViewById(R.id.edit_description_dialog_description);
 
         //phoneNumberTextView.setText(phoneNumber);
         //phoneNumberTextView.setEnabled(false);
@@ -70,7 +70,7 @@ public class ChangeDisplayNameDialogFragment extends DialogFragment {
                 .setView(diagView)
                 //.setParentView(input)
                 //.setIcon(R.drawable.ic_edit_48)
-                .setTitle("Change display name")
+                .setTitle("Edit Display Name")
                 //.setMessage(Utils.formatPhoneNumber(phoneNumber))
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
