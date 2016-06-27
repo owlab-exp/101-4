@@ -15,14 +15,19 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
     private static final String TAG = AbstractPhoneStateChangeReceiver.class.getSimpleName();
 
     private static int lastState = TelephonyManager.CALL_STATE_IDLE;
-    private static Date startTime;
+    private static Date timeFrom;
     private static boolean isIncoming;
     private static String savedPhoneNumber;
 
     protected TelephonyManager tm;
 
+    private static long counter = 0;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, ">>>>> onReceive counter: " + ++counter);
+        long startTime = System.currentTimeMillis();
+
         if(tm == null) {
             tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         }
@@ -48,6 +53,7 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
         } else {
             Log.d(TAG, ">>>>> other intent action: " + intent.getAction().toString());
         }
+        Log.d(TAG, ">>>>> processing time: " + (System.currentTimeMillis() - startTime));
     }
 
     // Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
@@ -62,23 +68,23 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
             //TODO when "isIncoming" should be false?
             case TelephonyManager.CALL_STATE_RINGING:
                 isIncoming = true;
-                startTime = new Date();
+                timeFrom = new Date();
                 savedPhoneNumber = phoneNumber;
-                onIncomingCallArrived(context, phoneNumber, startTime);
+                onIncomingCallArrived(context, phoneNumber, timeFrom);
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 //Ringing -> Offhook are picking up of incoming calls (Or that will be outgoing call)
                 if(lastState == TelephonyManager.CALL_STATE_RINGING) {
                     isIncoming = true;
-                    startTime = new Date();
-                    onIncomingCallAnswered(context, savedPhoneNumber, startTime);
+                    timeFrom = new Date();
+                    onIncomingCallAnswered(context, savedPhoneNumber, timeFrom);
                 }
                 break;
             case TelephonyManager.CALL_STATE_IDLE:
                 if(lastState == TelephonyManager.CALL_STATE_RINGING) {
-                    onIncomingCallMissed(context, savedPhoneNumber, startTime);
+                    onIncomingCallMissed(context, savedPhoneNumber, timeFrom);
                 } else if(isIncoming) {
-                    onIncomingCallEnded(context, savedPhoneNumber, startTime, new Date());
+                    onIncomingCallEnded(context, savedPhoneNumber, timeFrom, new Date());
                 }
                 break;
             default:

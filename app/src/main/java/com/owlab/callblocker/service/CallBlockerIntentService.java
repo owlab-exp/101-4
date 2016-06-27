@@ -148,7 +148,7 @@ public class CallBlockerIntentService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         // If the blocking is already on
-        if(sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+        if(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             //handleActionStatusbarNotificationOn(false);
             handleActionStatusbarNotificationOn();
             //resultReceiver.send(CONS.RESULT_SUCCESS, null);
@@ -159,12 +159,12 @@ public class CallBlockerIntentService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         // If the blocking is already on
-        if(sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+        if(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             resultReceiver.send(CONS.RESULT_FAIL, null);
             return;
         }
 
-        sharedPreferences.edit().putBoolean(getString(R.string.pref_key_blocking_on), true).commit();
+        sharedPreferences.edit().putBoolean(CONS.PREF_KEY_BLOCKING_ON, true).commit();
         //handleActionStatusbarNotificationOn(true);
         handleActionStatusbarNotificationOn();
         resultReceiver.send(CONS.RESULT_SUCCESS, null);
@@ -174,12 +174,12 @@ public class CallBlockerIntentService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         // If the blocking is already off
-        if(!sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+        if(!sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             resultReceiver.send(CONS.RESULT_FAIL, null);
             return;
         }
 
-        sharedPreferences.edit().putBoolean(getString(R.string.pref_key_blocking_on), false).commit();
+        sharedPreferences.edit().putBoolean(CONS.PREF_KEY_BLOCKING_ON, false).commit();
         // at last off the blocking notification icon
         handleActionStatusbarNotificationOff();
         resultReceiver.send(CONS.RESULT_SUCCESS, null);
@@ -191,7 +191,7 @@ public class CallBlockerIntentService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         //If the blocking is not on state, then do not show
-        if(!sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false)) {
+        if(!sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             return;
         }
 

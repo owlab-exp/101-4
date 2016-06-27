@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pref_key_blocking_on">pref_key_blocking_on</string>
-
     <string name="settings_key_show_app_notification_icon">settings_key_show_app_notification_icon</string>
     <!-- additional call blocking -->
     <string name="settings_key_block_hidden_number">settings_key_block_hidden_number</string>

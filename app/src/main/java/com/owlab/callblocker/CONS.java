@@ -6,6 +6,8 @@ package com.owlab.callblocker;
 public final class CONS {
     public static final int STATUSBAR_NOTIFICATION_ID = 111;
 
+    public static final String PREF_KEY_BLOCKING_ON = "BLOCKING_ON";
+
     public static final int MATCH_METHOD_EXACT = 0;
     public static final int MATCH_METHOD_STARTS_WITH = 1;
 

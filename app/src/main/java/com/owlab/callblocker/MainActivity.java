@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
         Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
 
-        mainOnOffSwitch.setChecked(sharedPreferences.getBoolean(getString(R.string.pref_key_blocking_on), false));
+        mainOnOffSwitch.setChecked(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false));
         mainOnOffSwitch.setOnCheckedChangeListener(new FUNS.BlockingSwitchChangeListener(this));
 
         return super.onCreateOptionsMenu(menu);
