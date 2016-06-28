@@ -1,0 +1,75 @@
+package com.owlab.callblocker.custom;
+
+import android.content.Context;
+import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import com.owlab.callblocker.R;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Created by ernest on 6/28/16.
+ */
+public class SpinnerPreferenceFragmentCompat extends PreferenceDialogFragmentCompat {
+    private static final String TAG = SpinnerPreferenceFragmentCompat.class.getSimpleName();
+
+    @Override
+    protected View onCreateDialogView(Context context) {
+        View view = LayoutInflater.from(context).inflate(R.layout.country_select_spinner_layout, null);
+
+        Log.d(TAG, ">>>>> default locale's country: " + Locale.getDefault().getCountry());
+
+        Map<String, String> countryNameCodeMap = new HashMap<>();
+        //Locales
+        Locale[] locales = Locale.getAvailableLocales();
+        ArrayList<String> countryNameList = new ArrayList<>();
+        ArrayList<String> countryCodeList = new ArrayList<>();
+
+        for(Locale locale : locales) {
+            //String countryCode = locale.getCountry();
+            //String country = locale.getDisplayCountry(locale);
+            String countryCode = locale.getCountry();
+            //Log.d(TAG, ">>>>> country & code: " + country + ", " + countryCode);
+            if(!TextUtils.isEmpty(countryCode) && !countryCodeList.contains(countryCode)) {
+                countryCodeList.add(countryCode);
+                String countryNameNative = locale.getDisplayCountry(locale);
+                countryNameCodeMap.put(countryNameNative, countryCode);
+                countryNameList.add(countryNameNative);
+            }
+        }
+        Log.d(TAG, ">>>>> number of country codes: " + countryCodeList.size());
+        Log.d(TAG, ">>>>> number of country map " + countryNameCodeMap.size());
+        Log.d(TAG, ">>>>> number of country names: " + countryNameList.size());
+
+        Collections.sort(countryNameList, String.CASE_INSENSITIVE_ORDER);
+
+        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+        //ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, countryNameList);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context, R.layout.spinner_custom_item, countryNameList);
+        spinner.setAdapter(spinnerAdapter);
+
+
+        return view;
+    }
+
+    @Override
+    protected void onBindDialogView(View view) {
+        super.onBindDialogView(view);
+    }
+
+    @Override
+    public void onDialogClosed(boolean positiveResult) {
+        Log.d(TAG, ">>>>> onDialogClosed with: positiveResult = " + positiveResult);
+
+    }
+}

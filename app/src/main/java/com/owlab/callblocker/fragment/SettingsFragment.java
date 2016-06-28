@@ -3,6 +3,7 @@ package com.owlab.callblocker.fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
@@ -15,6 +16,8 @@ import android.view.View;
 import com.owlab.callblocker.FUNS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.custom.SpinnerPreference;
+import com.owlab.callblocker.custom.SpinnerPreferenceFragmentCompat;
 
 import java.util.Objects;
 
@@ -35,6 +38,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         CheckBoxPreference showNotificationIcon = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_show_app_notification_icon));
         showNotificationIcon.setOnPreferenceChangeListener(new FUNS.ShowBlockingNotificationIconPrefChangeListener(getActivity()));
+
+        SpinnerPreference selectCountryPref = (SpinnerPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_country));
+        selectCountryPref.setDialogTitle("Select a country");
 
         SwitchPreference blockHiddenNumberPref = (SwitchPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_block_hidden_number));
         blockHiddenNumberPref.setOnPreferenceChangeListener(new FUNS.BlockHiddenNumberPrefChangeListener(getActivity()));
@@ -58,6 +64,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         Log.d(TAG, ">>>>> onCreatePreferences called");
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        if(preference instanceof SpinnerPreference) {
+            DialogFragment fragment = new SpinnerPreferenceFragmentCompat();
+            Bundle bundle = new Bundle(1);
+            bundle.putString("key", preference.getKey());
+            fragment.setArguments(bundle);
+            fragment.setTargetFragment(this, 0);
+            fragment.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else {
+            super.onDisplayPreferenceDialog(preference);
+        }
     }
 
     @Override

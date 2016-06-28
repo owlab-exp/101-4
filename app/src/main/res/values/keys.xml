@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_key_show_app_notification_icon">settings_key_show_app_notification_icon</string>
+    <string name="settings_key_country">settings_key_country</string>
     <!-- additional call blocking -->
     <string name="settings_key_block_hidden_number">settings_key_block_hidden_number</string>
     <string name="settings_key_block_unknown_number">settings_key_block_unknown_number</string>

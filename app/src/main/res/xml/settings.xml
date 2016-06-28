@@ -8,20 +8,25 @@
             android:key="@string/settings_key_show_app_notification_icon"
             android:summary="Show app icon in the status bar while blocking is on"
             android:title="Show statusbar icon" />
+        <com.owlab.callblocker.custom.SpinnerPreference
+            android:key="@string/settings_key_country"
+            android:summary="System default"
+            android:title="Phone number format"
+            />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="settings_additional_blocking"
         android:title="ADDITIONAL BLOCKING">
         <SwitchPreference
+            android:defaultValue="false"
             android:key="@string/settings_key_block_hidden_number"
-            android:defaultValue="false"
-            android:title="From hidden number"
-            android:summary="Block incoming calls having no number"/>
+            android:summary="Block incoming calls having no number"
+            android:title="Block hidden number" />
         <SwitchPreference
-            android:key="@string/settings_key_block_unknown_number"
             android:defaultValue="false"
-            android:title="From unknown number"
-            android:summary="Block all numbers not in contacts"/>
+            android:key="@string/settings_key_block_unknown_number"
+            android:summary="Block all numbers not in contacts"
+            android:title="Block unknown number" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="settings_category_call_blocking_setting"
