@@ -41,6 +41,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         SpinnerPreference selectCountryPref = (SpinnerPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_country));
         selectCountryPref.setDialogTitle("Select a country");
+        selectCountryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                Log.d(TAG, ">>>>> value: "  + o.toString());
+                return true;
+            }
+        });
 
         SwitchPreference blockHiddenNumberPref = (SwitchPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_block_hidden_number));
         blockHiddenNumberPref.setOnPreferenceChangeListener(new FUNS.BlockHiddenNumberPrefChangeListener(getActivity()));
