@@ -9,6 +9,7 @@ import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -17,8 +18,9 @@ import com.owlab.callblocker.FUNS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.custom.SpinnerPreference;
-import com.owlab.callblocker.custom.SpinnerPreferenceFragmentCompat;
+import com.owlab.callblocker.custom.SpinnerPreferenceDialogFragmentCompat;
 
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -39,15 +41,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         CheckBoxPreference showNotificationIcon = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_show_app_notification_icon));
         showNotificationIcon.setOnPreferenceChangeListener(new FUNS.ShowBlockingNotificationIconPrefChangeListener(getActivity()));
 
-        SpinnerPreference selectCountryPref = (SpinnerPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_country));
+        SpinnerPreference selectCountryPref = (SpinnerPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_country_and_code));
         selectCountryPref.setDialogTitle("Select a country");
-        selectCountryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object o) {
-                Log.d(TAG, ">>>>> value: "  + o.toString());
-                return true;
-            }
-        });
+        String countryAndCode = selectCountryPref.getText();
+        if(TextUtils.isEmpty(countryAndCode)) {
+            Locale locale = Locale.getDefault();
+            selectCountryPref.setSummary(locale.getDisplayCountry(locale));
+        } else {
+            selectCountryPref.setSummary(countryAndCode.split(":")[0]);
+        }
+        //selectCountryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        //    @Override
+        //    public boolean onPreferenceChange(Preference preference, Object o) {
+        //        Log.d(TAG, ">>>>> value: "  + o.toString());
+        //        return true;
+        //    }
+        //});
 
         SwitchPreference blockHiddenNumberPref = (SwitchPreference) getPreferenceManager().findPreference(getString(R.string.settings_key_block_hidden_number));
         blockHiddenNumberPref.setOnPreferenceChangeListener(new FUNS.BlockHiddenNumberPrefChangeListener(getActivity()));
@@ -70,16 +79,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        Log.d(TAG, ">>>>> onCreatePreferences called");
     }
 
     @Override
     public void onDisplayPreferenceDialog(Preference preference) {
         if(preference instanceof SpinnerPreference) {
-            DialogFragment fragment = new SpinnerPreferenceFragmentCompat();
-            Bundle bundle = new Bundle(1);
-            bundle.putString("key", preference.getKey());
-            fragment.setArguments(bundle);
+            //Please refer to
+            //android.framework.support.v7.preference.src.android.support.v7.preference.PreferenceFragmentCompat
+            DialogFragment fragment = SpinnerPreferenceDialogFragmentCompat.newInstance(preference.getKey());
             fragment.setTargetFragment(this, 0);
             fragment.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
         } else {
@@ -136,6 +143,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         if(preference instanceof SwitchPreference) {
             SwitchPreference switchPreference = (SwitchPreference) preference;
             switchPreference.setChecked(sharedPreferences.getBoolean(key, false));
+        }
+
+        if(preference instanceof SpinnerPreference) {
+            String countryAndCode = sharedPreferences.getString(key, "");
+            if(!countryAndCode.isEmpty()) {
+                preference.setSummary(countryAndCode.split(":")[0]); // country's display name
+
+            }
         }
     }
 }

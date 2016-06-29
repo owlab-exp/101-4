@@ -9,7 +9,7 @@
             android:summary="Show app icon in the status bar while blocking is on"
             android:title="Show statusbar icon" />
         <com.owlab.callblocker.custom.SpinnerPreference
-            android:key="@string/settings_key_country"
+            android:key="@string/settings_key_country_and_code"
             android:summary="System default"
             android:title="Phone number format"
             />

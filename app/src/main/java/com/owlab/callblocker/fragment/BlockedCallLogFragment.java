@@ -249,7 +249,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                     }
                 }
 
-                numberView.setText(Utils.formatPhoneNumber(phoneNumberStripped));
+                numberView.setText(Utils.formatPhoneNumber(getContext(), phoneNumberStripped));
 
                 ImageView typeIV = (ImageView) view.findViewById(R.id.blocked_call_log_row_type);
                 String type = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.TYPE));

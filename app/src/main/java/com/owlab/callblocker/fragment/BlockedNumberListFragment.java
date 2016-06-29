@@ -146,7 +146,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                 }
 
                 TextView phoneNumberTV = (TextView) view.findViewById(R.id.phone_number_list_row_phone_number);
-                phoneNumberTV.setText(Utils.formatPhoneNumber(phoneNumber));
+                phoneNumberTV.setText(Utils.formatPhoneNumber(getContext(), phoneNumber));
 
                 TextView displayNameTV = (TextView) view.findViewById(R.id.phone_number_list_row_display_name);
 

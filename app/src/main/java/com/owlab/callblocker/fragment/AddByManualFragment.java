@@ -7,7 +7,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.preference.PreferenceManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +51,14 @@ public class AddByManualFragment extends Fragment {
 
         matchMethodRG = (RadioGroup) fragmentView.findViewById(R.id.radio_group_match_method);
         phoneNumberET = (EditText) fragmentView.findViewById(R.id.add_by_manual_phone_number);
-        phoneNumberET.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        String countryAndCode = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.settings_key_country_and_code), "");
+        PhoneNumberFormattingTextWatcher phoneNumberFormattingTextWatcher = null;
+        if(TextUtils.isEmpty(countryAndCode)) {
+            phoneNumberFormattingTextWatcher = new PhoneNumberFormattingTextWatcher();
+        } else {
+            phoneNumberFormattingTextWatcher = new PhoneNumberFormattingTextWatcher(countryAndCode.split(":")[1]);
+        }
+        phoneNumberET.addTextChangedListener(phoneNumberFormattingTextWatcher);
         displayNameET = (EditText) fragmentView.findViewById(R.id.add_by_manual_display_name);
         doneFab = (FloatingActionButton) fragmentView.findViewById(R.id.fab_done);
 

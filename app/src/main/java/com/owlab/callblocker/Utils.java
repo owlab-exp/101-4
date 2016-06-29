@@ -1,6 +1,7 @@
 package com.owlab.callblocker;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.telephony.PhoneNumberUtils;
 import android.util.TypedValue;
 
@@ -12,15 +13,18 @@ import java.util.Locale;
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
 
-    public static String formatPhoneNumber(String phoneNumber) {
+    public static String formatPhoneNumber(Context context, String phoneNumber) {
         String formattedPhoneNumber = null;
         //To support different builds
         //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         //`Log.d(TAG, ">>>>> defafultCountryCode: " + Locale.getDefault().getCountry());
+        String countryAndCode = PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.settings_key_country_and_code), "");
+        if(countryAndCode.isEmpty()) {
+
         formattedPhoneNumber = PhoneNumberUtils.formatNumber(phoneNumber, Locale.getDefault().getCountry());
-        //} else {
-        //    formattedPhoneNumber = PhoneNumberUtils.formatNumber(phoneNumber);
-        //}
+        } else {
+            formattedPhoneNumber = PhoneNumberUtils.formatNumber(phoneNumber, countryAndCode.split(":")[1]);
+        }
         return formattedPhoneNumber;
     }
 

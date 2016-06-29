@@ -337,7 +337,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                         }
                     }
 
-                    numberView.setText(Utils.formatPhoneNumber(phoneNumberStripped));
+                    numberView.setText(Utils.formatPhoneNumber(getContext(), phoneNumberStripped));
 
 
                     String type = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.TYPE));

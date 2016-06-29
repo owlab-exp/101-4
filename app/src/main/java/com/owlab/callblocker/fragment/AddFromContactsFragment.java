@@ -242,7 +242,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     TextView numberView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_number);
                     String phoneNumber = cursor.getString(columnIndex);
                     //Log.d(TAG, ">>>>> phone number in contact: " + phoneNumber);
-                    numberView.setText(Utils.formatPhoneNumber(phoneNumber));
+                    numberView.setText(Utils.formatPhoneNumber(getContext(), phoneNumber));
                     return true;
                 }
 

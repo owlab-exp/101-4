@@ -254,7 +254,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                         nameView.setText("");
                     }
                 }
-                numberView.setText(Utils.formatPhoneNumber(phoneNumberStripped));
+                numberView.setText(Utils.formatPhoneNumber(getContext(), phoneNumberStripped));
 
                 ImageView typeIV = (ImageView) view.findViewById(R.id.add_from_call_log_row_type);
                 String type = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.TYPE));

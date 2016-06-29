@@ -33,7 +33,7 @@ public class DeleteDialogFragment extends DialogFragment {
         //final EditTextAddNumberDialogFragment input = new EditText(getActivity());
         Bundle arguments = getArguments();
         final int _id = arguments.getInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID);
-        final String phoneNumber = Utils.formatPhoneNumber(arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER));
+        final String phoneNumber = Utils.formatPhoneNumber(getContext(), arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER));
         final String displayName = arguments.getString(CONS.ARG_KEY_DISPLAY_NAME);
 
         View diagView = inflater.inflate(R.layout.delete_dialog_layout, null);
