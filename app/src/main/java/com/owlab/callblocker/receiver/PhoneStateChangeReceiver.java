@@ -1,6 +1,7 @@
 package com.owlab.callblocker.receiver;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,9 +9,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,17 +34,57 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
 
     private static boolean mIsRingerChanged = false;
     private static int mLastRingerMode = 0;
-    SharedPreferences sharedPreferences;
+
+    private static SharedPreferences sharedPreferences;
+    private static CallBlockerDbHelper dbHelper;
+    private static ContentResolver contentResolver;
+    private static AudioManager audioManager;
+
+    private static TelephonyManager telephonyManager;
+    private static Method getTelephonyMethod;
+    private static Object iTelephony;
+    private static Method endCallMethod;
 
     //public PhoneStateChangeReceiver() {
     //    Log.d(TAG, ">>>>> instantiated");
     //}
 
     @Override
+    protected void initialize(Context context) {
+        Log.d(TAG, ">>>>> initializing...");
+
+        if(sharedPreferences == null)
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if(dbHelper == null)
+            dbHelper = new CallBlockerDbHelper(context);
+        if(contentResolver == null)
+            contentResolver = context.getContentResolver();
+        if(audioManager == null)
+            audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        try {
+            if (telephonyManager == null
+                    || getTelephonyMethod == null
+                    || iTelephony == null
+                    || endCallMethod == null
+                    ) {
+                telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                getTelephonyMethod = telephonyManager.getClass().getDeclaredMethod("getITelephony");
+                getTelephonyMethod.setAccessible(true);
+                iTelephony = getTelephonyMethod.invoke(telephonyManager);
+                endCallMethod = iTelephony.getClass().getDeclaredMethod("endCall");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, ">>>>> initializing completed");
+
+    }
+
+    @Override
     protected void onIncomingCallArrived(Context context, String phoneNumber, Date fromTime) {
         Log.d(TAG, ">>>>> Call arrived: " + phoneNumber + " at " + fromTime.toString());
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         boolean isBlockingOn = sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false);
         if (!isBlockingOn) {
@@ -74,7 +115,6 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         }
 
         //Check if numbers are in blocked list
-        CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(context);
         if (dbHelper.isActiveBlockedNumberStartsWith(phoneNumber) || dbHelper.isActiveBlockedNumberExact(phoneNumber)) {
             quietCall(context, phoneNumber, fromTime);
             return;
@@ -83,12 +123,13 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
     }
 
     private static final String[] contactsProjection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
+
     private boolean isInContacts(Context context, String phoneNumber) {
         boolean result = false;
 
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+        Uri contactsFilterUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
         //Log.d(TAG, ">>>>> uri: " + uri.toString());
-        Cursor contactsCursor = context.getContentResolver().query(uri, contactsProjection, null, null, null);
+        Cursor contactsCursor = contentResolver.query(contactsFilterUri, contactsProjection, null, null, null);
         if (contactsCursor != null) {
             if (contactsCursor.getCount() > 0) {
                 result = true;
@@ -141,15 +182,14 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         //Log.d(TAG, ">>>>> count: " + blockedCount);
     }
 
-    private static AudioManager audioManager;
 
     private void suppressRinging(Context context) {
         Log.d(TAG, ">>>>> suppress ringing");
         mIsRingerChanged = false;
-        //Subject to getting be quiet
-        if(audioManager == null) {
-            audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        }
+        ////Subject to getting be quiet
+        //if(audioManager == null) {
+        //    audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        //}
         //Swap ringer mode if not silent
         if (audioManager.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
             mLastRingerMode = audioManager.getRingerMode();
@@ -164,34 +204,15 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
     private void releaseRinging(Context context) {
         if (mIsRingerChanged) {
             Log.d(TAG, ">>>>> release ringing");
-            if(audioManager == null) {
-                audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-            }
             audioManager.setRingerMode(mLastRingerMode);
             mIsRingerChanged = false;
             Toast.makeText(context, "ringer mode restored", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private static TelephonyManager telephonyManager;
-    private static Method getTelephonyMethod;
-    private static Object iTelephony;
-    private static Method endCallMethod;
-
     private void dismissCall(Context context) {
         Log.d(TAG, ">>>>> dismiss call");
         try {
-            if(telephonyManager == null
-                    || getTelephonyMethod == null
-                    || iTelephony == null
-                    || endCallMethod == null
-                    ) {
-                telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-                getTelephonyMethod = telephonyManager.getClass().getDeclaredMethod("getITelephony");
-                getTelephonyMethod.setAccessible(true);
-                iTelephony = getTelephonyMethod.invoke(telephonyManager);
-                endCallMethod = iTelephony.getClass().getDeclaredMethod("endCall");
-            }
             //Method silenceRingerMethod = iTelephony.getClass().getDeclaredMethod("silenceRinger");
             //if(suppressRingingOn) {
             //    Log.d(TAG, ">>>>> suppress ringing...");
@@ -204,8 +225,6 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
             endCallMethod.invoke(iTelephony);
             //}
 
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

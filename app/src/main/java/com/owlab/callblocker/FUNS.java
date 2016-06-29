@@ -61,6 +61,7 @@ public class FUNS {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
             if (checked) {
+                //First warm up the phone state chagne receiver
                 //dealing with permission
                 //firstly listing needed permissions
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);

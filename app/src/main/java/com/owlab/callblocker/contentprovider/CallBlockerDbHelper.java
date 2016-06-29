@@ -14,7 +14,7 @@ import com.owlab.callblocker.CONS;
 public class CallBlockerDbHelper extends SQLiteOpenHelper {
     private static final String TAG = CallBlockerDbHelper.class.getSimpleName();
 
-    public static final int DATABASE_VERSION = 5; //20160625
+    public static final int DATABASE_VERSION = 6; //20160629
     public static final String DATABASE_NAME = "CallBlocker.db";
 
     public CallBlockerDbHelper(Context context) {

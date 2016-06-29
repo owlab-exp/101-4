@@ -20,40 +20,54 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
     private static String savedPhoneNumber;
 
     protected TelephonyManager tm;
+    protected boolean initialized;
 
     private static long counter = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, ">>>>> onReceive counter: " + ++counter);
-        long startTime = System.currentTimeMillis();
+        String intentAction = intent.getAction();
+        Log.d(TAG, ">>>>> intent action: " + intentAction);
 
-        if(tm == null) {
-            tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        }
+        if(intentAction.equals("android.intent.action.PHONE_STATE")) {
+            long startTime = System.currentTimeMillis();
 
-        //If android.intent.action.PHONE_STATE
-        if(intent.getAction().equals("android.intent.action.PHONE_STATE")) {
-            String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
-            String phoneNumber = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            int state = 0;
-            if(stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                state = TelephonyManager.CALL_STATE_IDLE;
-            } else if(stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                state = TelephonyManager.CALL_STATE_RINGING;
-            } else if(stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                state = TelephonyManager.CALL_STATE_OFFHOOK;
-            } else {
-                Log.d(TAG, ">>>>> other call state: " + stateStr);
-                Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
-                return;
+            if(!initialized) {
+                initialize(context);
+                initialized = true;
             }
 
-            onCallStateChanged(context, state, phoneNumber);
-        } else {
-            Log.d(TAG, ">>>>> other intent action: " + intent.getAction().toString());
+            if (tm == null) {
+                tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            }
+
+            //If android.intent.action.PHONE_STATE
+            if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
+                String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
+                String phoneNumber = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                int state = 0;
+                if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                    state = TelephonyManager.CALL_STATE_IDLE;
+                } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                    state = TelephonyManager.CALL_STATE_RINGING;
+                } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                    state = TelephonyManager.CALL_STATE_OFFHOOK;
+                } else {
+                    Log.d(TAG, ">>>>> other call state: " + stateStr);
+                    Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
+                    return;
+                }
+
+                onCallStateChanged(context, state, phoneNumber);
+            } else {
+                Log.d(TAG, ">>>>> other intent action: " + intent.getAction().toString());
+            }
+            Log.d(TAG, ">>>>> processing time: " + (System.currentTimeMillis() - startTime));
+        } else if(intentAction.equals("com.owlab.callblocker.WARM_UP")) {
+            initialize(context);
+            initialized = true;
         }
-        Log.d(TAG, ">>>>> processing time: " + (System.currentTimeMillis() - startTime));
     }
 
     // Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
@@ -92,6 +106,7 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
         lastState = state;
     }
 
+    protected abstract void initialize(Context context);
     protected abstract void onIncomingCallArrived(Context context, String phoneNumber, Date start);
     protected abstract void onIncomingCallAnswered(Context context, String phoneNumber, Date start);
     protected abstract void onIncomingCallEnded(Context context, String phoneNumber, Date start, Date end);

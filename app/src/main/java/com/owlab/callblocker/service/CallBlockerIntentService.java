@@ -164,6 +164,12 @@ public class CallBlockerIntentService extends IntentService {
             return;
         }
 
+        //Warm up the phone state chagne receiver
+        Log.d(TAG, ">>>>> sending warm up signal...");
+        Intent warmupIntent = new Intent();
+        warmupIntent.setAction("com.owlab.callblocker.WARM_UP");
+        sendBroadcast(warmupIntent);
+
         sharedPreferences.edit().putBoolean(CONS.PREF_KEY_BLOCKING_ON, true).commit();
         //handleActionStatusbarNotificationOn(true);
         handleActionStatusbarNotificationOn();

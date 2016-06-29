@@ -65,6 +65,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.owlab.callblocker.WARM_UP"/>
+            </intent-filter>
         </receiver>
 
         <service
