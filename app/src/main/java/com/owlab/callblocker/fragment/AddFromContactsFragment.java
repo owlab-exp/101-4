@@ -3,6 +3,7 @@ package com.owlab.callblocker.fragment;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -110,8 +111,12 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                         }
                     }
 
-                    if(numOfAdded > 0)
-                        Toast.makeText(getActivity(), numOfAdded + " " + (numOfAdded > 1 ? "phone numbers":"phone number") + " added", Toast.LENGTH_SHORT).show();
+                    if(numOfAdded > 0) {
+                        Intent updateMatchPatternIntent = new Intent(CONS.ACTION_UPDATE_MATCH_PATTERN);
+                        getContext().sendBroadcast(updateMatchPatternIntent);
+
+                        Toast.makeText(getActivity(), numOfAdded + " " + (numOfAdded > 1 ? "phone numbers" : "phone number") + " added", Toast.LENGTH_SHORT).show();
+                    }
                     if(numOfNotAdded > 0)
                         Toast.makeText(getActivity(), numOfNotAdded + " " + (numOfNotAdded > 1 ? "phone numbers":"phone number") + " not added, duplicate?", Toast.LENGTH_SHORT).show();
 

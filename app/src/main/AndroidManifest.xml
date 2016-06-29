@@ -68,6 +68,9 @@
             <intent-filter>
                 <action android:name="com.owlab.callblocker.WARM_UP"/>
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.owlab.callblocker.UPDATE_MATCH_PATTERN"/>
+            </intent-filter>
         </receiver>
 
         <service

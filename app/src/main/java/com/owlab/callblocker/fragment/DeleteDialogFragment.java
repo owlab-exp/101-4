@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -71,7 +72,12 @@ public class DeleteDialogFragment extends DialogFragment {
                                 public void onDismissed(Snackbar snackbar, int event) {
                                     super.onDismissed(snackbar, event);
                                     if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                                        getTargetFragment().getActivity().getContentResolver().delete(CallBlockerProvider.BLOCKED_NUMBER_URI, CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " > 0", null);
+                                        int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(CallBlockerProvider.BLOCKED_NUMBER_URI, CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " > 0", null);
+                                        if(deleteCount > 0) {
+                                            Intent matchPatternUpdateIntent = new Intent(CONS.ACTION_UPDATE_MATCH_PATTERN);
+                                            getTargetFragment().getActivity().sendBroadcast(matchPatternUpdateIntent);
+                                        }
+
                                     }
                                 }
                             });
@@ -80,6 +86,10 @@ public class DeleteDialogFragment extends DialogFragment {
                                 public void onClick(View view) {
                                     values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED, 0);
                                     int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_NUMBER_URI, values, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id, null);
+                                    if(updateCount > 0) {
+                                        Intent matchPatternUpdateIntent = new Intent(CONS.ACTION_UPDATE_MATCH_PATTERN);
+                                        getTargetFragment().getActivity().sendBroadcast(matchPatternUpdateIntent);
+                                    }
                                 }
                             });
                             snackbar.show();

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.owlab.callblocker.CONS;
+
 import java.util.Date;
 
 /**
@@ -19,31 +21,27 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
     private static boolean isIncoming;
     private static String savedPhoneNumber;
 
-    protected TelephonyManager tm;
     protected boolean initialized;
 
     private static long counter = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, ">>>>> onReceive counter: " + ++counter);
+        //Log.d(TAG, ">>>>> onReceive counter: " + ++counter);
         String intentAction = intent.getAction();
-        Log.d(TAG, ">>>>> intent action: " + intentAction);
+        //Log.d(TAG, ">>>>> intent action: " + intentAction);
 
         if(intentAction.equals("android.intent.action.PHONE_STATE")) {
-            long startTime = System.currentTimeMillis();
+            //long startTime = System.currentTimeMillis();
 
+            //Is this needed?
             if(!initialized) {
                 initialize(context);
                 initialized = true;
             }
 
-            if (tm == null) {
-                tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            }
-
             //If android.intent.action.PHONE_STATE
-            if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
+            //if (intent.getAction().equals("android.intent.action.PHONE_STATE")) {
                 String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
                 String phoneNumber = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                 int state = 0;
@@ -60,13 +58,15 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
                 }
 
                 onCallStateChanged(context, state, phoneNumber);
-            } else {
-                Log.d(TAG, ">>>>> other intent action: " + intent.getAction().toString());
-            }
-            Log.d(TAG, ">>>>> processing time: " + (System.currentTimeMillis() - startTime));
+            //} else {
+            //    Log.d(TAG, ">>>>> other intent action: " + intent.getAction().toString());
+            //}
+            //Log.d(TAG, ">>>>> processing time: " + (System.currentTimeMillis() - startTime));
         } else if(intentAction.equals("com.owlab.callblocker.WARM_UP")) {
             initialize(context);
             initialized = true;
+        } else if(intentAction.equals(CONS.ACTION_UPDATE_MATCH_PATTERN)) {
+            updateMatchPattern(context);
         }
     }
 
@@ -107,6 +107,7 @@ public abstract class AbstractPhoneStateChangeReceiver extends BroadcastReceiver
     }
 
     protected abstract void initialize(Context context);
+    protected abstract void updateMatchPattern(Context context);
     protected abstract void onIncomingCallArrived(Context context, String phoneNumber, Date start);
     protected abstract void onIncomingCallAnswered(Context context, String phoneNumber, Date start);
     protected abstract void onIncomingCallEnded(Context context, String phoneNumber, Date start, Date end);

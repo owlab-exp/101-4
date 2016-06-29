@@ -2,6 +2,7 @@ package com.owlab.callblocker.fragment;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -126,8 +127,12 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     selectedNumberMap.clear();
                     selectedRowIdMap.clear();
 
-                    if (numOfAdded > 0)
+                    if (numOfAdded > 0) {
+                        Intent updateMatchPatternIntent = new Intent(CONS.ACTION_UPDATE_MATCH_PATTERN);
+                        getContext().sendBroadcast(updateMatchPatternIntent);
+
                         Toast.makeText(getActivity(), numOfAdded + " " + (numOfAdded > 1 ? "phone numbers" : "phone number") + " added", Toast.LENGTH_SHORT).show();
+                    }
                     if (numOfNotAdded > 0)
                         Toast.makeText(getActivity(), numOfNotAdded + " " + (numOfNotAdded > 1 ? "phone numbers" : "phone number") + " not added, duplicate?", Toast.LENGTH_SHORT).show();
 

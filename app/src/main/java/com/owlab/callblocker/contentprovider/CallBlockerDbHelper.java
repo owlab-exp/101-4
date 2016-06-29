@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.owlab.callblocker.CONS;
 
+import java.util.regex.Pattern;
+
 /**
  * Created by ernest on 5/17/16.
  */
@@ -151,6 +153,49 @@ public class CallBlockerDbHelper extends SQLiteOpenHelper {
 
         db.close();
         return result;
+    }
+
+    public Pattern getMatchPattern() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                CallBlockerDb.TBL_BLOCKED_NUMBER,
+                new String[]{CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD},
+                CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE + " > 0 AND " + CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0",
+                null,
+                null,
+                null,
+                null);
+
+        StringBuilder sb = new StringBuilder();
+
+        if(cursor != null) {
+            if(cursor.moveToFirst()) {
+                boolean isFirst = true;
+                do {
+                    if(isFirst) {
+                        isFirst = !isFirst;
+                    } else {
+                        sb.append("|");
+                    }
+                    String number = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER));
+                    sb.append(number);
+                    int matchMathod = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD));
+                    if(matchMathod == CONS.MATCH_METHOD_EXACT) {
+
+                    } else if(matchMathod == CONS.MATCH_METHOD_STARTS_WITH) {
+                        sb.append(".*");
+                    }
+                } while(cursor.moveToNext());
+            }
+        }
+
+        db.close();
+
+        String patternStr = sb.toString();
+        if(!patternStr.isEmpty()) {
+            return Pattern.compile(patternStr);
+        }
+        return null;
     }
 
     public boolean logExists(String phoneNumber, String date) {

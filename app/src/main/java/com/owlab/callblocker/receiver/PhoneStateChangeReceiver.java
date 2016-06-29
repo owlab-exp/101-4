@@ -25,6 +25,7 @@ import com.owlab.callblocker.service.CallLogObserverStartService;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * Created by ernest on 5/27/16.
@@ -36,7 +37,8 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
     private static int mLastRingerMode = 0;
 
     private static SharedPreferences sharedPreferences;
-    private static CallBlockerDbHelper dbHelper;
+    //private static CallBlockerDbHelper dbHelper;
+    private static Pattern matchPattern;
     private static ContentResolver contentResolver;
     private static AudioManager audioManager;
 
@@ -51,12 +53,16 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
 
     @Override
     protected void initialize(Context context) {
-        Log.d(TAG, ">>>>> initializing...");
+        Log.d(TAG, ">>>>> initializing started");
 
         if(sharedPreferences == null)
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if(dbHelper == null)
-            dbHelper = new CallBlockerDbHelper(context);
+        //if(dbHelper == null)
+        //    dbHelper = new CallBlockerDbHelper(context);
+        if(matchPattern == null) {
+            CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(context);
+            matchPattern = dbHelper.getMatchPattern();
+        }
         if(contentResolver == null)
             contentResolver = context.getContentResolver();
         if(audioManager == null)
@@ -77,18 +83,25 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         } catch(Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG, ">>>>> initializing completed");
+        Log.d(TAG, ">>>>> initializing finished");
 
     }
 
     @Override
-    protected void onIncomingCallArrived(Context context, String phoneNumber, Date fromTime) {
-        Log.d(TAG, ">>>>> Call arrived: " + phoneNumber + " at " + fromTime.toString());
+    protected void updateMatchPattern(Context context) {
+        Log.d(TAG, ">>>>> update match pattern started");
+        CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(context);
+        matchPattern = dbHelper.getMatchPattern();
+        Log.d(TAG, ">>>>> update match pattern finished");
+    }
 
+    @Override
+    protected void onIncomingCallArrived(Context context, String phoneNumber, Date fromTime) {
+        //Log.d(TAG, ">>>>> Call arrived: " + phoneNumber + " at " + fromTime.toString());
 
         boolean isBlockingOn = sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false);
         if (!isBlockingOn) {
-            Log.d(TAG, ">>>>> preference - blocking - off, do nothing");
+            //Log.d(TAG, ">>>>> preference - blocking - off, do nothing");
             return;
         }
 
@@ -115,11 +128,11 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
         }
 
         //Check if numbers are in blocked list
-        if (dbHelper.isActiveBlockedNumberStartsWith(phoneNumber) || dbHelper.isActiveBlockedNumberExact(phoneNumber)) {
+        //if (dbHelper.isActiveBlockedNumberStartsWith(phoneNumber) || dbHelper.isActiveBlockedNumberExact(phoneNumber)) {
+        if(matchPattern.matcher(phoneNumber).matches()) {
             quietCall(context, phoneNumber, fromTime);
             return;
         }
-
     }
 
     private static final String[] contactsProjection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
@@ -203,7 +216,7 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
 
     private void releaseRinging(Context context) {
         if (mIsRingerChanged) {
-            Log.d(TAG, ">>>>> release ringing");
+            //Log.d(TAG, ">>>>> release ringing");
             audioManager.setRingerMode(mLastRingerMode);
             mIsRingerChanged = false;
             Toast.makeText(context, "ringer mode restored", Toast.LENGTH_SHORT).show();
@@ -211,7 +224,6 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
     }
 
     private void dismissCall(Context context) {
-        Log.d(TAG, ">>>>> dismiss call");
         try {
             //Method silenceRingerMethod = iTelephony.getClass().getDeclaredMethod("silenceRinger");
             //if(suppressRingingOn) {

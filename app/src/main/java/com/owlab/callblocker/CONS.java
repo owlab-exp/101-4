@@ -11,6 +11,8 @@ public final class CONS {
     public static final int MATCH_METHOD_EXACT = 0;
     public static final int MATCH_METHOD_STARTS_WITH = 1;
 
+    public static final String ACTION_UPDATE_MATCH_PATTERN = "com.owlab.callblocker.UPDATE_MATCH_PATTERN";
+
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_BLOCKING = 0;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_BLOCK_HIDDEN_NUMBER = 5;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_BLOCK_UNKNOWN_NUMBER = 7;
