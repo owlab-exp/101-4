@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.owlab.callblocker.service.CallBlockerIntentService;
+import com.owlab.callblocker.service.CallQuieterIntentService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -143,12 +144,13 @@ public class FUNS {
                 //}
 
                 if (requiredPermissionList.size() == 0) {
+                    Log.d(TAG, "sending quieter on request");
                     //turn blocking on here
-                    CallBlockerIntentService.startActionBlockingOn(activity, new ResultReceiver(new Handler()) {
+                    CallQuieterIntentService.startActionQuieterOn(activity, new ResultReceiver(new Handler()) {
                         @Override
                         protected void onReceiveResult(int resultCode, Bundle result) {
-                            Log.d(TAG, ">>>>> reuslt received");
-                            Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? " started" : " not started"), Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, ">>>>> quieter on reuslt received");
+                            Toast.makeText(activity, "Call quieter service " + (resultCode == CONS.RESULT_SUCCESS ? " started" : " not started"), Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
@@ -174,10 +176,11 @@ public class FUNS {
 
                 //TODO think about the right places of this code
             } else {
-                CallBlockerIntentService.startActionBlockingOff(activity, new ResultReceiver(new Handler()) {
+                Log.d(TAG, "sending quieter off request");
+                CallQuieterIntentService.startActionQuieterOff(activity, new ResultReceiver(new Handler()) {
                     @Override
                     protected void onReceiveResult(int resultCode, Bundle result) {
-                        Toast.makeText(activity, "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? " stopped" : "not stopped"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Call quieter service " + (resultCode == CONS.RESULT_SUCCESS ? " stopped" : "not stopped"), Toast.LENGTH_SHORT).show();
                     }
                 });
             }

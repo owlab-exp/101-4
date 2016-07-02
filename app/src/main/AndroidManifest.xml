@@ -61,6 +61,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <!--
         <receiver android:name=".receiver.PhoneStateChangeReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
@@ -75,6 +76,13 @@
 
         <service
             android:name=".service.CallBlockerIntentService"
+            android:exported="false" />
+        -->
+        <service
+            android:name=".service.CallQuieterIntentService"
+            android:exported="false" />
+        <service
+            android:name=".service.CallQuieterService"
             android:exported="false" />
         <service
             android:name=".service.CallLogObserverStartService"
