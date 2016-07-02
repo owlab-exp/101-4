@@ -205,7 +205,7 @@ public class CallBlockerProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        Log.d(TAG, ">>> update called: contentVaues = " + contentValues + ", selection = " + selection);
+        Log.d(TAG, ">>> onContentChanged called: contentVaues = " + contentValues + ", selection = " + selection);
         SQLiteDatabase db = mCallBlockerDbHelper.getWritableDatabase();
         int rowsUpdated = 0;
         switch(sURIMatcher.match(uri)) {

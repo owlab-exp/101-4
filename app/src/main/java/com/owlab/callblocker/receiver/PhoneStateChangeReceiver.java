@@ -89,10 +89,10 @@ public class PhoneStateChangeReceiver extends AbstractPhoneStateChangeReceiver {
 
     @Override
     protected void updateMatchPattern(Context context) {
-        Log.d(TAG, ">>>>> update match pattern started");
+        Log.d(TAG, ">>>>> onContentChanged match pattern started");
         CallBlockerDbHelper dbHelper = new CallBlockerDbHelper(context);
         matchPattern = dbHelper.getMatchPattern();
-        Log.d(TAG, ">>>>> update match pattern finished");
+        Log.d(TAG, ">>>>> onContentChanged match pattern finished");
     }
 
     @Override

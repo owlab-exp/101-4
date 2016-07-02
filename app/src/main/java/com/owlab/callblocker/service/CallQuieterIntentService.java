@@ -20,7 +20,7 @@ import com.owlab.callblocker.R;
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
  * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
+ * TODO: Customize class - onContentChanged intent actions, extra parameters and static
  * helper methods.
  */
 public class CallQuieterIntentService extends IntentService {
