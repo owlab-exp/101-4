@@ -1,7 +1,6 @@
 package com.owlab.callblocker.fragment;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -99,8 +98,6 @@ public class AddByManualFragment extends Fragment {
                     Uri rowUri = getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
 
                     if(Long.parseLong(rowUri.getLastPathSegment()) > 0) {
-                        Intent matchPatternUpdateIntent = new Intent(CONS.ACTION_UPDATE_MATCH_PATTERN);
-                        getContext().sendBroadcast(matchPatternUpdateIntent);
                         Toast.makeText(getActivity(), phoneNumber + " added", Toast.LENGTH_SHORT).show();
                         getFragmentManager().popBackStack(ViewPagerContainerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     } else {

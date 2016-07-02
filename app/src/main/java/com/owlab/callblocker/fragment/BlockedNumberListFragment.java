@@ -181,8 +181,6 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                                 contentValues, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id,
                                 null);
                         if (updateCount > 0) {
-                            Intent updateMatchPatternIntent = new Intent(CONS.ACTION_UPDATE_MATCH_PATTERN);
-                            getContext().sendBroadcast(updateMatchPatternIntent);
 
                             Snackbar.make(fragmentView, "Blocking " + (checkedChanged ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
                         }

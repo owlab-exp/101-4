@@ -27,7 +27,7 @@ import com.owlab.callblocker.fragment.AddFromContactsFragment;
 import com.owlab.callblocker.fragment.AddFromSmsLogFragment;
 import com.owlab.callblocker.fragment.SettingsFragment;
 import com.owlab.callblocker.fragment.ViewPagerContainerFragment;
-import com.owlab.callblocker.service.CallBlockerIntentService;
+import com.owlab.callblocker.service.CallQuieterIntentService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(mainActivity, "Can not ON because of lack of permissions", Toast.LENGTH_SHORT).show();
                 } else {
                     //otherwise start action - blcoking on
-                    CallBlockerIntentService.startActionBlockingOn(this, new ResultReceiver(new Handler()) {
+                    CallQuieterIntentService.startActionQuieterOn(this, new ResultReceiver(new Handler()) {
                         @Override
                         protected void onReceiveResult(int resultCode, Bundle reuslt) {
                             Log.d(TAG, ">>>>> result received");

@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
@@ -137,8 +140,19 @@ public class CallQuieterIntentService extends IntentService {
         // If the blocking is already on
         if(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             //handleActionStatusbarNotificationOn(false);
-            handleActionStatusbarNotificationOn();
+            //handleActionStatusbarNotificationOn();
             //resultReceiver.send(CONS.RESULT_SUCCESS, null);
+            startActionQuieterOn(getBaseContext(), new ResultReceiver(new Handler()) {
+
+                @Override
+                protected void onReceiveResult(int resultCode, Bundle resultData) {
+                    if(resultCode == CONS.RESULT_SUCCESS) {
+                        Toast.makeText(getBaseContext(), "CallQuieter started successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getBaseContext(), "CallQuieter could not start", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
     }
 
@@ -179,6 +193,7 @@ public class CallQuieterIntentService extends IntentService {
         // at last off the blocking notification icon
         handleActionStatusbarNotificationOff();
         resultReceiver.send(CONS.RESULT_SUCCESS, null);
+
     }
 
     //private void handleActionStatusbarNotificationOn(boolean checkStatus) {

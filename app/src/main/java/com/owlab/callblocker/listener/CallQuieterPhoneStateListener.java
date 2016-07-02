@@ -21,8 +21,8 @@ import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.contentobserver.CallQuieterContentChangeListener;
 import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
-import com.owlab.callblocker.service.CallBlockerIntentService;
 import com.owlab.callblocker.service.CallLogObserverStartService;
+import com.owlab.callblocker.service.CallQuieterIntentService;
 
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
@@ -277,7 +277,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
         int blockedCount = sharedPreferences.getInt(ctx.getString(R.string.status_key_notification_count), 0);
         sharedPreferences.edit().putInt(ctx.getString(R.string.status_key_notification_count), ++blockedCount).commit();
         //Update block counter in notification
-        CallBlockerIntentService.startActionStatusbarNotificationCounterUpdate(ctx);
+        CallQuieterIntentService.startActionStatusbarNotificationCounterUpdate(ctx);
     }
     /*
     @Override

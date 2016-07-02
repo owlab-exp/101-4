@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.owlab.callblocker.CONS;
-import com.owlab.callblocker.service.CallBlockerIntentService;
+import com.owlab.callblocker.service.CallQuieterIntentService;
 
 /**
  * Created by ernest on 6/7/16.
@@ -23,7 +23,7 @@ public class BootCompletedIntentReceiver extends BroadcastReceiver {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             //TODO start the call blocker service, if it is ON
-            CallBlockerIntentService.startActionWhenBootBootCompleted(context);
+            CallQuieterIntentService.startActionWhenBootBootCompleted(context);
         }
     }
 }

@@ -18,7 +18,6 @@ import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.owlab.callblocker.service.CallBlockerIntentService;
 import com.owlab.callblocker.service.CallQuieterIntentService;
 
 import java.util.ArrayList;
@@ -216,10 +215,10 @@ public class FUNS {
             boolean checked = (Boolean) newValue;
             if (checked) {
                 //Show notification icon if not
-                CallBlockerIntentService.startActionStatusbarNotificationOn(context);
+                CallQuieterIntentService.startActionStatusbarNotificationOn(context);
             } else {
                 //Remove notification icon if shown
-                CallBlockerIntentService.startActionStatusbarNotificationOff(context);
+                CallQuieterIntentService.startActionStatusbarNotificationOff(context);
             }
 
             return true;
