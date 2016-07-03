@@ -46,7 +46,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         String countryAndCode = selectCountryPref.getText();
         if(TextUtils.isEmpty(countryAndCode)) {
             Locale locale = Locale.getDefault();
-            selectCountryPref.setSummary(locale.getDisplayCountry(locale));
+            String countryNameNative = locale.getDisplayCountry(locale);
+            String countryName = locale.getDisplayCountry();
+            String countryNameComposite = countryName + "(" + countryNameNative + ")";
+            //selectCountryPref.setSummary(locale.getDisplayCountry(locale));
+            selectCountryPref.setSummary(countryNameComposite);
         } else {
             selectCountryPref.setSummary(countryAndCode.split(":")[0]);
         }

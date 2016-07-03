@@ -1,9 +1,11 @@
-package com.owlab.callblocker;
+package com.owlab.callblocker.util;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneNumberUtils;
 import android.util.TypedValue;
+
+import com.owlab.callblocker.R;
 
 import java.util.Locale;
 

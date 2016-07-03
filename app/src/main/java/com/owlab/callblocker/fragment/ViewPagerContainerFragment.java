@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.Utils;
+import com.owlab.callblocker.util.Utils;
 
 import java.io.Serializable;
 import java.util.Objects;
