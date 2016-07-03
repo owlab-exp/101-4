@@ -53,7 +53,7 @@
         </activity>
 
         <provider
-            android:name=".contentprovider.CallBlockerProvider"
+            android:name=".contentprovider.CallQuieterContentProvider"
             android:authorities="com.owlab.callblocker.contentprovider" />
 
         <receiver android:name=".receiver.BootCompletedIntentReceiver">

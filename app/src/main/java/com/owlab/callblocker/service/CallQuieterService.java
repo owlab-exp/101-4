@@ -10,7 +10,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.owlab.callblocker.contentobserver.CallQuieterContentObserver;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
 import com.owlab.callblocker.listener.CallQuieterPhoneStateListener;
 
 /**
@@ -40,7 +40,7 @@ public class CallQuieterService extends Service {
             phoneStateListener = new CallQuieterPhoneStateListener(getBaseContext());
             callQuieterContentObserver = new CallQuieterContentObserver(new Handler(), phoneStateListener);
 
-            getContentResolver().registerContentObserver(CallBlockerProvider.BLOCKED_NUMBER_URI, true, callQuieterContentObserver);
+            getContentResolver().registerContentObserver(CallQuieterContentProvider.REGISTERED_NUMBER_URI, true, callQuieterContentObserver);
             telManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
             started = true;

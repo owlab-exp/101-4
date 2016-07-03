@@ -32,10 +32,10 @@ import android.widget.Toast;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
 import com.owlab.callblocker.util.Utils;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
-import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
+import com.owlab.callblocker.contentprovider.CallQuieterDbHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +53,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
-    CallBlockerDbHelper callBlockerDbHelper; //= new CallBlockerDbHelper(getActivity());
+    CallQuieterDbHelper callQuieterDbHelper; //= new CallQuieterDbHelper(getActivity());
     HashMap<String, String> selectedPhoneMap = new HashMap<>();
 
     private static final String KEY_SELECTED_NUMBER_MAP = "selectedNumberMap";
@@ -75,7 +75,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
 
         rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
         rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
-        callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
+        callQuieterDbHelper = new CallQuieterDbHelper(getActivity());
     }
 
     @Override
@@ -100,9 +100,9 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     int numOfNotAdded = 0;
                     for(Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, entry.getKey());
-                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, entry.getValue());
-                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
+                        values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER, entry.getKey());
+                        values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.DISPLAY_NAME, entry.getValue());
+                        Uri newUri = getActivity().getContentResolver().insert(CallQuieterContentProvider.REGISTERED_NUMBER_URI, values);
                         if(Long.parseLong(newUri.getLastPathSegment()) > 0)
                             numOfAdded++;
                         else {
@@ -200,7 +200,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                 String phoneNumberR = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 LinearLayout rowView = (LinearLayout) view.getParent();
-                if(callBlockerDbHelper.isBlockedNumber(phoneNumberR)) {
+                if(callQuieterDbHelper.isBlockedNumber(phoneNumberR)) {
                 //if(blockedPhoneCursor.getCount() > 0) {
                     //Log.d(TAG, ">>> found phone number: " + phoneNumberR);
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
@@ -302,7 +302,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         String phoneNumber = phoneNumberFormatted.split("\n")[0].replaceAll("[^\\d]", "");
         Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber + ", displayName: " + displayName);
 
-        if(callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
+        if(callQuieterDbHelper.isBlockedNumber(phoneNumber)) {
             //Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), phoneNumber + " already in the block list", Snackbar.LENGTH_SHORT).show();
             return;

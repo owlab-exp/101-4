@@ -22,7 +22,7 @@ public final class CONS {
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG = 20;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_SMS_LOG = 25;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS = 30;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS = 35;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS = 35;
 
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAIL = -1;
@@ -41,7 +41,7 @@ public final class CONS {
     public static final String ROW_COLOR_UNSELECTED = "#ffffff";
     public static final String ROW_COLOR_SELECTED = "#ab82ff";
 
-    public static final String ARG_KEY_BLOCKED_NUMBER_ID = "_id";
-    public static final String ARG_KEY_BLOCKED_NUMBER = "phoneNumber";
+    public static final String ARG_KEY_REGISTERED_NUMBER_ID = "_id";
+    public static final String ARG_KEY_REGISTERED_NUMBER = "phoneNumber";
     public static final String ARG_KEY_DISPLAY_NAME = "displayName";
 }

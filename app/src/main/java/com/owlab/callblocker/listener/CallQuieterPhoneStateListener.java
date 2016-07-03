@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
 import com.owlab.callblocker.contentobserver.CallQuieterContentChangeListener;
-import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
+import com.owlab.callblocker.contentprovider.CallQuieterDbHelper;
 import com.owlab.callblocker.service.CallLogObserverStartService;
 import com.owlab.callblocker.service.CallQuieterIntentService;
 
@@ -62,7 +62,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     private ContentResolver contentResolver;
     private Object iTelephonyObject;
     private Method endCallMethod;
-    private CallBlockerDbHelper callBlockerDbHelper;
+    private CallQuieterDbHelper callQuieterDbHelper;
     //This should be updated whenever the phone number list changes
     private Pattern matchPattern;
 
@@ -91,8 +91,8 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
         getITelephonyMethod.setAccessible(true);
         iTelephonyObject = getITelephonyMethod.invoke(telephonyManager);
         endCallMethod = iTelephonyObject.getClass().getDeclaredMethod("endCall");
-        callBlockerDbHelper = new CallBlockerDbHelper(ctx);
-        matchPattern = callBlockerDbHelper.getMatchPattern();
+        callQuieterDbHelper = new CallQuieterDbHelper(ctx);
+        matchPattern = callQuieterDbHelper.getMatchPattern();
     }
 
     @Override
@@ -206,7 +206,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     @Override
     public void onContentChanged() {
         Log.d(TAG, ">>>>> updating match pattern");
-        matchPattern = callBlockerDbHelper.getMatchPattern();
+        matchPattern = callQuieterDbHelper.getMatchPattern();
     }
 
     private boolean isInContacts(String phoneNumber) {

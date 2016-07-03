@@ -226,7 +226,7 @@ public class CallQuieterIntentService extends IntentService {
         PendingIntent clearCountPendingIntent = PendingIntent.getService(getBaseContext(), 0, startServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Intent openMainActivityIntent = new Intent(getApplication(), MainActivity.class);
-        openMainActivityIntent.setAction("OPEN_BLOCKED_CALL_LOG");
+        openMainActivityIntent.setAction("OPEN_QUIETED_CALL_LOG");
         openMainActivityIntent.putExtra("pageNo", 1);
 
         int count = sharedPreferences.getInt(getString(R.string.status_key_notification_count), 0);

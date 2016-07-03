@@ -5,7 +5,7 @@
     <item
         android:id="@+id/menuitem_main_onoff_switch_layout"
         app:showAsAction="always"
-        app:actionLayout="@layout/main_onoff_switch_layout"
+        app:actionLayout="@layout/main_onoff_toggle_button_layout"
         android:title="" />
     <item
         android:id="@+id/menuitem_settings"

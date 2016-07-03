@@ -16,25 +16,25 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:key="settings_additional_blocking"
-        android:title="ADDITIONAL BLOCKING">
+        android:title="ADDITIONAL NUMBERS">
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/settings_key_block_hidden_number"
-            android:summary="Block incoming calls having no number"
-            android:title="Block hidden number" />
+            android:summary="Quiet incoming calls having no number"
+            android:title="Quiet hidden number" />
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/settings_key_block_unknown_number"
-            android:summary="Block all numbers not in contacts"
-            android:title="Block unknown number" />
+            android:summary="Quiet all numbers not in the contacts"
+            android:title="Quiet unknown number" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="settings_category_call_blocking_setting"
-        android:title="CALL BLOCKING SETTING">
+        android:title="CALL QUIET SETTING">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/settings_key_suppress_ringing"
-            android:summary="Suppress ringing for the blocked numbers"
+            android:summary="Suppress ringing for the registered numbers"
             android:title="Suppress ringing" />
         <!--
         <CheckBoxPreference
@@ -46,12 +46,12 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/settings_key_dismiss_call"
-            android:summary="Dismiss immediately calls from the blocked numbers"
+            android:summary="Dismiss calls immediately from the registered numbers"
             android:title="Dismiss calls" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/settings_key_delete_call_log"
-            android:summary="Delete call log of the blocked numbers"
+            android:summary="Delete call log of the quieted calls"
             android:title="Delete call log" />
         <!--
         <CheckBoxPreference

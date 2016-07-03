@@ -37,10 +37,10 @@ import android.widget.Toast;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
+import com.owlab.callblocker.contentprovider.CallQuieterDbHelper;
 import com.owlab.callblocker.util.Utils;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
-import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
-    CallBlockerDbHelper callBlockerDbHelper;
+    CallQuieterDbHelper callQuieterDbHelper;
     HashMap<String, String> selectedPhoneMap = new HashMap<>();
     HashMap<String, Long> selectedPhoneRowIdMap = new HashMap<>();
 
@@ -81,7 +81,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
         rotateForwardAppear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward_appear);
         rotateBackwardDisappear = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward_disappear);
-        callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
+        callQuieterDbHelper = new CallQuieterDbHelper(getActivity());
 
 
         if(savedInstanceState != null) {
@@ -139,9 +139,9 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                     int numOfNotAdded = 0;
                     for (Map.Entry<String, String> entry : selectedPhoneMap.entrySet()) {
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, entry.getKey());
-                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, entry.getValue());
-                        Uri newUri = getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
+                        values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER, entry.getKey());
+                        values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.DISPLAY_NAME, entry.getValue());
+                        Uri newUri = getActivity().getContentResolver().insert(CallQuieterContentProvider.REGISTERED_NUMBER_URI, values);
                         if (newUri != null && Long.parseLong(newUri.getLastPathSegment()) > 0) {
                             //Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
                             numOfAdded++;
@@ -284,7 +284,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                     String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
                     LinearLayout rowView = (LinearLayout) view.getParent();
 
-                    if (callBlockerDbHelper.isBlockedNumber(phoneNumberStripped)) {
+                    if (callQuieterDbHelper.isBlockedNumber(phoneNumberStripped)) {
                         //Already in blocked numbers
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_ALREADY_BLOCKED));
                     } else {
@@ -555,7 +555,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
         Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
 
-        if (callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
+        if (callQuieterDbHelper.isBlockedNumber(phoneNumber)) {
             //Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), phoneNumber + " already in the block list", Snackbar.LENGTH_SHORT).show();
             return;

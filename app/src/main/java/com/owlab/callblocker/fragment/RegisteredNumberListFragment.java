@@ -28,21 +28,21 @@ import android.widget.TextView;
 import com.owlab.callblocker.AddSourceSelectionActivity;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
 import com.owlab.callblocker.util.Utils;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class BlockedNumberListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    public static final String TAG = BlockedNumberListFragment.class.getSimpleName();
+public class RegisteredNumberListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String TAG = RegisteredNumberListFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
     private static final int DB_LOADER = 0;
     private boolean isFabRotated = false;
 
-    public BlockedNumberListFragment() {
+    public RegisteredNumberListFragment() {
         Log.d(TAG, ">>>>> instantiated");
     }
 
@@ -56,7 +56,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Log.d(TAG, ">>>>> onCreateView called");
-        View view = inflater.inflate(R.layout.blocked_number_list_layout, container, false);
+        View view = inflater.inflate(R.layout.registered_number_list_layout, container, false);
 
         //Floating Action Button
         final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add);
@@ -105,12 +105,12 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
     }
 
     private final String[] FROM_COLUMNS = {
-            CallBlockerDb.COLS_BLOCKED_NUMBER._ID
-            , CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER
-            , CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME
-            , CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD
-            , CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE
-            //, CallBlockerDb.COLS_BLOCKED_NUMBER.CREATED_AT
+            CallQuieterDb.COLS_REGISTERED_NUMBER._ID
+            , CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER
+            , CallQuieterDb.COLS_REGISTERED_NUMBER.DISPLAY_NAME
+            , CallQuieterDb.COLS_REGISTERED_NUMBER.MATCH_METHOD
+            , CallQuieterDb.COLS_REGISTERED_NUMBER.IS_ACTIVE
+            //, CallQuieterDb.COLS_REGISTERED_NUMBER.CREATED_AT
     };
 
     private final int[] TO_IDS = new int[]{
@@ -125,7 +125,7 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
     };
 
     private void setLoader(final View fragmentView) {
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.blocked_number_list_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.registered_number_list_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             //private int _idColumnIndex = -1;
             //private int phoneNumberColumnIndex = -1;
@@ -133,11 +133,11 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
             //private int isActiveColumnIndex = -1;
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int idIndex) {
-                final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER._ID));
-                final String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER));
-                final String displayName = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME));
-                final int matchMethod = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD));
-                final boolean checkedRead = cursor.getInt(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE)) > 0;
+                final int _id = cursor.getInt(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER._ID));
+                final String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER));
+                final String displayName = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.DISPLAY_NAME));
+                final int matchMethod = cursor.getInt(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.MATCH_METHOD));
+                final boolean checkedRead = cursor.getInt(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.IS_ACTIVE)) > 0;
 
                 LinearLayout nonExactMatchLayout = (LinearLayout) view.findViewById(R.id.phone_number_list_row_non_exact_match);
                 switch(matchMethod) {
@@ -158,11 +158,11 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                     public void onClick(View descriptionView) {
                         EditDisplayNameDialogFragment editDisplayNameDialogFragment = new EditDisplayNameDialogFragment();
                         Bundle argument = new Bundle();
-                        argument.putInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID, _id);
-                        argument.putString(CONS.ARG_KEY_BLOCKED_NUMBER, phoneNumber);
+                        argument.putInt(CONS.ARG_KEY_REGISTERED_NUMBER_ID, _id);
+                        argument.putString(CONS.ARG_KEY_REGISTERED_NUMBER, phoneNumber);
                         argument.putString(CONS.ARG_KEY_DISPLAY_NAME, displayName);
                         editDisplayNameDialogFragment.setArguments(argument);
-                        editDisplayNameDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
+                        editDisplayNameDialogFragment.setTargetFragment(RegisteredNumberListFragment.this, 0);
                         editDisplayNameDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_change_description_diag");
                     }
                 });
@@ -175,14 +175,14 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean checkedChanged) {
                         ContentValues contentValues = new ContentValues();
-                        contentValues.put(CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE, checkedChanged ? 1 : 0);
+                        contentValues.put(CallQuieterDb.COLS_REGISTERED_NUMBER.IS_ACTIVE, checkedChanged ? 1 : 0);
                         int updateCount = getActivity().getContentResolver().update(
-                                CallBlockerProvider.BLOCKED_NUMBER_URI,
-                                contentValues, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id,
+                                CallQuieterContentProvider.REGISTERED_NUMBER_URI,
+                                contentValues, CallQuieterDb.COLS_REGISTERED_NUMBER._ID + " = " + _id,
                                 null);
                         if (updateCount > 0) {
 
-                            Snackbar.make(fragmentView, "Blocking " + (checkedChanged ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(fragmentView, "Quieting " + (checkedChanged ? "enabled" : "disabled") + " for " + phoneNumber, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -195,11 +195,11 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
                     public void onClick(View view) {
                         DialogFragment deletePhoneDialogFragment = new DeleteDialogFragment();
                         Bundle argument = new Bundle();
-                        argument.putInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID, _id);
-                        argument.putString(CONS.ARG_KEY_BLOCKED_NUMBER, phoneNumber);
+                        argument.putInt(CONS.ARG_KEY_REGISTERED_NUMBER_ID, _id);
+                        argument.putString(CONS.ARG_KEY_REGISTERED_NUMBER, phoneNumber);
                         argument.putString(CONS.ARG_KEY_DISPLAY_NAME, displayName);
                         deletePhoneDialogFragment.setArguments(argument);
-                        deletePhoneDialogFragment.setTargetFragment(BlockedNumberListFragment.this, 0);
+                        deletePhoneDialogFragment.setTargetFragment(RegisteredNumberListFragment.this, 0);
                         deletePhoneDialogFragment.show(getActivity().getSupportFragmentManager(), "tag_delete_phone_dialog");
                     }
                 });
@@ -218,14 +218,14 @@ public class BlockedNumberListFragment extends ListFragment implements LoaderMan
         switch (loaderId) {
             case DB_LOADER:
                 String[] projection = {
-                        CallBlockerDb.COLS_BLOCKED_NUMBER._ID
-                        , CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER
-                        , CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME
-                        , CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD
-                        , CallBlockerDb.COLS_BLOCKED_NUMBER.IS_ACTIVE
+                        CallQuieterDb.COLS_REGISTERED_NUMBER._ID
+                        , CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER
+                        , CallQuieterDb.COLS_REGISTERED_NUMBER.DISPLAY_NAME
+                        , CallQuieterDb.COLS_REGISTERED_NUMBER.MATCH_METHOD
+                        , CallQuieterDb.COLS_REGISTERED_NUMBER.IS_ACTIVE
                 };
-                String selection = CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " = 0";
-                cursorLoader = new CursorLoader(this.getActivity(), CallBlockerProvider.BLOCKED_NUMBER_URI, projection, selection, null, null);
+                String selection = CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED + " = 0";
+                cursorLoader = new CursorLoader(this.getActivity(), CallQuieterContentProvider.REGISTERED_NUMBER_URI, projection, selection, null, null);
                 break;
         }
         return cursorLoader;

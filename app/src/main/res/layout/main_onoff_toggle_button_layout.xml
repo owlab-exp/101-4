@@ -9,6 +9,7 @@
         android:layout_marginRight="7dp"
         android:textOff="OFF"
         android:textOn="ON"
+        android:showText="false"
         android:theme="@style/Switch"
         />
 </RelativeLayout>

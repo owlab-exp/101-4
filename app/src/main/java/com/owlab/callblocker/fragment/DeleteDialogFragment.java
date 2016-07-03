@@ -12,9 +12,9 @@ import android.view.View;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
 import com.owlab.callblocker.util.Utils;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
 
 /**
  * Created by ernest on 5/15/16.
@@ -32,8 +32,8 @@ public class DeleteDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         //final EditTextAddNumberDialogFragment input = new EditText(getActivity());
         Bundle arguments = getArguments();
-        final int _id = arguments.getInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID);
-        final String phoneNumber = Utils.formatPhoneNumber(getContext(), arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER));
+        final int _id = arguments.getInt(CONS.ARG_KEY_REGISTERED_NUMBER_ID);
+        final String phoneNumber = Utils.formatPhoneNumber(getContext(), arguments.getString(CONS.ARG_KEY_REGISTERED_NUMBER));
         final String displayName = arguments.getString(CONS.ARG_KEY_DISPLAY_NAME);
 
         View diagView = inflater.inflate(R.layout.delete_dialog_layout, null);
@@ -57,11 +57,11 @@ public class DeleteDialogFragment extends DialogFragment {
                         //mDeleteItemDialogListener.onDeleteItemConirmClick(_id);
                         dialog.dismiss();
                         //TODO not need uri encoding of _id?
-                        //Uri deleteUri = ContentUris.withAppendedId(CallBlockerProvider.BLOCKED_NUMBER_URI, _id);
+                        //Uri deleteUri = ContentUris.withAppendedId(CallQuieterContentProvider.REGISTERED_NUMBER_URI, _id);
                         //int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(deleteUri, null, null);
                         final ContentValues values = new ContentValues();
-                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED, 1);
-                        int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_NUMBER_URI, values, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id, null);
+                        values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED, 1);
+                        int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallQuieterContentProvider.REGISTERED_NUMBER_URI, values, CallQuieterDb.COLS_REGISTERED_NUMBER._ID + " = " + _id, null);
                         values.clear();
 
                         if (updateCount > 0) {
@@ -71,7 +71,7 @@ public class DeleteDialogFragment extends DialogFragment {
                                 public void onDismissed(Snackbar snackbar, int event) {
                                     super.onDismissed(snackbar, event);
                                     if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                                        int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(CallBlockerProvider.BLOCKED_NUMBER_URI, CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED + " > 0", null);
+                                        int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(CallQuieterContentProvider.REGISTERED_NUMBER_URI, CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED + " > 0", null);
                                         if(deleteCount > 0) {
                                         }
 
@@ -81,8 +81,8 @@ public class DeleteDialogFragment extends DialogFragment {
                             snackbar.setAction("Undo", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.MARK_DELETED, 0);
-                                    int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_NUMBER_URI, values, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + " = " + _id, null);
+                                    values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED, 0);
+                                    int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallQuieterContentProvider.REGISTERED_NUMBER_URI, values, CallQuieterDb.COLS_REGISTERED_NUMBER._ID + " = " + _id, null);
                                     if(updateCount > 0) {
                                     }
                                 }

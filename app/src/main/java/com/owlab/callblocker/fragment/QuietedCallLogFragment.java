@@ -32,10 +32,10 @@ import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
+import com.owlab.callblocker.contentprovider.CallQuieterDbHelper;
 import com.owlab.callblocker.util.Utils;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
-import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
@@ -45,23 +45,23 @@ import java.util.Objects;
  * List up blocked call log
  * Each row is expanded if clicked,to show "call" and "delete" button
  */
-public class BlockedCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
-    public static final String TAG = BlockedCallLogFragment.class.getSimpleName();
+public class QuietedCallLogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+    public static final String TAG = QuietedCallLogFragment.class.getSimpleName();
 
     private SimpleCursorAdapter cursorAdapter;
-    private static final int BLOCKED_CALL_LOG_LOADER = 0;
+    private static final int QUIETED_CALL_LOG_LOADER = 0;
     //private boolean isFabRotated = false;
 
     FloatingActionButton enterFab;
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
-    CallBlockerDbHelper callBlockerDbHelper;
+    CallQuieterDbHelper callQuieterDbHelper;
     HashSet<Long> selectedRowIdSet = new HashSet<>();
 
     private final static String KEY_SELECTED_ROW_ID_SET = "selectedRowIdSet";
 
-    public BlockedCallLogFragment() {
+    public QuietedCallLogFragment() {
         //Log.d(TAG, ">>>>> instantiated");
     }
 
@@ -79,7 +79,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
             }
         }
 
-        callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
+        callQuieterDbHelper = new CallQuieterDbHelper(getActivity());
     }
 
     @Override
@@ -94,7 +94,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Log.d(TAG, ">>>>> onCreateView called");
-        View view = inflater.inflate(R.layout.blocked_call_log_layout, container, false);
+        View view = inflater.inflate(R.layout.quieted_call_log_layout, container, false);
 
         enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
         enterFab.setOnClickListener(new View.OnClickListener() {
@@ -106,9 +106,9 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                     //selectedRowIdSet.toArray(rowIds);
                     final ContentValues values = new ContentValues();
                     for (Long _id : selectedRowIdSet) {
-                        values.put(CallBlockerDb.COLS_BLOCKED_CALL.MARK_DELETED, 1);
-                        int updateCount = getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_CALL_URI, values, CallBlockerDb.COLS_BLOCKED_CALL._ID + " = " + _id, null);
-                        //int deleteCount = getActivity().getContentResolver().delete(CallBlockerProvider.BLOCKED_CALL_URI, CallBlockerDb.COLS_BLOCKED_CALL._ID + " = ?", new String[]{Long.toString(_id)});
+                        values.put(CallQuieterDb.COLS_QUIETED_CALL.MARK_DELETED, 1);
+                        int updateCount = getActivity().getContentResolver().update(CallQuieterContentProvider.QUIETED_CALL_URI, values, CallQuieterDb.COLS_QUIETED_CALL._ID + " = " + _id, null);
+                        //int deleteCount = getActivity().getContentResolver().delete(CallQuieterContentProvider.QUIETED_CALL_URI, CallQuieterDb.COLS_QUIETED_CALL._ID + " = ?", new String[]{Long.toString(_id)});
                         if (updateCount > 0) {
                             //Toast.makeText(getActivity(), entry.getKey() + " added", Toast.LENGTH_SHORT).show();
                             numOfUpdated++;
@@ -127,7 +127,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                             public void onDismissed(Snackbar snackbar, int event) {
                                 super.onDismissed(snackbar, event);
                                 if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                                    getActivity().getContentResolver().delete(CallBlockerProvider.BLOCKED_CALL_URI, CallBlockerDb.COLS_BLOCKED_CALL.MARK_DELETED + " > 1", null);
+                                    getActivity().getContentResolver().delete(CallQuieterContentProvider.QUIETED_CALL_URI, CallQuieterDb.COLS_QUIETED_CALL.MARK_DELETED + " > 1", null);
                                     selectedRowIdSet.clear();
                                 }
                             }
@@ -138,8 +138,8 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                             public void onClick(View view) {
                                 //recover
                                 for (Long _id : selectedRowIdSet) {
-                                    values.put(CallBlockerDb.COLS_BLOCKED_CALL.MARK_DELETED, 0);
-                                    getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_CALL_URI, values, CallBlockerDb.COLS_BLOCKED_CALL._ID + " = " + _id, null);
+                                    values.put(CallQuieterDb.COLS_QUIETED_CALL.MARK_DELETED, 0);
+                                    getActivity().getContentResolver().update(CallQuieterContentProvider.QUIETED_CALL_URI, values, CallQuieterDb.COLS_QUIETED_CALL._ID + " = " + _id, null);
                                     values.clear();
                                 }
                             }
@@ -180,18 +180,18 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
     }
 
     final String[] FROM_COLUMNS = {
-            CallBlockerDb.COLS_BLOCKED_CALL._ID
-            , CallBlockerDb.COLS_BLOCKED_CALL.NUMBER
-            , CallBlockerDb.COLS_BLOCKED_CALL.TYPE
-            , CallBlockerDb.COLS_BLOCKED_CALL.DATE
-            , CallBlockerDb.COLS_BLOCKED_CALL.DURATION
+            CallQuieterDb.COLS_QUIETED_CALL._ID
+            , CallQuieterDb.COLS_QUIETED_CALL.NUMBER
+            , CallQuieterDb.COLS_QUIETED_CALL.TYPE
+            , CallQuieterDb.COLS_QUIETED_CALL.DATE
+            , CallQuieterDb.COLS_QUIETED_CALL.DURATION
     };
     final int[] TO_IDS = new int[]{
-            R.id.blocked_call_log_row_holder
+            R.id.quieted_call_log_row_holder
     };
 
     private void setupLoader(final View fragmentView) {
-        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.blocked_call_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
+        cursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.quieted_call_log_row_layout, null, FROM_COLUMNS, TO_IDS, 0);
         cursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
 
             ContentResolver contentResolver = getActivity().getContentResolver();
@@ -200,8 +200,8 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int idIdx) {
 
-                Long rowId = cursor.getLong(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL._ID));
-                String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.NUMBER));
+                Long rowId = cursor.getLong(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_QUIETED_CALL._ID));
+                String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_QUIETED_CALL.NUMBER));
                 String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
 
                 LinearLayout rowView = (LinearLayout) view.getParent();
@@ -212,9 +212,9 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                     rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
                 }
 
-                ImageView photoView = (ImageView) view.findViewById(R.id.blocked_call_log_row_photo);
-                TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_number);
-                TextView nameView = (TextView) view.findViewById(R.id.blocked_call_log_row_name);
+                ImageView photoView = (ImageView) view.findViewById(R.id.quieted_call_log_row_photo);
+                TextView numberView = (TextView) view.findViewById(R.id.quieted_call_log_row_number);
+                TextView nameView = (TextView) view.findViewById(R.id.quieted_call_log_row_name);
 
 
                 if (phoneNumberStripped.equals("")) {
@@ -251,8 +251,8 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
                 numberView.setText(Utils.formatPhoneNumber(getContext(), phoneNumberStripped));
 
-                ImageView typeIV = (ImageView) view.findViewById(R.id.blocked_call_log_row_type);
-                String type = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.TYPE));
+                ImageView typeIV = (ImageView) view.findViewById(R.id.quieted_call_log_row_type);
+                String type = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_QUIETED_CALL.TYPE));
 
                 switch (Integer.parseInt(type)) {
                     case CallLog.Calls.OUTGOING_TYPE:
@@ -269,17 +269,17 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
                         break;
                 }
 
-                String dateStr = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.DATE));
+                String dateStr = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_QUIETED_CALL.DATE));
 
                 long dateLong = Long.valueOf(dateStr);
                 SimpleDateFormat dateFormat = new SimpleDateFormat();
                 //TODO if today, then do simpler format
 
-                TextView dateView = (TextView) view.findViewById(R.id.blocked_call_log_row_date);
+                TextView dateView = (TextView) view.findViewById(R.id.quieted_call_log_row_date);
                 dateView.setText(dateFormat.format(dateLong));
 
-                String duration = cursor.getString(cursor.getColumnIndexOrThrow(CallBlockerDb.COLS_BLOCKED_CALL.DURATION));
-                TextView durationView = (TextView) view.findViewById(R.id.blocked_call_log_row_duration);
+                String duration = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_QUIETED_CALL.DURATION));
+                TextView durationView = (TextView) view.findViewById(R.id.quieted_call_log_row_duration);
                 durationView.setText(duration + " seconds");
 
                 return true;
@@ -287,7 +287,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
         });
 
         setListAdapter(cursorAdapter);
-        getLoaderManager().initLoader(BLOCKED_CALL_LOG_LOADER, null, this);
+        getLoaderManager().initLoader(QUIETED_CALL_LOG_LOADER, null, this);
     }
 
     @Override
@@ -296,9 +296,9 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
         CursorLoader cursorLoader = null;
         switch (loaderId) {
-            case BLOCKED_CALL_LOG_LOADER:
-                String selection = CallBlockerDb.COLS_BLOCKED_CALL.MARK_DELETED + " = 0";
-                cursorLoader = new CursorLoader(getActivity(), CallBlockerProvider.BLOCKED_CALL_URI, null, selection, null, CallBlockerDb.COLS_BLOCKED_CALL.DATE + " DESC");
+            case QUIETED_CALL_LOG_LOADER:
+                String selection = CallQuieterDb.COLS_QUIETED_CALL.MARK_DELETED + " = 0";
+                cursorLoader = new CursorLoader(getActivity(), CallQuieterContentProvider.QUIETED_CALL_URI, null, selection, null, CallQuieterDb.COLS_QUIETED_CALL.DATE + " DESC");
                 break;
             default:
                 Log.e(TAG, ">>>>> Loader ID not recognized: " + loaderId);
@@ -336,7 +336,7 @@ public class BlockedCallLogFragment extends ListFragment implements LoaderManage
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long rowId) {
-        TextView numberView = (TextView) view.findViewById(R.id.blocked_call_log_row_number);
+        TextView numberView = (TextView) view.findViewById(R.id.quieted_call_log_row_number);
         String phoneNumberRead = numberView.getText().toString();
         String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
         if(phoneNumberStripped.isEmpty()) {

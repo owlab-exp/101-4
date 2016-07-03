@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.owlab.callblocker.fragment.AddByManualFragment;
 import com.owlab.callblocker.fragment.AddFromCallLogFragment;
@@ -91,12 +92,12 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(MainActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
+                                ActivityCompat.requestPermissions(MainActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS);
                             }
                         },
                         null);
             } else {
-                ActivityCompat.requestPermissions(this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS);
+                ActivityCompat.requestPermissions(this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS);
             }
         } else {
             if(!recovered)
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             newIntentArrived = false;
             Intent intent = getIntent();
             Log.d(TAG, ">>>>> intent: " + intent.toString());
-            if (intent != null && "OPEN_BLOCKED_CALL_LOG".equals(intent.getAction())) {
+            if (intent != null && "OPEN_QUIETED_CALL_LOG".equals(intent.getAction())) {
                 int pageNo = intent.getIntExtra("pageNo", 0);
                 Log.d(TAG, ">>>>> pageNo: " + pageNo);
 
@@ -216,6 +217,8 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
         Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
+        //MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
+        //ToggleButton mainOnOffSwitch = (ToggleButton) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
 
         boolean mainOnOffSwichChecked = sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false);
         if(mainOnOffSwichChecked) CallQuieterIntentService.startActionQuieterOn(this, new ResultReceiver(new Handler()) {
@@ -265,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
     public void setMainOnOffSwitch(boolean checked) {
         MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
         Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
+        //ToggleButton mainOnOffSwitch = (ToggleButton) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
 
         mainOnOffSwitch.setChecked(checked);
     }
@@ -363,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this);
 
         switch (requestCode) {
-            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_BLOCKED_CALLS:
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS:
                 if(permissionReadBlockedCallLogGranted) {
                     //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG).commit();
                     nextFragmentTag = ViewPagerContainerFragment.TAG;

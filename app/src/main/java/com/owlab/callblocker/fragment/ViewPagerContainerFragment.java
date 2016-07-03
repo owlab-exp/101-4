@@ -137,13 +137,13 @@ public class ViewPagerContainerFragment extends Fragment {
 
             switch (position) {
                     case 0:
-                        BlockedNumberListFragment blockedNumberListFragment = new BlockedNumberListFragment();
-                        fragments.put(position, blockedNumberListFragment);
-                        return blockedNumberListFragment;
+                        RegisteredNumberListFragment registeredNumberListFragment = new RegisteredNumberListFragment();
+                        fragments.put(position, registeredNumberListFragment);
+                        return registeredNumberListFragment;
                     case 1:
-                        BlockedCallLogFragment blockedCallLogFragment = new BlockedCallLogFragment();
-                        fragments.put(position, blockedCallLogFragment);
-                        return blockedCallLogFragment;
+                        QuietedCallLogFragment quietedCallLogFragment = new QuietedCallLogFragment();
+                        fragments.put(position, quietedCallLogFragment);
+                        return quietedCallLogFragment;
             }
 
             return null;
@@ -158,9 +158,9 @@ public class ViewPagerContainerFragment extends Fragment {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "Blocked Numbers";
+                    return "Registered Numbers";
                 case 1:
-                    return "Blocked Calls";
+                    return "Quieted Calls";
             }
 
             return null;

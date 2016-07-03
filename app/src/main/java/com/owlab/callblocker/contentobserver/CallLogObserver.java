@@ -17,9 +17,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
-import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
+import com.owlab.callblocker.contentprovider.CallQuieterDbHelper;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
 
 /**
  * Created by ernest on 6/13/16.
@@ -31,7 +31,7 @@ public class CallLogObserver extends ContentObserver {
 
     private Context context;
     private ContentResolver contentResolver;
-    private CallBlockerDbHelper callBlockerDbHelper;
+    private CallQuieterDbHelper callQuieterDbHelper;
 
     private Service starter;
 
@@ -46,7 +46,7 @@ public class CallLogObserver extends ContentObserver {
         super(handler);
         this.context = starter.getBaseContext();
         this.contentResolver = context.getContentResolver();
-        this.callBlockerDbHelper = new CallBlockerDbHelper(context);
+        this.callQuieterDbHelper = new CallQuieterDbHelper(context);
         this.starter = starter;
 
         this.phoneNumber = args.getString(CONS.INTENT_KEY_PHONE_NUMBER);
@@ -113,7 +113,7 @@ public class CallLogObserver extends ContentObserver {
                     , callLogSelection
                     , callLogSelectionArgs
                     , callLogSelectionOrder);
-            //Cursor cursor = context.getContentResolver().query(CallLog.Calls.BLOCKED_NUMBER_URI, null, CallLog.Calls.NUMBER + " = ? ", phoneNumbers, "");
+            //Cursor cursor = context.getContentResolver().query(CallLog.Calls.REGISTERED_NUMBER_URI, null, CallLog.Calls.NUMBER + " = ? ", phoneNumbers, "");
             Log.d(TAG, ">>>>> " + cursor.getCount() + " calls found in log");
 
             int deleteCount = 0;
@@ -128,15 +128,15 @@ public class CallLogObserver extends ContentObserver {
 
                     //Defensive code
                     //Occasionally, the same call logs comes here
-                    if(!callBlockerDbHelper.logExists(number, date)) {
+                    if(!callQuieterDbHelper.logExists(number, date)) {
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerDb.COLS_BLOCKED_CALL.NUMBER, number);
-                        values.put(CallBlockerDb.COLS_BLOCKED_CALL.TYPE, type);
-                        values.put(CallBlockerDb.COLS_BLOCKED_CALL.DATE, date);
-                        values.put(CallBlockerDb.COLS_BLOCKED_CALL.DURATION, duration);
+                        values.put(CallQuieterDb.COLS_QUIETED_CALL.NUMBER, number);
+                        values.put(CallQuieterDb.COLS_QUIETED_CALL.TYPE, type);
+                        values.put(CallQuieterDb.COLS_QUIETED_CALL.DATE, date);
+                        values.put(CallQuieterDb.COLS_QUIETED_CALL.DURATION, duration);
 
-                        //context.getContentResolver().insert(CallBlockerProvider.BLOCKED_CALL_URI, values);
-                        contentResolver.insert(CallBlockerProvider.BLOCKED_CALL_URI, values);
+                        //context.getContentResolver().insert(CallQuieterContentProvider.QUIETED_CALL_URI, values);
+                        contentResolver.insert(CallQuieterContentProvider.QUIETED_CALL_URI, values);
                     }
 
                     //delete if needed

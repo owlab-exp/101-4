@@ -23,9 +23,9 @@ import android.widget.Toast;
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
-import com.owlab.callblocker.contentprovider.CallBlockerDbHelper;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
+import com.owlab.callblocker.contentprovider.CallQuieterDbHelper;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
 
 /**
  * Created by ernest on 6/26/16.
@@ -83,19 +83,19 @@ public class AddByManualFragment extends Fragment {
                     Toast.makeText(getActivity(), "Empty number", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                CallBlockerDbHelper callBlockerDbHelper = new CallBlockerDbHelper(getActivity());
-                if(callBlockerDbHelper.isBlockedNumber(phoneNumber)) {
+                CallQuieterDbHelper callQuieterDbHelper = new CallQuieterDbHelper(getActivity());
+                if(callQuieterDbHelper.isBlockedNumber(phoneNumber)) {
                     //already exists in the table
                     Toast.makeText(getActivity(), "The number already exists", Toast.LENGTH_SHORT).show();
                     return;
                 } else {
 
                     ContentValues values = new ContentValues();
-                    values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.PHONE_NUMBER, phoneNumber);
-                    values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, displayName);
-                    values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.MATCH_METHOD, matchMethodInt);
+                    values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER, phoneNumber);
+                    values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.DISPLAY_NAME, displayName);
+                    values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.MATCH_METHOD, matchMethodInt);
 
-                    Uri rowUri = getActivity().getContentResolver().insert(CallBlockerProvider.BLOCKED_NUMBER_URI, values);
+                    Uri rowUri = getActivity().getContentResolver().insert(CallQuieterContentProvider.REGISTERED_NUMBER_URI, values);
 
                     if(Long.parseLong(rowUri.getLastPathSegment()) > 0) {
                         Toast.makeText(getActivity(), phoneNumber + " added", Toast.LENGTH_SHORT).show();

@@ -15,8 +15,8 @@ import android.widget.EditText;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.R;
-import com.owlab.callblocker.contentprovider.CallBlockerDb;
-import com.owlab.callblocker.contentprovider.CallBlockerProvider;
+import com.owlab.callblocker.contentprovider.CallQuieterDb;
+import com.owlab.callblocker.contentprovider.CallQuieterContentProvider;
 
 /**
  * Created by ernest on 5/15/16.
@@ -51,8 +51,8 @@ public class EditDisplayNameDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         //final EditTextAddNumberDialogFragment input = new EditText(getActivity());
         Bundle arguments = getArguments();
-        final int _id = arguments.getInt(CONS.ARG_KEY_BLOCKED_NUMBER_ID);
-        final String phoneNumber = arguments.getString(CONS.ARG_KEY_BLOCKED_NUMBER);
+        final int _id = arguments.getInt(CONS.ARG_KEY_REGISTERED_NUMBER_ID);
+        final String phoneNumber = arguments.getString(CONS.ARG_KEY_REGISTERED_NUMBER);
         final String displayName = arguments.getString(CONS.ARG_KEY_DISPLAY_NAME);
 
         View diagView = inflater.inflate(R.layout.edit_display_name_dialog_layout, null);
@@ -78,11 +78,11 @@ public class EditDisplayNameDialogFragment extends DialogFragment {
                         //mUpdateDescriptionDialogListener.onUpdateDescriptionUpdateClick(_id, displayNameET.getText().toString());
                         dialog.dismiss();
                         ContentValues values = new ContentValues();
-                        values.put(CallBlockerDb.COLS_BLOCKED_NUMBER.DISPLAY_NAME, displayNameET.getText().toString());
-                        int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallBlockerProvider.BLOCKED_NUMBER_URI, values, CallBlockerDb.COLS_BLOCKED_NUMBER._ID + "=" + _id, null);
+                        values.put(CallQuieterDb.COLS_REGISTERED_NUMBER.DISPLAY_NAME, displayNameET.getText().toString());
+                        int updateCount = getTargetFragment().getActivity().getContentResolver().update(CallQuieterContentProvider.REGISTERED_NUMBER_URI, values, CallQuieterDb.COLS_REGISTERED_NUMBER._ID + "=" + _id, null);
                         if(updateCount > 0) {
                             Snackbar.make(getTargetFragment().getView(), "Display name changed", Snackbar.LENGTH_SHORT).show();
-                            getTargetFragment().getActivity().getContentResolver().notifyChange(CallBlockerProvider.BLOCKED_NUMBER_URI, null);
+                            getTargetFragment().getActivity().getContentResolver().notifyChange(CallQuieterContentProvider.REGISTERED_NUMBER_URI, null);
                         }
                     }
                 })

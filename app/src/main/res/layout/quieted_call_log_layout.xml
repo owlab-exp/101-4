@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.BlockedNumberListFragment">
+    tools:context=".fragment.QuietedCallLogFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,17 +29,16 @@
 
     <android.support.design.widget.FloatingActionButton
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/fab_add"
+        android:id="@+id/fab_done"
         app:fabSize="normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/fab_add_48"
+        android:src="@drawable/fab_delete_48"
         app:backgroundTint="@color/colorAccent"
         />
 </android.support.design.widget.CoordinatorLayout>
 <!-- // reserve
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@android:color/holo_purple"
 -->
