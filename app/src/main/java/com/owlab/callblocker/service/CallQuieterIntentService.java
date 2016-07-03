@@ -7,13 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.owlab.callblocker.CONS;
 import com.owlab.callblocker.MainActivity;
@@ -142,17 +139,18 @@ public class CallQuieterIntentService extends IntentService {
             //handleActionStatusbarNotificationOn(false);
             //handleActionStatusbarNotificationOn();
             //resultReceiver.send(CONS.RESULT_SUCCESS, null);
-            startActionQuieterOn(getBaseContext(), new ResultReceiver(new Handler()) {
+            startActionQuieterOn(getBaseContext(), null);
+            //startActionQuieterOn(getBaseContext(), new ResultReceiver(new Handler()) {
 
-                @Override
-                protected void onReceiveResult(int resultCode, Bundle resultData) {
-                    if(resultCode == CONS.RESULT_SUCCESS) {
-                        Toast.makeText(getBaseContext(), "CallQuieter started successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getBaseContext(), "CallQuieter could not start", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            //    @Override
+            //    protected void onReceiveResult(int resultCode, Bundle resultData) {
+            //        if(resultCode == CONS.RESULT_SUCCESS) {
+            //            Toast.makeText(getBaseContext(), "CallQuieter started successfully", Toast.LENGTH_SHORT).show();
+            //        } else {
+            //            Toast.makeText(getBaseContext(), "CallQuieter could not start", Toast.LENGTH_SHORT).show();
+            //        }
+            //    }
+            //});
         }
     }
 
@@ -160,11 +158,11 @@ public class CallQuieterIntentService extends IntentService {
         Log.d(TAG, "handleActionQuieterOn called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        // If the blocking is already on
-        if(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
-            resultReceiver.send(CONS.RESULT_FAIL, null);
-            return;
-        }
+        //// If the blocking is already on
+        //if(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
+        //    resultReceiver.send(CONS.RESULT_FAIL, null);
+        //    return;
+        //}
 
         Log.d(TAG, "Start Call Quieter Service...");
         getBaseContext().startService(new Intent(getBaseContext(), CallQuieterService.class));
@@ -172,18 +170,20 @@ public class CallQuieterIntentService extends IntentService {
         sharedPreferences.edit().putBoolean(CONS.PREF_KEY_BLOCKING_ON, true).commit();
         //handleActionStatusbarNotificationOn(true);
         handleActionStatusbarNotificationOn();
-        resultReceiver.send(CONS.RESULT_SUCCESS, null);
+        if(resultReceiver != null) {
+            resultReceiver.send(CONS.RESULT_SUCCESS, null);
+        }
     }
 
     private void handleActionQuieterOff(ResultReceiver resultReceiver) {
         Log.d(TAG, "handleActionQuieterOff called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
-        // If the blocking is already off
-        if(!sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
-            resultReceiver.send(CONS.RESULT_FAIL, null);
-            return;
-        }
+        //// If the blocking is already off
+        //if(!sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
+        //    resultReceiver.send(CONS.RESULT_FAIL, null);
+        //    return;
+        //}
 
         Log.d(TAG, "Stop Call Quieter Service...");
 

@@ -119,22 +119,22 @@ public class MainActivity extends AppCompatActivity {
         //getSupportFragmentManager().putFragment(outState, "nextFragmentTag", fragment);
         super.onSaveInstanceState(outState);
 
-        Log.d(TAG, ">>>>> onSaveInstanceState called");
+        //Log.d(TAG, ">>>>> onSaveInstanceState called");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Log.d(TAG, ">>>>> onResume");
+        //Log.d(TAG, ">>>>> onResume");
     }
 
     @Override
     public void onPostResume() {
         super.onPostResume();
-        Log.d(TAG, ">>>>> onPostResume");
-        Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
-        Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
+        //Log.d(TAG, ">>>>> onPostResume");
+        //Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
+        //Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
 
         if(onActivityResultCalled) {
             showFragmentAfterOnActivityResult(nextFragmentTag);
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onNewIntent(Intent intent) {
-        Log.d(TAG, ">>>>> new intent: " + intent.toString());
+        //Log.d(TAG, ">>>>> new intent: " + intent.toString());
         //forward for further processing in onPostResume
         setIntent(intent);
         newIntentArrived = true;
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        Log.d(TAG, ">>>>> onPause");
+        //Log.d(TAG, ">>>>> onPause");
 
         //currentFragmentTag = null;
         //nextFragmentTag = null;
@@ -217,7 +217,11 @@ public class MainActivity extends AppCompatActivity {
         MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
         Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
 
-        mainOnOffSwitch.setChecked(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false));
+        boolean mainOnOffSwichChecked = sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false);
+        if(mainOnOffSwichChecked) CallQuieterIntentService.startActionQuieterOn(this, new ResultReceiver(new Handler()) {
+           //
+        });
+        mainOnOffSwitch.setChecked(mainOnOffSwichChecked);
         mainOnOffSwitch.setOnCheckedChangeListener(new FUNS.BlockingSwitchChangeListener(this));
 
         return super.onCreateOptionsMenu(menu);

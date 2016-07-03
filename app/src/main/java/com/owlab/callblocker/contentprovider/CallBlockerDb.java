@@ -6,7 +6,6 @@ import com.owlab.callblocker.CONS;
 
 /**
  * Created by ernest on 5/17/16.
- * TODO save and restore phone numbers to block
  */
 public class CallBlockerDb {
     public static final String TBL_BLOCKED_NUMBER = "BLOCKED_NUMBER";

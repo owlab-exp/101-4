@@ -19,10 +19,11 @@ import com.owlab.callblocker.listener.CallQuieterPhoneStateListener;
 public class CallQuieterService extends Service {
     private static final String TAG = CallQuieterService.class.getSimpleName();
 
-    TelephonyManager telManager;
-    CallQuieterPhoneStateListener phoneStateListener;
-    CallQuieterContentObserver callQuieterContentObserver;
+    private TelephonyManager telManager;
+    private CallQuieterPhoneStateListener phoneStateListener;
+    private CallQuieterContentObserver callQuieterContentObserver;
 
+    private boolean started = false;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -31,16 +32,21 @@ public class CallQuieterService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, ">>>>> onStartCommand called");
+        Log.d(TAG, ">>>>>> intent action: " + (intent != null ? intent.getAction() : "intent is null"));
 
+        if(!started) {
+            Log.d(TAG, ">>>>> Registering PHONE STATE LISTENER ...");
+            telManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            phoneStateListener = new CallQuieterPhoneStateListener(getBaseContext());
+            callQuieterContentObserver = new CallQuieterContentObserver(new Handler(), phoneStateListener);
 
-        Log.d(TAG, ">>>>> Registering PHONE STATE LISTENERd...");
-        telManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        phoneStateListener = new CallQuieterPhoneStateListener(getBaseContext());
-        callQuieterContentObserver = new CallQuieterContentObserver(new Handler(), phoneStateListener);
+            getContentResolver().registerContentObserver(CallBlockerProvider.BLOCKED_NUMBER_URI, true, callQuieterContentObserver);
+            telManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
-        getContentResolver().registerContentObserver(CallBlockerProvider.BLOCKED_NUMBER_URI, true, callQuieterContentObserver);
-        telManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+            started = true;
+        } else {
+            Log.d(TAG, ">>>>> Call quieter service already started");
+        }
 
         return START_STICKY;
     }
@@ -49,7 +55,7 @@ public class CallQuieterService extends Service {
     public void onDestroy() {
         Log.d(TAG, ">>>>> onDestroy called");
 
-        Log.d(TAG, ">>>>> Unregistering PHONE STATE LISTENERd...");
+        Log.d(TAG, ">>>>> Unregistering PHONE STATE LISTENER ...");
         getContentResolver().unregisterContentObserver(callQuieterContentObserver);
         telManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
     }

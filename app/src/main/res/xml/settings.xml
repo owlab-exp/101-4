@@ -6,8 +6,8 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/settings_key_show_app_notification_icon"
-            android:summary="Show app icon in the status bar while blocking is on"
-            android:title="Show statusbar icon" />
+            android:summary="Show app icon in the status bar while quieter is on"
+            android:title="Show App Icon while running" />
         <com.owlab.callblocker.custom.SpinnerPreference
             android:key="@string/settings_key_country_and_code"
             android:summary="System default"

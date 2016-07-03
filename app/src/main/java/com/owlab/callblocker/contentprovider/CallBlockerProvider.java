@@ -92,7 +92,6 @@ public class CallBlockerProvider extends ContentProvider {
                 break;
 
             default:
-                //TODO what needed for non-matching uri?
                 Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
         }
         return type;
@@ -124,7 +123,6 @@ public class CallBlockerProvider extends ContentProvider {
 
             default:
                 Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
-                //TODO no supported uri, how to handle?
         }
 
         return cursor;
@@ -150,7 +148,6 @@ public class CallBlockerProvider extends ContentProvider {
                     resultUri = Uri.parse(CallBlockerDb.TBL_BLOCKED_CALL + "/" + rowId);
                     break;
                 default:
-                    //TODO make default
                     Log.e(TAG, ">>>>> unsupported uri: " + uri.toString());
             }
         } catch(SQLiteConstraintException e) {
