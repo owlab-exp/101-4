@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.owlab.callblocker">
+    package="com.owlab.callquieter">
 
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -27,7 +27,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity"
+        <activity android:name="com.owlab.callquieter.SplashActivity"
             android:theme="@style/SplashTheme"
             android:label="@string/app_name"
             >
@@ -37,14 +37,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.owlab.callquieter.MainActivity"
             android:launchMode="singleTop"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:name=".AddSourceSelectionActivity"
+            android:name="com.owlab.callquieter.AddSourceSelectionActivity"
             android:theme="@style/AppTheme.NoActionBar.Translucent.Fade"
             >
             <intent-filter>
@@ -53,10 +53,10 @@
         </activity>
 
         <provider
-            android:name=".contentprovider.CallQuieterContentProvider"
-            android:authorities="com.owlab.callblocker.contentprovider" />
+            android:name="com.owlab.callquieter.contentprovider.CallQuieterContentProvider"
+            android:authorities="com.owlab.callquieter.contentprovider" />
 
-        <receiver android:name=".receiver.BootCompletedIntentReceiver">
+        <receiver android:name="com.owlab.callquieter.receiver.BootCompletedIntentReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -67,10 +67,10 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.owlab.callblocker.WARM_UP"/>
+                <action android:name="com.owlab.callquieterallquieter.WARM_UP"/>
             </intent-filter>
             <intent-filter>
-                <action android:name="com.owlab.callblocker.UPDATE_MATCH_PATTERN"/>
+                <action android:name="com.owlab.callquieterallquieter.UPDATE_MATCH_PATTERN"/>
             </intent-filter>
         </receiver>
 
@@ -79,13 +79,13 @@
             android:exported="false" />
         -->
         <service
-            android:name=".service.CallQuieterIntentService"
+            android:name="com.owlab.callquieter.service.CallQuieterIntentService"
             android:exported="false" />
         <service
-            android:name=".service.CallQuieterService"
+            android:name="com.owlab.callquieter.service.CallQuieterService"
             android:exported="false" />
         <service
-            android:name=".service.CallLogObserverStartService"
+            android:name="com.owlab.callquieter.service.CallLogObserverStartService"
             android:exported="false" />
     </application>
 

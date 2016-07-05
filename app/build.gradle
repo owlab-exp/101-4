@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.owlab.callblocker"
+        applicationId "com.owlab.callquieter"
         minSdkVersion 21
         targetSdkVersion 23
         versionCode 1

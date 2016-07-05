@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.owlab.callblocker.MainActivity">
+    tools:context="com.owlab.callquieter.MainActivity">
     <item
         android:id="@+id/menuitem_main_onoff_switch_layout"
         app:actionLayout="@layout/main_onoff_toggle_button_layout"
