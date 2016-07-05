@@ -25,6 +25,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import com.owlab.callquieter.CONS;
 import com.owlab.callquieter.MainActivity;
 import com.owlab.callquieter.R;
 import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
+import com.owlab.callquieter.util.FabMoveOnListScroll;
 import com.owlab.callquieter.util.Utils;
 import com.owlab.callquieter.contentprovider.CallQuieterDb;
 import com.owlab.callquieter.contentprovider.CallQuieterDbHelper;
@@ -49,7 +51,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     private static final int CONTACTS_LOADER = 0;
     //private boolean isFabRotated = false;
 
-    FloatingActionButton enterFab;
+    FloatingActionButton doneFab;
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
@@ -91,8 +93,8 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         View view = inflater.inflate(R.layout.add_from_contacts_layout, container, false);
 
 
-        enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
-        enterFab.setOnClickListener(new View.OnClickListener() {
+        doneFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
+        doneFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(selectedPhoneMap.size() > 0) {
@@ -133,11 +135,21 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        final ListView listView = getListView();
+        listView.setOnScrollListener(new FabMoveOnListScroll(doneFab));
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
         //if(isFabRotated) {
-        enterFab.startAnimation(rotateForwardAppear);
+        doneFab.startAnimation(rotateForwardAppear);
         getListView().setOnItemClickListener(this);
 
         MainActivity mainActivity = (MainActivity)getActivity();
@@ -165,7 +177,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
     public void onPause() {
         super.onPause();
 
-        enterFab.startAnimation(rotateBackwardDisappear);
+        doneFab.startAnimation(rotateBackwardDisappear);
     }
 
     //Provider COLUMNS

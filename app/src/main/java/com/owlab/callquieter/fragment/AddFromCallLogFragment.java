@@ -25,6 +25,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ import com.owlab.callquieter.R;
 import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
 import com.owlab.callquieter.contentprovider.CallQuieterDb;
 import com.owlab.callquieter.contentprovider.CallQuieterDbHelper;
+import com.owlab.callquieter.util.FabMoveOnListScroll;
 import com.owlab.callquieter.util.Utils;
 
 import java.text.SimpleDateFormat;
@@ -52,7 +54,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     private static final int CALL_LOG_LOADER = 0;
     //private boolean isFabRotated = false;
 
-    FloatingActionButton enterFab;
+    FloatingActionButton doneFab;
     Animation rotateForwardAppear;
     Animation rotateBackwardDisappear;
 
@@ -102,8 +104,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.add_from_call_log_layout, container, false);
 
-        enterFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
-        enterFab.setOnClickListener(new View.OnClickListener() {
+        doneFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
+        doneFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (selectedNumberMap.size() > 0) {
@@ -148,11 +150,21 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        final ListView listView = getListView();
+        listView.setOnScrollListener(new FabMoveOnListScroll(doneFab));
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
         //if(isFabRotated) {
-        enterFab.startAnimation(rotateForwardAppear);
+        doneFab.startAnimation(rotateForwardAppear);
         getListView().setOnItemClickListener(this);
 
         MainActivity mainActivity = (MainActivity)getActivity();
@@ -167,7 +179,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     public void onPause() {
         super.onPause();
 
-        enterFab.startAnimation(rotateBackwardDisappear);
+        doneFab.startAnimation(rotateBackwardDisappear);
     }
 
     final String[] COLUMNS = {

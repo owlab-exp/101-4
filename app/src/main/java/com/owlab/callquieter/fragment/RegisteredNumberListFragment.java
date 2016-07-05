@@ -21,6 +21,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -28,9 +29,10 @@ import android.widget.TextView;
 import com.owlab.callquieter.AddSourceSelectionActivity;
 import com.owlab.callquieter.CONS;
 import com.owlab.callquieter.R;
-import com.owlab.callquieter.contentprovider.CallQuieterDb;
-import com.owlab.callquieter.util.Utils;
 import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
+import com.owlab.callquieter.contentprovider.CallQuieterDb;
+import com.owlab.callquieter.util.FabMoveOnListScroll;
+import com.owlab.callquieter.util.Utils;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -41,6 +43,7 @@ public class RegisteredNumberListFragment extends ListFragment implements Loader
     private SimpleCursorAdapter cursorAdapter;
     private static final int DB_LOADER = 0;
     private boolean isFabRotated = false;
+    private FloatingActionButton fab;
 
     public RegisteredNumberListFragment() {
         Log.d(TAG, ">>>>> instantiated");
@@ -59,7 +62,8 @@ public class RegisteredNumberListFragment extends ListFragment implements Loader
         View view = inflater.inflate(R.layout.registered_number_list_layout, container, false);
 
         //Floating Action Button
-        final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        //final FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,12 +82,25 @@ public class RegisteredNumberListFragment extends ListFragment implements Loader
             }
         });
 
+
+
+
         //Animation fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         //fab.startAnimation(fabOpen);
 
         setLoader(view);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+        final ListView listView = getListView();
+        listView.setOnScrollListener(new FabMoveOnListScroll(fab));
+
     }
 
     @Override
