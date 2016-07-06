@@ -536,7 +536,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
-        //adRequestBuilder.addTestDevice()
+        //My Android Phone for test
+        adRequestBuilder.addTestDevice("E03A1FE80C73BF8D4F7E11299269201E");
+
         AdRequest adRequest = adRequestBuilder.build();
         adView.loadAd(adRequest);
     }
