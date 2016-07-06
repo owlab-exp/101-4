@@ -22,7 +22,7 @@ public final class CONS {
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CALL_LOG = 20;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_SMS_LOG = 25;
     public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_CONTACTS = 30;
-    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS = 35;
+    public static final int REQUEST_CODE_ASK_PERMISSION_FOR_AD_AND_READ_QUIETED_CALLS = 35;
 
     public static final int RESULT_SUCCESS = 0;
     public static final int RESULT_FAIL = -1;

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Call Quieter</string>
+    <string name="app_name">Call Quieter Lite</string>
     <string name="action_settings">Settings</string>
     <string name="fab_label_add_from_call_log">Add from Call log</string>
     <string name="title_settings">Settings</string>
@@ -16,5 +16,7 @@
         <item>Start with</item>
     </string-array>
 
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- Banner Ad from MobAd -->
+    <string name="banner_ad_app_id">ca-app-pub-6340229742234388~4640977558</string>
+    <string name="banner_ad_unit_id">ca-app-pub-6340229742234388/6117710751</string>
 </resources>

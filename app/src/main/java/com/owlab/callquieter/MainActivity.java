@@ -18,9 +18,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.owlab.callquieter.fragment.AddByManualFragment;
 import com.owlab.callquieter.fragment.AddFromCallLogFragment;
 import com.owlab.callquieter.fragment.AddFromContactsFragment;
@@ -44,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean onActivityResultCalled;
     private boolean onRequestPermissionsResultCalled;
 
+    private AdView adView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +68,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
-                PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+        if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
+                || PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED
+                || PermissionChecker.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
+                || PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED
+                ) {
+
             List<String> neededPermissionList = new ArrayList<>();
             boolean shouldShowRequestPermissionRationale = false;
+
             if(PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
                     shouldShowRequestPermissionRationale = true;
@@ -80,6 +95,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 neededPermissionList.add(Manifest.permission.CALL_PHONE);
             }
+            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET)) {
+                    shouldShowRequestPermissionRationale = true;
+                }
+                neededPermissionList.add(Manifest.permission.INTERNET);
+            }
+            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_NETWORK_STATE)) {
+                    shouldShowRequestPermissionRationale = true;
+                }
+                neededPermissionList.add(Manifest.permission.ACCESS_NETWORK_STATE);
+            }
 
             final String[] neededPermissions = new String[neededPermissionList.size()];
             neededPermissionList.toArray(neededPermissions);
@@ -91,18 +118,24 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(MainActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS);
+                                ActivityCompat.requestPermissions(MainActivity.this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_AD_AND_READ_QUIETED_CALLS);
                             }
                         },
                         null);
             } else {
-                ActivityCompat.requestPermissions(this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS);
+                ActivityCompat.requestPermissions(this, neededPermissions, CONS.REQUEST_CODE_ASK_PERMISSION_FOR_AD_AND_READ_QUIETED_CALLS);
             }
         } else {
-            if(!recovered)
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG)
-                    .commit();
+
+            //
+            initializeAd();
+
+            if(!recovered) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG)
+                        .commit();
+
+            }
         }
     }
 
@@ -123,10 +156,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        //Log.d(TAG, ">>>>> onPause");
+        adView.pause();
+
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-
         //Log.d(TAG, ">>>>> onResume");
+        adView.resume();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+
+        super.onDestroy();
     }
 
     @Override
@@ -135,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         //Log.d(TAG, ">>>>> onPostResume");
         //Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
         //Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
+
 
         if(onActivityResultCalled) {
             showFragmentAfterOnActivityResult(nextFragmentTag);
@@ -188,16 +237,6 @@ public class MainActivity extends AppCompatActivity {
         //forward for further processing in onPostResume
         setIntent(intent);
         newIntentArrived = true;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        //Log.d(TAG, ">>>>> onPause");
-
-        //currentFragmentTag = null;
-        //nextFragmentTag = null;
     }
 
     private Menu menu;
@@ -354,8 +393,12 @@ public class MainActivity extends AppCompatActivity {
         boolean permissionCallPhoneGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
         boolean permissionReadCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
         boolean permissionWriteCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
-        boolean permissionReadBlockedCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
-                && PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionForAdAndnReadQuietedCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED
+                ;
+
         boolean permissionBlockHiddenNumberGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
         boolean permissionBlockUnknownNumberGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                 && PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
@@ -366,8 +409,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this);
 
         switch (requestCode) {
-            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_READ_QUIETED_CALLS:
-                if(permissionReadBlockedCallLogGranted) {
+            case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_AD_AND_READ_QUIETED_CALLS:
+                if(permissionForAdAndnReadQuietedCallLogGranted) {
+                    //
+                    initializeAd();
                     //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG).commit();
                     nextFragmentTag = ViewPagerContainerFragment.TAG;
                     onRequestPermissionsResultCalled = true;
@@ -470,5 +515,29 @@ public class MainActivity extends AppCompatActivity {
             default:
                 Log.e(TAG, ">>>>> unsupported request code: " + requestCode);
         }
+    }
+
+    private void initializeAd() {
+        //Initialize AdMob
+        MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_app_id));
+        adView = (AdView)findViewById(R.id.adView);
+        adView.setAdListener(new AdListener() {
+            private final String TAG = AdListener.class.getSimpleName();
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                //Log.d(TAG, ">>>>> failed to load, errorCode: " + errorCode);
+                //To minimize adview height when laod failed
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) adView.getLayoutParams();
+                layoutParams.height = 0;
+                adView.setLayoutParams(layoutParams);
+
+                super.onAdFailedToLoad(errorCode);
+
+            }
+        });
+        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+        //adRequestBuilder.addTestDevice()
+        AdRequest adRequest = adRequestBuilder.build();
+        adView.loadAd(adRequest);
     }
 }
