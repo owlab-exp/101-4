@@ -26,9 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <!--
+    <!--
     <include layout="@layout/content_main" />
     -->
+        <!-- main fragment container - content area -->
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/fragment_container"
@@ -36,16 +37,22 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/adView"
             android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <!-- a border for seperation of AdView -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignBottom="@+id/fragment_container"
+            android:layout_centerVertical="true"
+            android:background="@color/colorPrimarylight"
             />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             ads:adSize="SMART_BANNER"
-            app:adUnitId="@string/banner_ad_unit_id"
-            />
+            app:adUnitId="@string/banner_ad_unit_id" />
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

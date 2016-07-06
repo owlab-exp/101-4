@@ -1,7 +1,8 @@
 package com.owlab.callquieter.util;
 
+import android.content.res.Resources;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AbsListView;
 
@@ -55,7 +56,7 @@ public class FabMoveOnListScroll implements AbsListView.OnScrollListener {
     }
 
     private void onUpScroll() {
-        Log.d(TAG, ">>>>> up scrolling");
+        //Log.d(TAG, ">>>>> up scrolling");
         if(fabHidden) {
 
             fab.animate().cancel();
@@ -65,11 +66,14 @@ public class FabMoveOnListScroll implements AbsListView.OnScrollListener {
     }
 
     private void onDownScroll() {
-        Log.d(TAG, ">>>>> down scrolling");
+        //Log.d(TAG, ">>>>> down scrolling");
         if(!fabHidden) {
-            int fabHeifht = fab.getHeight();
+            //FAB margin is currently 16dp
+            float marginHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, Resources.getSystem().getDisplayMetrics());
+            float fabHeight = fab.getHeight();
+            //Log.d(TAG, ">>>>> marginHeight: " + marginHeight + ", fabHeight: " + fabHeight);
             fab.animate().cancel();
-            fab.animate().translationYBy(fabHeifht + 16);
+            fab.animate().translationYBy(fabHeight + marginHeight);
             fabHidden = true;
         }
     }
