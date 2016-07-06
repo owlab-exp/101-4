@@ -17,7 +17,6 @@ public class FabMoveOnListScroll implements AbsListView.OnScrollListener {
     private int oldFistVisibleItem;
 
     private int fabInitY;
-    private int fabScrollDistance = 200;
     private boolean fabHidden;
 
     public FabMoveOnListScroll(FloatingActionButton fab) {
@@ -68,8 +67,9 @@ public class FabMoveOnListScroll implements AbsListView.OnScrollListener {
     private void onDownScroll() {
         Log.d(TAG, ">>>>> down scrolling");
         if(!fabHidden) {
+            int fabHeifht = fab.getHeight();
             fab.animate().cancel();
-            fab.animate().translationYBy(fabScrollDistance);
+            fab.animate().translationYBy(fabHeifht + 16);
             fabHidden = true;
         }
     }
