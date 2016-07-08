@@ -13,8 +13,26 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix ".debug"
+        }
+
+        jnidebug {
+            initWith debug
+            applicationIdSuffix ".jndidebug"
+            jniDebuggable true
+        }
+    }
+    productFlavors {
+        lite {
+            versionName "1.0-lite"
+        }
+        pro {
+            versionName "1.0-pro"
         }
     }
 }

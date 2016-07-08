@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "431799208208",
+    "firebase_url": "https://call-quieter-lite.firebaseio.com",
+    "project_id": "call-quieter-lite",
+    "storage_bucket": "call-quieter-lite.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431799208208:android:12074e1ae78ff75a",
+        "android_client_info": {
+          "package_name": "com.owlab.callquieter.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "431799208208-o8k022v6f0dtvl7d0hdo41stdob1hm4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY-jc4ALDyGTIrYjIVmqUm6dAsWYtKQ6I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
