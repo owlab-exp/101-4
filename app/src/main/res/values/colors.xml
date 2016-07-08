@@ -18,9 +18,5 @@
     <color name="colorPrimarylight">#D1C4E9</color>
     <color name="colorAccent">#009688</color>
     <color name="colorAccentGrey">#607d8b</color>
-    <color name="colorPrimaryText">#212121</color>
-    <color name="colorSecondaryText">#727272</color>
-    <color name="colorIcons">#FFFFFF</color>
-    <color name="colorDivider">#B6B6B6</color>
 
 </resources>

@@ -11,11 +11,6 @@
     <string name="fab_label_add_from_contacts">Add from Contacts</string>
     <string name="fab_label_add_by_manual">Add by Manual</string>
 
-    <string-array name="spinner_match_method_items">
-        <item>Exact match</item>
-        <item>Start with</item>
-    </string-array>
-
     <!-- Banner Ad from MobAd -->
     <string name="banner_ad_app_id">ca-app-pub-6340229742234388~4640977558</string>
     <string name="banner_ad_unit_id">ca-app-pub-6340229742234388/6117710751</string>

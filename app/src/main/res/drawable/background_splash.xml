@@ -9,7 +9,7 @@
         >
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ic_launcher_xxxhdpi"
+            android:src="@drawable/ic_splash"
             />
     </item>
 </layer-list>

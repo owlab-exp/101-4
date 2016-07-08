@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -231,7 +232,7 @@ public class CallQuieterIntentService extends IntentService {
         int count = sharedPreferences.getInt(getString(R.string.status_key_notification_count), 0);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_drawer_callquieter))
                 .setSmallIcon(R.drawable.ic_stat_callquieter)
                 .setContentTitle(getString(R.string.app_name) + " running")
                 .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " quieted")
