@@ -5,6 +5,6 @@
             <solid android:color="@color/colorAccent" />
         </shape>
     </item>
-    <item android:drawable="@color/colorPrimary" />
+    <item android:drawable="@android:color/black" />
 
 </selector>
