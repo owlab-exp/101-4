@@ -17,8 +17,8 @@
             android:layout_gravity="top"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
-            android:background="@color/colorPrimarylight"
-            android:textColor="@color/colorPrimaryDark"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
             />
 
     </android.support.v4.view.ViewPager>
@@ -27,6 +27,9 @@
 <!--
         <android.support.v4.view.PagerTitleStrip
             android:id="@+id/pager_title_strip"
+
+            android:background="@color/colorPrimarylight"
+            android:textColor="@color/colorPrimaryDark"
 
             android:background="#e1bee7"
             android:textColor="#4a148c"

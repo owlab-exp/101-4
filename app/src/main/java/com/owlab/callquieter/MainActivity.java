@@ -1,6 +1,7 @@
 package com.owlab.callquieter;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -300,6 +301,12 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragment_container, settingsFragment, SettingsFragment.TAG)
                         .addToBackStack(ViewPagerContainerFragment.TAG)
                         .commit();
+                return true;
+            case R.id.menuitem_help:
+                Dialog helpDialog = new Dialog(this);
+                helpDialog.setTitle("Tips");
+                helpDialog.setCancelable(true);
+                helpDialog.show();
                 return true;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
