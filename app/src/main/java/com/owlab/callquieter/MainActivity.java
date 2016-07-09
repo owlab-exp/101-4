@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -18,10 +19,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -45,6 +50,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private Toolbar toolbar;
+
     private String nextFragmentTag;
     private boolean onActivityResultCalled;
     private boolean onRequestPermissionsResultCalled;
@@ -58,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + savedInstanceState);
 
         boolean recovered = false;
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             recovered = true;
         }
 
-        if(!recovered) {
+        if (!recovered) {
             //Initialize app
             FUNS.initializeApp(this);
         }
@@ -70,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
@@ -83,25 +89,25 @@ public class MainActivity extends AppCompatActivity {
             List<String> neededPermissionList = new ArrayList<>();
             boolean shouldShowRequestPermissionRationale = false;
 
-            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
                     shouldShowRequestPermissionRationale = true;
                 }
                 neededPermissionList.add(Manifest.permission.READ_CONTACTS);
             }
-            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
                     shouldShowRequestPermissionRationale = true;
                 }
                 neededPermissionList.add(Manifest.permission.CALL_PHONE);
             }
-            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET)) {
                     shouldShowRequestPermissionRationale = true;
                 }
                 neededPermissionList.add(Manifest.permission.INTERNET);
             }
-            if(PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_NETWORK_STATE)) {
                     shouldShowRequestPermissionRationale = true;
                 }
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
             final String[] neededPermissions = new String[neededPermissionList.size()];
             neededPermissionList.toArray(neededPermissions);
-            if(shouldShowRequestPermissionRationale) {
+            if (shouldShowRequestPermissionRationale) {
 
                 FUNS.showMessageWithOKCancel(
                         this,
@@ -130,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             //
             initializeAd();
 
-            if(!recovered) {
+            if (!recovered) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG)
                         .commit();
@@ -168,6 +174,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //Log.d(TAG, ">>>>> onResume");
         adView.resume();
+
+
     }
 
     @Override
@@ -185,17 +193,17 @@ public class MainActivity extends AppCompatActivity {
         //Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
 
 
-        if(onActivityResultCalled) {
+        if (onActivityResultCalled) {
             showFragmentAfterOnActivityResult(nextFragmentTag);
             onActivityResultCalled = false;
         }
 
-        if(onRequestPermissionsResultCalled) {
+        if (onRequestPermissionsResultCalled) {
             showFragmentAfterOnRequestPermissionsResult(nextFragmentTag);
             onRequestPermissionsResultCalled = false;
         }
 
-        if(newIntentArrived) {
+        if (newIntentArrived) {
             newIntentArrived = false;
             Intent intent = getIntent();
             Log.d(TAG, ">>>>> intent: " + intent.toString());
@@ -259,13 +267,18 @@ public class MainActivity extends AppCompatActivity {
         //ToggleButton mainOnOffSwitch = (ToggleButton) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
 
         boolean mainOnOffSwichChecked = sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false);
-        if(mainOnOffSwichChecked) CallQuieterIntentService.startActionQuieterOn(this, new ResultReceiver(new Handler()) {
-           //
-        });
+        if (mainOnOffSwichChecked)
+            CallQuieterIntentService.startActionQuieterOn(this, new ResultReceiver(new Handler()) {
+                //
+            });
         mainOnOffSwitch.setChecked(mainOnOffSwichChecked);
         mainOnOffSwitch.setOnCheckedChangeListener(new FUNS.BlockingSwitchChangeListener(this));
 
-        return super.onCreateOptionsMenu(menu);
+        boolean result = super.onCreateOptionsMenu(menu);
+
+        presentShowcaseForMainOnOffSwitch();
+
+        return result;
     }
 
     @Override
@@ -330,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showFragmentAfterOnActivityResult(String tag) {
         Log.d(TAG, ">>>>> tag: " + tag);
-        if(tag == null) {
+        if (tag == null) {
             return;
         }
 
@@ -372,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showFragmentAfterOnRequestPermissionsResult(String tag) {
-        if(ViewPagerContainerFragment.TAG.equals(tag)) {
+        if (ViewPagerContainerFragment.TAG.equals(tag)) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG)
                     .commit();
@@ -396,13 +409,12 @@ public class MainActivity extends AppCompatActivity {
         boolean permissionForAdAndnReadQuietedCallLogGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED
                 && PermissionChecker.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
                 && PermissionChecker.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
-                && PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED
-                ;
+                && PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED;
 
         boolean permissionBlockHiddenNumberGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
         boolean permissionBlockUnknownNumberGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
                 && PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
-                ;
+        ;
         //boolean permissionReadContactsGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         //boolean permissionWriteContactsGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
 
@@ -410,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_AD_AND_READ_QUIETED_CALLS:
-                if(permissionForAdAndnReadQuietedCallLogGranted) {
+                if (permissionForAdAndnReadQuietedCallLogGranted) {
                     //
                     initializeAd();
                     //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ViewPagerContainerFragment(), ViewPagerContainerFragment.TAG).commit();
@@ -427,19 +439,19 @@ public class MainActivity extends AppCompatActivity {
 
                 boolean canStart = true;
 
-                if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_block_hidden_number), false) && !permissionBlockHiddenNumberGranted) {
+                if (sharedPreferences.getBoolean(this.getString(R.string.settings_key_block_hidden_number), false) && !permissionBlockHiddenNumberGranted) {
                     canStart = false;
                 }
-                if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_block_unknown_number), false) && !permissionBlockUnknownNumberGranted) {
+                if (sharedPreferences.getBoolean(this.getString(R.string.settings_key_block_unknown_number), false) && !permissionBlockUnknownNumberGranted) {
                     canStart = false;
                 }
-                if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_suppress_ringing), false) && !permissionReadPhoneStateGranted) {
+                if (sharedPreferences.getBoolean(this.getString(R.string.settings_key_suppress_ringing), false) && !permissionReadPhoneStateGranted) {
                     canStart = false;
                 }
-                if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_dismiss_call), false) && !permissionCallPhoneGranted) {
+                if (sharedPreferences.getBoolean(this.getString(R.string.settings_key_dismiss_call), false) && !permissionCallPhoneGranted) {
                     canStart = false;
                 }
-                if(sharedPreferences.getBoolean(this.getString(R.string.settings_key_delete_call_log), false) &&
+                if (sharedPreferences.getBoolean(this.getString(R.string.settings_key_delete_call_log), false) &&
                         //!(permissionReadCallLogGranted && permissionWriteCallLogGranted && permissionReadContactsGranted && permissionWriteContactsGranted)) {
                         !(permissionReadCallLogGranted && permissionWriteCallLogGranted)) {
                     canStart = false;
@@ -520,9 +532,10 @@ public class MainActivity extends AppCompatActivity {
     private void initializeAd() {
         //Initialize AdMob
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_app_id));
-        adView = (AdView)findViewById(R.id.adView);
+        adView = (AdView) findViewById(R.id.adView);
         adView.setAdListener(new AdListener() {
             private final String TAG = AdListener.class.getSimpleName();
+
             @Override
             public void onAdFailedToLoad(int errorCode) {
                 //Log.d(TAG, ">>>>> failed to load, errorCode: " + errorCode);
@@ -541,5 +554,38 @@ public class MainActivity extends AppCompatActivity {
 
         AdRequest adRequest = adRequestBuilder.build();
         adView.loadAd(adRequest);
+    }
+
+    private void presentShowcaseForMainOnOffSwitch() {
+
+        MenuItem mainOnOffSwitchLayout = menu.findItem(R.id.menuitem_main_onoff_switch_layout);
+        final Switch mainOnOffSwitch = (Switch) mainOnOffSwitchLayout.getActionView().findViewById(R.id.action_main_onoff_switch);
+
+
+        ShowcaseView scView = new ShowcaseView.Builder(this)
+                //.withNewStyleShowcase()
+                .withMaterialShowcase()
+                //.setTarget(scTarget)
+                .setTarget(new Target() {
+                    @Override
+                    public Point getPoint() {
+                        return new ViewTarget(mainOnOffSwitch).getPoint();
+                    }
+                })
+                .setContentTitle("Turn the main switch on")
+                .setContentText("You can turn the switch off at any time")
+                .setStyle(R.style.ShowcaseTheme2)
+                //.hideOnTouchOutside()
+                .replaceEndButton(R.layout.custom_showcase_button_gotit_layout)
+                //.singleShot(101l)
+                .build();
+
+        RelativeLayout.LayoutParams buttonPosition = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        buttonPosition.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        buttonPosition.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+        buttonPosition.setMargins(margin, margin, margin, margin);
+
+        scView.setButtonPosition(buttonPosition);
     }
 }
