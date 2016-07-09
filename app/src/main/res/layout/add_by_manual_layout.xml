@@ -124,9 +124,9 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_done_white_48dp"
-        app:backgroundTint="@color/colorAccent"
         app:fabSize="normal" />
 </android.support.design.widget.CoordinatorLayout><!-- // reserve
         android:layout_margin="@dimen/fab_margin"
                         android:onClick="onRadioButtonClikced"
+        app:backgroundTint="@color/colorAccent"
 -->

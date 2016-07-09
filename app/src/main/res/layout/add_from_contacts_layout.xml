@@ -23,9 +23,9 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_done_white_48dp"
-        app:backgroundTint="@color/colorAccent"
         />
 </android.support.design.widget.CoordinatorLayout>
 <!-- // reserve
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/colorAccent"
 -->

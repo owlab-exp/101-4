@@ -127,7 +127,6 @@
                     android:layout_gravity="center_vertical|center"
                     android:elevation="3dp"
                     android:src="@drawable/fab_add_from_call_log_48"
-                    app:backgroundTint="@color/colorAccent"
                     app:fabSize="normal"
                     app:pressedTranslationZ="12dp" />
             </GridLayout>
@@ -135,4 +134,5 @@
 </android.support.design.widget.CoordinatorLayout><!--
     android:background="#29000000"
         android:layout_gravity="center_vertical|center"
+                    app:backgroundTint="@color/colorAccent"
     -->
