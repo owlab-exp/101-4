@@ -303,9 +303,19 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
                 return true;
             case R.id.menuitem_help:
-                HelpDialog helpDialog = new HelpDialog(this);
+                //WebView helpWV = new WebView(this);
+                //helpWV.loadData("haha", "text/html; charset=utf-8", "utf-8");
+                //AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                //builder.setTitle("sample")
+                //        .setView(helpWV)
+                //        .show();
+                //        //.setNeutralButton("OK", dispatchPopulateAccessibilityEvent())
+
+                HelpDialog helpDialog = new HelpDialog(MainActivity.this);
                 helpDialog.setTitle("Tips & Feedback");
+                helpDialog.setCancelable(true);
                 helpDialog.show();
+
                 //Dialog helpDialog = new Dialog(this);
                 //helpDialog.setTitle("Tips");
                 //helpDialog.setCancelable(true);

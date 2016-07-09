@@ -24,7 +24,6 @@ h4 {
 
 <h4>Add from SMS log</h4>
 <p><u>Long click</u> on a message will show its full message body</p>
-<br>
 
 <h3>Feedback</h3>
 <p>Any comments, feedback, suggestions on Call Quieter, please write to us using the address below.</p>

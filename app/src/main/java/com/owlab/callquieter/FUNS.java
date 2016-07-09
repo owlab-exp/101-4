@@ -20,6 +20,10 @@ import android.widget.Toast;
 
 import com.owlab.callquieter.service.CallQuieterIntentService;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -518,5 +522,22 @@ public class FUNS {
                 return true;
             }
         }
+    }
+
+    public static String readRawTextFile(Context context, int id) {
+        InputStream in = context.getResources().openRawResource(id);
+        InputStreamReader reader = new InputStreamReader(in);
+        BufferedReader buffer = new BufferedReader(reader);
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+        try {
+            while((line = buffer.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            buffer.close();
+        } catch(IOException e) {
+            return null;
+        }
+        return stringBuilder.toString();
     }
 }
