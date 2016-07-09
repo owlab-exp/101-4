@@ -15,6 +15,6 @@
     <item
         android:id="@+id/menuitem_help"
         android:orderInCategory="101"
-        android:title="Help"
+        android:title="Tips &amp; Feedback"
         app:showAsAction="never" />
 </menu>

@@ -91,6 +91,9 @@
     <style name="showcase_text_2" parent="TextAppearance.ShowcaseView.Detail.Light">
         <item name="android:textColor">#8affffff</item>
     </style>
+
+    <!-- for Help Dialog -->
+    <dimen name="webViewTextSize">5dp</dimen>
 </resources>
 <!-- // reserve
         <item name="android:background">@android:color/transparent</item>

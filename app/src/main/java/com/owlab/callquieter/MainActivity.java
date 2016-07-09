@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menuitem_help:
                 HelpDialog helpDialog = new HelpDialog(this);
-                helpDialog.setTitle("Contents");
+                helpDialog.setTitle("Tips & Feedback");
                 helpDialog.show();
                 //Dialog helpDialog = new Dialog(this);
                 //helpDialog.setTitle("Tips");

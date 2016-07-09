@@ -1,16 +1,32 @@
-<a href="#apphelp">Call Quieter Help</a>
+<style>
+p {
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+}
+
+h3 {
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+}
+
+h4 {
+    margin-top: 0.4em;
+    margin-bottom: 0em;
+}
+</style>
+<h3>Tips on screens</h3>
+
+<h4>Registered numbers</h4>
+<p>Each display name can be changed by <u>clicking the display name</u></p>
+
+<h4>Quieted calls</h4>
+<p><u>Long click</u> on a number will call back to the number</p>
+
+<h4>Add from SMS log</h4>
+<p><u>Long click</u> on a message will show its full message body</p>
 <br>
-<a href="#feedback">Feedback</a>
-<br>
-<a name="apphelp" id="apphelp">
-<h3>Call Quieter Help</h3>
-Call Quieter is a utility application
-</>
-<br>
-<a name="feedback" id="feedback">
+
 <h3>Feedback</h3>
-Any comments, feedback, suggestions on Call Quieter, please address to the link below.
+<p>Any comments, feedback, suggestions on Call Quieter, please write to us using the address below.</p>
+<p><a href="mailto:support.owlab@gmail.com">support.owlab@gmail.com</a></p>
 <br>
-<a href="mailto:nemo.owlab@gmail.com">Contact support</a>
-</a>
-</br>
