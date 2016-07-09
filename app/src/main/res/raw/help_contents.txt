@@ -1,0 +1,16 @@
+<a href="#apphelp">Call Quieter Help</a>
+<br>
+<a href="#feedback">Feedback</a>
+<br>
+<a name="apphelp" id="apphelp">
+<h3>Call Quieter Help</h3>
+Call Quieter is a utility application
+</>
+<br>
+<a name="feedback" id="feedback">
+<h3>Feedback</h3>
+Any comments, feedback, suggestions on Call Quieter, please address to the link below.
+<br>
+<a href="mailto:nemo.owlab@gmail.com">Contact support</a>
+</a>
+</br>

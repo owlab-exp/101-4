@@ -1,7 +1,6 @@
 package com.owlab.callquieter;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +31,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.owlab.callquieter.dialog.HelpDialog;
 import com.owlab.callquieter.fragment.AddByManualFragment;
 import com.owlab.callquieter.fragment.AddFromCallLogFragment;
 import com.owlab.callquieter.fragment.AddFromContactsFragment;
@@ -303,10 +303,13 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
                 return true;
             case R.id.menuitem_help:
-                Dialog helpDialog = new Dialog(this);
-                helpDialog.setTitle("Tips");
-                helpDialog.setCancelable(true);
+                HelpDialog helpDialog = new HelpDialog(this);
+                helpDialog.setTitle("Contents");
                 helpDialog.show();
+                //Dialog helpDialog = new Dialog(this);
+                //helpDialog.setTitle("Tips");
+                //helpDialog.setCancelable(true);
+                //helpDialog.show();
                 return true;
             case android.R.id.home:
                 getSupportFragmentManager().popBackStack();
