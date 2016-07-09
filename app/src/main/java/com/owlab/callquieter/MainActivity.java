@@ -572,12 +572,12 @@ public class MainActivity extends AppCompatActivity {
                         return new ViewTarget(mainOnOffSwitch).getPoint();
                     }
                 })
-                .setContentTitle("Turn the main switch on")
-                .setContentText("You can turn the switch off at any time")
+                .setContentTitle("Turn on the main switch")
+                .setContentText("To disable Call Quieter service, you can turn it off at any time.")
                 .setStyle(R.style.ShowcaseTheme2)
                 //.hideOnTouchOutside()
                 .replaceEndButton(R.layout.custom_showcase_button_gotit_layout)
-                //.singleShot(101l)
+                .singleShot(101l)
                 .build();
 
         RelativeLayout.LayoutParams buttonPosition = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
