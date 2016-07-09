@@ -66,8 +66,11 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                 null);
 
         //Log.d(TAG, ">>>>> count: " + cursor.getCount());
-        if(cursor != null && cursor.getCount() > 0) {
-            result = true;
+        if(cursor != null) {
+            if(cursor.getCount() > 0 ) {
+                result = true;
+            }
+            cursor.close();
         }
 
         db.close();
@@ -103,8 +106,11 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                 null);
 
         //Log.d(TAG, ">>>>> count: " + cursor.getCount());
-        if(cursor != null && cursor.getCount() > 0) {
-            result = true;
+        if(cursor != null) {
+            if (cursor.getCount() > 0) {
+                result = true;
+            }
+            cursor.close();
         }
 
         db.close();
@@ -143,15 +149,18 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                 null,
                 null);
 
-        if(cursor != null && cursor.moveToFirst()) {
-            do {
-                String startsWith = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER));
-                Log.d(TAG, ">>>>> startsWith: " + startsWith);
-                if(phoneNumber.startsWith(startsWith)) {
-                    result = true;
-                    break;
-                }
-            } while(cursor.moveToNext());
+        if(cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String startsWith = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER));
+                    Log.d(TAG, ">>>>> startsWith: " + startsWith);
+                    if (phoneNumber.startsWith(startsWith)) {
+                        result = true;
+                        break;
+                    }
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
         }
 
         db.close();
@@ -190,6 +199,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                     }
                 } while(cursor.moveToNext());
             }
+            cursor.close();
         }
 
         db.close();
@@ -218,8 +228,11 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                 null,
                 null,
                 null);
-        if(cursor != null && cursor.getCount() > 0) {
-            result = true;
+        if(cursor != null) {
+            if (cursor.getCount() > 0) {
+                result = true;
+            }
+            cursor.close();
         }
 
         db.close();

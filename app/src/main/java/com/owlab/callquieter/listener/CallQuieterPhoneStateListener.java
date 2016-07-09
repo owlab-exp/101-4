@@ -213,7 +213,8 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     private boolean isInContacts(String phoneNumber) {
         boolean result = false;
         Uri contactsFilterUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor contactsCursor = contentResolver.query(contactsFilterUri, contactsProjection, null, null, null);
+        //Cursor contactsCursor = contentResolver.query(contactsFilterUri, contactsProjection, null, null, null);
+        Cursor contactsCursor = contentResolver.query(contactsFilterUri, contactsProjection, null, null, ContactsContract.PhoneLookup.DISPLAY_NAME + " LIMIT 1");
 
         if(contactsCursor != null) {
             result = contactsCursor.getCount() > 0;
