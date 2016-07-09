@@ -92,6 +92,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
         iTelephonyObject = getITelephonyMethod.invoke(telephonyManager);
         endCallMethod = iTelephonyObject.getClass().getDeclaredMethod("endCall");
         callQuieterDbHelper = new CallQuieterDbHelper(ctx);
+        //matchPattern can be null, if no registered number available
         matchPattern = callQuieterDbHelper.getMatchPattern();
     }
 
@@ -170,9 +171,9 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
             }
         }
 
-        if(matchPattern.matcher(phoneNumber).matches()) {
+        if(matchPattern != null && matchPattern.matcher(phoneNumber).matches()) {
             quietCall(phoneNumber, timeArrived);
-            return;
+            //return;
         }
     }
 
