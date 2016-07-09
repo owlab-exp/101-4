@@ -5,13 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.MailTo;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.owlab.callquieter.R;
 
@@ -61,15 +57,15 @@ public class HelpDialog extends Dialog {
         String helpText = readRawTextFile(R.raw.help_contents);
         helpView.loadData(helpText, "text/html; charset=utf-8", "utf-8");
 
-        // No effect
-        TextView titleTV = (TextView) findViewById(android.R.id.title);
-        Log.d(TAG, ">>>>> titleTV: " + titleTV);
+        //// No effect
+        //TextView titleTV = (TextView) findViewById(android.R.id.title);
+        //Log.d(TAG, ">>>>> titleTV: " + titleTV);
 
-        if(titleTV != null) {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) titleTV.getLayoutParams();
-            layoutParams.gravity = Gravity.CENTER;
-            titleTV.setLayoutParams(layoutParams);
-        }
+        //if(titleTV != null) {
+        //    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) titleTV.getLayoutParams();
+        //    layoutParams.gravity = Gravity.CENTER;
+        //    titleTV.setLayoutParams(layoutParams);
+        //}
     }
 
     private String readRawTextFile(int id) {
@@ -82,6 +78,7 @@ public class HelpDialog extends Dialog {
             while((line = buffer.readLine()) != null) {
                 stringBuilder.append(line);
             }
+            buffer.close();
         } catch(IOException e) {
             return null;
         }
