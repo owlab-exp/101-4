@@ -1,12 +1,11 @@
 package com.owlab.callquieter.dialog;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatDialog;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,14 +16,15 @@ import com.owlab.callquieter.R;
 /**
  * Created by ernest on 7/9/16.
  */
-public class HelpDialog extends Dialog {
+public class HelpDialog extends AppCompatDialog {
     private static final String TAG = HelpDialog.class.getSimpleName();
 
     private Context context;
     //private int layoutId;
     public HelpDialog(Context context) {
         //This is critical!
-        super(context, android.R.style.Theme_DeviceDefault_Dialog);
+        //super(context, android.R.style.Theme_DeviceDefault_Dialog);
+        super(context, android.R.style.Theme_Material_Dialog);
         this.context = context;
     }
 
@@ -83,11 +83,11 @@ public class HelpDialog extends Dialog {
         });
 
         //String helpText = "haha";
-        long startTime = System.currentTimeMillis();
+        //long startTime = System.currentTimeMillis();
         String helpText = FUNS.readRawTextFile(getContext(), R.raw.help_contents);
         helpView.loadData(helpText, "text/html; charset=utf-8", "utf-8");
-        long endTime = System.currentTimeMillis();
-        Log.d(TAG, ">>>>> time to load: " + (endTime - startTime));
+        //long endTime = System.currentTimeMillis();
+        //Log.d(TAG, ">>>>> time to load: " + (endTime - startTime));
 
         //// No effect
         //TextView titleTV = (TextView) findViewById(android.R.id.title);

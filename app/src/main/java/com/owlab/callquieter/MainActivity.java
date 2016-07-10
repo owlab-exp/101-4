@@ -313,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
 
                 HelpDialog helpDialog = new HelpDialog(MainActivity.this);
                 helpDialog.setTitle("Tips & Feedback");
+                helpDialog.setCanceledOnTouchOutside(true);
                 helpDialog.setCancelable(true);
                 helpDialog.show();
 

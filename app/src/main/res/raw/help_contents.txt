@@ -1,3 +1,5 @@
+<html>
+<head>
 <style>
 p {
     margin-top: 0.2em;
@@ -5,6 +7,7 @@ p {
 }
 
 h3 {
+    color: #2447ba0;
     margin-top: 0.5em;
     margin-bottom: 0em;
 }
@@ -14,6 +17,8 @@ h4 {
     margin-bottom: 0em;
 }
 </style>
+</head>
+<body>
 <h3>Tips on screens</h3>
 
 <h4>Registered numbers</h4>
@@ -29,3 +34,5 @@ h4 {
 <p>Any comments, feedback, suggestions on Call Quieter, please write to us using the address below.</p>
 <p><a href="mailto:support.owlab@gmail.com">support.owlab@gmail.com</a></p>
 <br>
+</body>
+</html>
