@@ -232,8 +232,8 @@ public class CallQuieterIntentService extends IntentService {
         int count = sharedPreferences.getInt(getString(R.string.status_key_notification_count), 0);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_stat_drawer_callquieter))
-                .setSmallIcon(R.drawable.ic_stat_callquieter)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_materialdesign_callquieter))
+                .setSmallIcon(R.drawable.ic_materialdesign_callquieter)
                 .setContentTitle(getString(R.string.app_name) + " running")
                 .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " quieted")
                 .addAction(R.drawable.ic_clear_24, "Clear count", clearCountPendingIntent)
