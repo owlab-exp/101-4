@@ -1,5 +1,6 @@
 package com.owlab.callquieter.dialog;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.MailTo;
@@ -24,7 +25,8 @@ public class HelpDialog extends AppCompatDialog {
     public HelpDialog(Context context) {
         //This is critical!
         //super(context, android.R.style.Theme_DeviceDefault_Dialog);
-        super(context, android.R.style.Theme_Material_Dialog);
+        //super(context, android.R.style.Theme_Material_Dialog);
+        super(context);
         this.context = context;
     }
 
@@ -72,7 +74,14 @@ public class HelpDialog extends AppCompatDialog {
                     //intent.putExtra(Intent.EXTRA_SUBJECT, "CallQuieter feedback");
                     Uri uri = Uri.parse(uriText);
                     intent.setData(uri);
-                    context.startActivity(Intent.createChooser(intent, "Send feedback email"));
+                    //To detect if email client exists
+                    ComponentName emailApp = intent.resolveActivity(getContext().getPackageManager());
+                    ComponentName unsupportedAction = ComponentName.unflattenFromString("com.android.fallback/.Fallback");
+                    boolean hasEmailApp = emailApp != null && !emailApp.equals(unsupportedAction);
+
+                    if(hasEmailApp) {
+                        context.startActivity(Intent.createChooser(intent, "Send feedback email"));
+                    }
                     return true;
                 } else {
                     webView.loadUrl(url);

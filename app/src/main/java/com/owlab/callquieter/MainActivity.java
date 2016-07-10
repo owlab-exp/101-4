@@ -570,6 +570,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+        //Emulator for test
+        adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
         //My Android Phone for test
         adRequestBuilder.addTestDevice("E03A1FE80C73BF8D4F7E11299269201E");
 
