@@ -55,7 +55,7 @@ public class CallLogObserver extends ContentObserver {
         //this.phoneNumber = phoneNumber;
         //this.timeFrom = timeFrom;
         //this.delete = delete;
-        //Log.d(TAG, ">>>>> instantiated, numOfInstance: " + ++numOfInstance);
+        //////Log.d(TAG, ">>>>> instantiated, numOfInstance: " + ++numOfInstance);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CallLogObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange) {
-        Log.d(TAG, ">>>>> call log changed");
+        ////Log.d(TAG, ">>>>> call log changed");
         super.onChange(selfChange, null);
     }
 
@@ -74,7 +74,7 @@ public class CallLogObserver extends ContentObserver {
     public void onChange(boolean selfChange, Uri uri) {
         //This causes endless repeat!
         //super.onChange(selfChange, uri);
-        Log.d(TAG, ">>>>> onChange,  parameter = (" + selfChange + ", " + uri.toString() + ")");
+        ////Log.d(TAG, ">>>>> onChange,  parameter = (" + selfChange + ", " + uri.toString() + ")");
 
         //if(!selfChange) processLog();
         processLog();
@@ -114,7 +114,7 @@ public class CallLogObserver extends ContentObserver {
                     , callLogSelectionArgs
                     , callLogSelectionOrder);
             //Cursor cursor = context.getContentResolver().query(CallLog.Calls.REGISTERED_NUMBER_URI, null, CallLog.Calls.NUMBER + " = ? ", phoneNumbers, "");
-            Log.d(TAG, ">>>>> " + cursor.getCount() + " calls found in log");
+            ////Log.d(TAG, ">>>>> " + cursor.getCount() + " calls found in log");
 
             int deleteCount = 0;
 
@@ -149,7 +149,7 @@ public class CallLogObserver extends ContentObserver {
             }
             cursor.close();
 
-            Log.d(TAG, ">>>>> " + deleteCount + " call log(s) deleted");
+            ////Log.d(TAG, ">>>>> " + deleteCount + " call log(s) deleted");
 
         } catch(Exception e) {
             Log.e(TAG, ">>>>> Error while deleting call log: " + e.getMessage());

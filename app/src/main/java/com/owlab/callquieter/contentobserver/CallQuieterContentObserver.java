@@ -26,7 +26,7 @@ public class CallQuieterContentObserver extends ContentObserver {
     @Override
     public void onChange(boolean selfChange, Uri uri) {
 
-        Log.d(TAG, ">>>>> onChange: selfChange: " + selfChange + ", uri: " + uri);
+        ////Log.d(TAG, ">>>>> onChange: selfChange: " + selfChange + ", uri: " + uri);
 
         listener.onContentChanged();
     }

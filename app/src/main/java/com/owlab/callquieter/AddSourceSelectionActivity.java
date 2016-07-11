@@ -49,7 +49,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, ">>>>> onCreate called");
+        ////Log.d(TAG, ">>>>> onCreate called");
 
         setContentView(R.layout.activity_add_source_selection);
 
@@ -227,8 +227,8 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Log.d(TAG, ">>>>> onResume called");
-        Log.d(TAG, ">>>>> transitionSource ? " + transitionSource);
+        ////Log.d(TAG, ">>>>> onResume called");
+        ////Log.d(TAG, ">>>>> transitionSource ? " + transitionSource);
 
         //initialize for onPause
         transitionTarget = null;
@@ -254,8 +254,8 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        Log.d(TAG, ">>>>> onPause called");
-        Log.d(TAG, ">>>>> transitionTarget ? " + transitionTarget);
+        ////Log.d(TAG, ">>>>> onPause called");
+        ////Log.d(TAG, ">>>>> transitionTarget ? " + transitionTarget);
 
         //initialize for onResume
         transitionSource = null;
@@ -275,7 +275,7 @@ public class AddSourceSelectionActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Log.d(TAG, ">>>>> back pressed");
+        ////Log.d(TAG, ">>>>> back pressed");
         super.onBackPressed();
 
     }

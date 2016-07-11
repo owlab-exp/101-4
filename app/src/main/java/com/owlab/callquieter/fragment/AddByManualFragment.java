@@ -77,7 +77,7 @@ public class AddByManualFragment extends Fragment {
                         break;
                     default:
                 }
-                Log.d(TAG, ">>>>> data: (" + phoneNumber + ", " + displayName + ", " + matchMethodInt + ")");
+                ////Log.d(TAG, ">>>>> data: (" + phoneNumber + ", " + displayName + ", " + matchMethodInt + ")");
 
                 if(phoneNumber.isEmpty()) {
                     Toast.makeText(getActivity(), "Empty number", Toast.LENGTH_SHORT).show();
@@ -113,10 +113,10 @@ public class AddByManualFragment extends Fragment {
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
                 switch(checkedId) {
                     case R.id.match_method_exact:
-                        Log.d(TAG, ">>>>> radio button: exact");
+                        ////Log.d(TAG, ">>>>> radio button: exact");
                         break;
                     case R.id.match_method_starts_with:
-                        Log.d(TAG, ">>>>> radio button: startWith");
+                        ////Log.d(TAG, ">>>>> radio button: startWith");
                         break;
                 }
             }

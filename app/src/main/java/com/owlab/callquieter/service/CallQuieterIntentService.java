@@ -49,7 +49,7 @@ public class CallQuieterIntentService extends IntentService {
     }
 
     public static void startActionQuieterOn(Context context, ResultReceiver resultReceiver) {
-        Log.d(TAG, "startActionQuieterOn called");
+        ////Log.d(TAG, "startActionQuieterOn called");
         Intent intent = new Intent(context, CallQuieterIntentService.class);
         intent.setAction(ACTION_QUIETER_ON);
         intent.putExtra("receiver", resultReceiver);
@@ -57,7 +57,7 @@ public class CallQuieterIntentService extends IntentService {
     }
 
     public static void startActionQuieterOff(Context context, ResultReceiver resultReceiver) {
-        Log.d(TAG, "startActionQuieterOff called");
+        ////Log.d(TAG, "startActionQuieterOff called");
         Intent intent = new Intent(context, CallQuieterIntentService.class);
         intent.setAction(ACTION_QUIETER_OFF);
         intent.putExtra("receiver", resultReceiver);
@@ -90,7 +90,7 @@ public class CallQuieterIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, ">>>>> handling intent action: " + intent.getAction().toString());
+        ////Log.d(TAG, ">>>>> handling intent action: " + intent.getAction().toString());
 
         if (intent == null) return;
 
@@ -155,7 +155,7 @@ public class CallQuieterIntentService extends IntentService {
     }
 
     private void handleActionQuieterOn(ResultReceiver resultReceiver) {
-        Log.d(TAG, "handleActionQuieterOn called");
+        ////Log.d(TAG, "handleActionQuieterOn called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         //// If the blocking is already on
@@ -164,7 +164,7 @@ public class CallQuieterIntentService extends IntentService {
         //    return;
         //}
 
-        Log.d(TAG, "Start Call Quieter Service...");
+        ////Log.d(TAG, "Start Call Quieter Service...");
         getBaseContext().startService(new Intent(getBaseContext(), CallQuieterService.class));
 
         sharedPreferences.edit().putBoolean(CONS.PREF_KEY_BLOCKING_ON, true).commit();
@@ -176,7 +176,7 @@ public class CallQuieterIntentService extends IntentService {
     }
 
     private void handleActionQuieterOff(ResultReceiver resultReceiver) {
-        Log.d(TAG, "handleActionQuieterOff called");
+        ////Log.d(TAG, "handleActionQuieterOff called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         //// If the blocking is already off
@@ -185,7 +185,7 @@ public class CallQuieterIntentService extends IntentService {
         //    return;
         //}
 
-        Log.d(TAG, "Stop Call Quieter Service...");
+        ////Log.d(TAG, "Stop Call Quieter Service...");
 
         getBaseContext().stopService(new Intent(getBaseContext(), CallQuieterService.class));
 
@@ -198,7 +198,7 @@ public class CallQuieterIntentService extends IntentService {
 
     //private void handleActionStatusbarNotificationOn(boolean checkStatus) {
     private void handleActionStatusbarNotificationOn() {
-        //Log.d(TAG, ">>>>> handleActionStatusbarNotificationOn called");
+        //////Log.d(TAG, ">>>>> handleActionStatusbarNotificationOn called");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         //If the blocking is not on state, then do not show
@@ -208,7 +208,7 @@ public class CallQuieterIntentService extends IntentService {
 
         //If the notification is disabled then return
         if (!sharedPreferences.getBoolean(getString(R.string.settings_key_show_app_notification_icon), false)) {
-            Log.d(TAG, ">>>>> show notification icon disabled");
+            ////Log.d(TAG, ">>>>> show notification icon disabled");
             return;
         }
 

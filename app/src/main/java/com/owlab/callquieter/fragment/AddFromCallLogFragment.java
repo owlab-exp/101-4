@@ -66,7 +66,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     private static final String KEY_SELECTED_ROW_ID_MAP = "selectedRowIdMap";
 
     public AddFromCallLogFragment() {
-        Log.d(TAG, ">>>>> instantiated");
+        ////Log.d(TAG, ">>>>> instantiated");
     }
 
     @Override
@@ -101,7 +101,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, ">>>>> onCreateView called");
+        ////Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.add_from_call_log_layout, container, false);
 
         doneFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
@@ -241,9 +241,9 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
                     String displayName = null;
                     String photoUriStr = null;
                     //long contactId = -1l;
-                    //Log.d(TAG, ">>>>> looking for: " + phoneNumber);
+                    //////Log.d(TAG, ">>>>> looking for: " + phoneNumber);
                     Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumberStripped));
-                    //Log.d(TAG, ">>>>> uri: " + uri.toString());
+                    //////Log.d(TAG, ">>>>> uri: " + uri.toString());
                     Cursor contactsCursor = contentResolver.query(uri, projection, null, null, null);
                     if (contactsCursor != null) {
                         if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
@@ -263,7 +263,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
                     if (displayName != null) {
                         nameView.setText(displayName);
-                        //Log.d(TAG, ">>>>> set nameView: " + displayName);
+                        //////Log.d(TAG, ">>>>> set nameView: " + displayName);
                     } else {
                         nameView.setText("");
                     }
@@ -310,7 +310,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-        //Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
+        //////Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
 
         CursorLoader cursorLoader = null;
         switch (loaderId) {
@@ -337,7 +337,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long rowId) {
         //public void onListItemClick(ListView listView, View view, int position, long rowId) {
         //super.onListItemClick(listView, view, position, rowId);
-        Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
+        ////Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
         TextView numberView = (TextView) view.findViewById(R.id.add_from_call_log_row_number);
         TextView nameView = (TextView) view.findViewById(R.id.add_from_call_log_row_name);
         //String displayName = infoView.getText().toString();
@@ -347,7 +347,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
         String displayName = nameView.getText().toString();
 
-        Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
+        ////Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
 
         if (callQuieterDbHelper.isBlockedNumber(phoneNumber)) {
             //Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
@@ -368,7 +368,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
             } else {
                 selectedNumberMap.remove(phoneNumber);
                 selectedRowIdMap.remove(phoneNumber);
-                Log.d(TAG, ">>>>> removed");
+                ////Log.d(TAG, ">>>>> removed");
                 view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
                 //Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
                 Snackbar.make(getView(), phoneNumber + " removed from the bucket", Snackbar.LENGTH_SHORT).show();
@@ -376,7 +376,7 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         } else {
             selectedNumberMap.put(phoneNumber, displayName);
             selectedRowIdMap.put(phoneNumber, rowId);
-            Log.d(TAG, ">>>>> added");
+            ////Log.d(TAG, ">>>>> added");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
             //Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), phoneNumber + " added to the bucket", Snackbar.LENGTH_SHORT).show();

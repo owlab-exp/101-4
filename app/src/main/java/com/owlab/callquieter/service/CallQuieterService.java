@@ -32,10 +32,10 @@ public class CallQuieterService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, ">>>>>> intent action: " + (intent != null ? intent.getAction() : "intent is null"));
+        ////Log.d(TAG, ">>>>>> intent action: " + (intent != null ? intent.getAction() : "intent is null"));
 
         if(!started) {
-            Log.d(TAG, ">>>>> Registering PHONE STATE LISTENER ...");
+            ////Log.d(TAG, ">>>>> Registering PHONE STATE LISTENER ...");
             telManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
             phoneStateListener = new CallQuieterPhoneStateListener(getBaseContext());
             callQuieterContentObserver = new CallQuieterContentObserver(new Handler(), phoneStateListener);
@@ -45,7 +45,7 @@ public class CallQuieterService extends Service {
 
             started = true;
         } else {
-            Log.d(TAG, ">>>>> Call quieter service already started");
+            ////Log.d(TAG, ">>>>> Call quieter service already started");
         }
 
         return START_STICKY;
@@ -53,9 +53,9 @@ public class CallQuieterService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, ">>>>> onDestroy called");
+        ////Log.d(TAG, ">>>>> onDestroy called");
 
-        Log.d(TAG, ">>>>> Unregistering PHONE STATE LISTENER ...");
+        ////Log.d(TAG, ">>>>> Unregistering PHONE STATE LISTENER ...");
         getContentResolver().unregisterContentObserver(callQuieterContentObserver);
         telManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
     }

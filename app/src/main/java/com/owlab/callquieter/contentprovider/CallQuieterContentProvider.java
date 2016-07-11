@@ -80,7 +80,7 @@ public class CallQuieterContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(Uri uri) {
-        //Log.d(TAG, ">>>>> getType called, uri: " + uri.toString());
+        //////Log.d(TAG, ">>>>> getType called, uri: " + uri.toString());
         String type = null;
         switch(sURIMatcher.match(uri)) {
             case REGISTERED_NUMBERS:
@@ -100,7 +100,7 @@ public class CallQuieterContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        //Log.d(TAG, ">>>>> selection: " + selection);
+        //////Log.d(TAG, ">>>>> selection: " + selection);
 
         SQLiteDatabase db = null;
         Cursor cursor = null;
@@ -131,7 +131,7 @@ public class CallQuieterContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        Log.d(TAG, ">>>>> insert called with uri: " + uri.toString() + ", values: " + contentValues.toString());
+        ////Log.d(TAG, ">>>>> insert called with uri: " + uri.toString() + ", values: " + contentValues.toString());
         SQLiteDatabase db = mCallQuieterDbHelper.getWritableDatabase();
 
         Uri resultUri = null;
@@ -202,7 +202,7 @@ public class CallQuieterContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        Log.d(TAG, ">>> onContentChanged called: contentVaues = " + contentValues + ", selection = " + selection);
+        ////Log.d(TAG, ">>> onContentChanged called: contentVaues = " + contentValues + ", selection = " + selection);
         SQLiteDatabase db = mCallQuieterDbHelper.getWritableDatabase();
         int rowsUpdated = 0;
         switch(sURIMatcher.match(uri)) {

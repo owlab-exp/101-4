@@ -19,7 +19,7 @@ public class BootCompletedIntentReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         //if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
         //}
-        Log.d(TAG, ">>>>> boot completed intent received");
+        ////Log.d(TAG, ">>>>> boot completed intent received");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if(sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             //TODO start the call blocker service, if it is ON

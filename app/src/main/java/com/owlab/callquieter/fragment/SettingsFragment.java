@@ -34,7 +34,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + Objects.toString(savedInstanceState));
+        ////Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + Objects.toString(savedInstanceState));
         // set contents
         addPreferencesFromResource(R.xml.settings);
 
@@ -57,7 +57,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         //selectCountryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
         //    @Override
         //    public boolean onPreferenceChange(Preference preference, Object o) {
-        //        Log.d(TAG, ">>>>> value: "  + o.toString());
+        //        ////Log.d(TAG, ">>>>> value: "  + o.toString());
         //        return true;
         //    }
         //});
@@ -106,7 +106,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, ">>>>> onResume called");
+        ////Log.d(TAG, ">>>>> onResume called");
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -128,7 +128,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, ">>>>> onPause called");
+        ////Log.d(TAG, ">>>>> onPause called");
 
         //Unregister preferencechangelistener
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -137,7 +137,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(TAG, ">>>>> preference changed, key: " + key);
+        ////Log.d(TAG, ">>>>> preference changed, key: " + key);
         Preference preference = findPreference(key);
         if(preference instanceof CheckBoxPreference) {
             CheckBoxPreference checkBoxPreference = (CheckBoxPreference)preference;

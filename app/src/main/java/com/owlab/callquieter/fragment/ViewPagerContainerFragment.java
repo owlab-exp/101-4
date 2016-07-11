@@ -35,7 +35,7 @@ public class ViewPagerContainerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.d(TAG, ">>>>> onCreateView called with savedInstanceState: " + Objects.toString(savedInstanceState));
+        ////Log.d(TAG, ">>>>> onCreateView called with savedInstanceState: " + Objects.toString(savedInstanceState));
 
         View root = inflater.inflate(R.layout.view_pager_container_view, container, false);
 
@@ -64,7 +64,7 @@ public class ViewPagerContainerFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Log.d(TAG, ">>>>> onResume called");
+        ////Log.d(TAG, ">>>>> onResume called");
         MainActivity mainActivity = (MainActivity)getActivity();
         ActionBar mainActionBar = mainActivity.getSupportActionBar();
         if(mainActionBar != null) {
@@ -96,7 +96,7 @@ public class ViewPagerContainerFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(final Bundle outState) {
-        Log.d(TAG, ">>>>> onSaveInstanceState called");
+        ////Log.d(TAG, ">>>>> onSaveInstanceState called");
         //outState.putSerializable("pagerAdapter", myFragmentPagerAdapter);
 
         super.onSaveInstanceState(outState);
@@ -106,7 +106,7 @@ public class ViewPagerContainerFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
-        Log.d(TAG, ">>>>> onPause called");
+        ////Log.d(TAG, ">>>>> onPause called");
     }
 
     public static class MyFragmentPagerAdapter extends FragmentPagerAdapter implements Serializable {
@@ -119,7 +119,7 @@ public class ViewPagerContainerFragment extends Fragment {
         public MyFragmentPagerAdapter(FragmentManager fm, int pageCount) {
             super(fm);
             this.pageCount = pageCount;
-            Log.d(TAG, ">>>>> instantiated");
+            ////Log.d(TAG, ">>>>> instantiated");
         }
 
         public Fragment getFragment(int position) {
@@ -128,7 +128,7 @@ public class ViewPagerContainerFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            Log.d(TAG, "Getting item in position: " + position);
+            ////Log.d(TAG, "Getting item in position: " + position);
             Fragment fragment = fragments.get(position);
 
             if (fragment != null) {

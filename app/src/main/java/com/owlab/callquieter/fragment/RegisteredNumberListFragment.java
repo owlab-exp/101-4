@@ -46,7 +46,7 @@ public class RegisteredNumberListFragment extends ListFragment implements Loader
     private FloatingActionButton fab;
 
     public RegisteredNumberListFragment() {
-        Log.d(TAG, ">>>>> instantiated");
+        ////Log.d(TAG, ">>>>> instantiated");
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RegisteredNumberListFragment extends ListFragment implements Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //Log.d(TAG, ">>>>> onCreateView called");
+        //////Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.registered_number_list_layout, container, false);
 
         //Floating Action Button

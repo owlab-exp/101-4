@@ -46,7 +46,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
 
     //Several helper methods for other use
     public boolean isBlockedNumber(String phoneNumber) {
-        //Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
+        //////Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
         boolean result = false;
 
         if(phoneNumber == null) {
@@ -55,7 +55,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
 
         String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
 
-        //Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
+        //////Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(CallQuieterDb.TBL_REGISTERED_NUMBER,
                 new String[]{CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER},
@@ -65,7 +65,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                 null,
                 null);
 
-        //Log.d(TAG, ">>>>> count: " + cursor.getCount());
+        //////Log.d(TAG, ">>>>> count: " + cursor.getCount());
         if(cursor != null) {
             if(cursor.getCount() > 0 ) {
                 result = true;
@@ -85,7 +85,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                     " AND " + CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED + " = 0";
 
     public boolean isActiveBlockedNumberExact(String phoneNumber) {
-        //Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
+        //////Log.d(TAG, ">>> phoneNumber: " + phoneNumber);
         boolean result = false;
 
         if(phoneNumber == null) {
@@ -94,7 +94,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
 
         String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
 
-        //Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
+        //////Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(CallQuieterDb.TBL_REGISTERED_NUMBER,
                 new String[]{CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER},
@@ -105,7 +105,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                 null,
                 null);
 
-        //Log.d(TAG, ">>>>> count: " + cursor.getCount());
+        //////Log.d(TAG, ">>>>> count: " + cursor.getCount());
         if(cursor != null) {
             if (cursor.getCount() > 0) {
                 result = true;
@@ -115,7 +115,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
 
         db.close();
 
-        Log.d(TAG, ">>>>> result: " + result);
+        ////Log.d(TAG, ">>>>> result: " + result);
         return result;
     }
 
@@ -153,7 +153,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     String startsWith = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER));
-                    Log.d(TAG, ">>>>> startsWith: " + startsWith);
+                    ////Log.d(TAG, ">>>>> startsWith: " + startsWith);
                     if (phoneNumber.startsWith(startsWith)) {
                         result = true;
                         break;

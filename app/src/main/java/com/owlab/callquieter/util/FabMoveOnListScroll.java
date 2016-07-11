@@ -56,7 +56,7 @@ public class FabMoveOnListScroll implements AbsListView.OnScrollListener {
     }
 
     private void onUpScroll() {
-        //Log.d(TAG, ">>>>> up scrolling");
+        //////Log.d(TAG, ">>>>> up scrolling");
         if(fabHidden) {
 
             fab.animate().cancel();
@@ -66,12 +66,12 @@ public class FabMoveOnListScroll implements AbsListView.OnScrollListener {
     }
 
     private void onDownScroll() {
-        //Log.d(TAG, ">>>>> down scrolling");
+        //////Log.d(TAG, ">>>>> down scrolling");
         if(!fabHidden) {
             //FAB margin is currently 16dp
             float marginHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, Resources.getSystem().getDisplayMetrics());
             float fabHeight = fab.getHeight();
-            //Log.d(TAG, ">>>>> marginHeight: " + marginHeight + ", fabHeight: " + fabHeight);
+            //////Log.d(TAG, ">>>>> marginHeight: " + marginHeight + ", fabHeight: " + fabHeight);
             fab.animate().cancel();
             fab.animate().translationYBy(fabHeight + marginHeight);
             fabHidden = true;

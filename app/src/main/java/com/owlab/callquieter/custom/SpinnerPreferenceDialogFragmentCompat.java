@@ -53,7 +53,7 @@ public class SpinnerPreferenceDialogFragmentCompat extends PreferenceDialogFragm
 
         View view = LayoutInflater.from(context).inflate(R.layout.country_select_spinner_layout, null);
 
-        //Log.d(TAG, ">>>>> default locale's country: " + Locale.getDefault().getCountry());
+        //////Log.d(TAG, ">>>>> default locale's country: " + Locale.getDefault().getCountry());
 
         //Locales
         Locale[] locales = Locale.getAvailableLocales();
@@ -62,7 +62,7 @@ public class SpinnerPreferenceDialogFragmentCompat extends PreferenceDialogFragm
             //String countryCode = locale.getCountry();
             //String country = locale.getDisplayCountry(locale);
             String countryCode = locale.getCountry();
-            //Log.d(TAG, ">>>>> country & code: " + country + ", " + countryCode);
+            //////Log.d(TAG, ">>>>> country & code: " + country + ", " + countryCode);
             if(!TextUtils.isEmpty(countryCode) && !countryNameCodeMap.containsValue(countryCode)) {
                 String countryName = locale.getDisplayCountry();
                 String countryNameNative = locale.getDisplayCountry(locale);
@@ -73,8 +73,8 @@ public class SpinnerPreferenceDialogFragmentCompat extends PreferenceDialogFragm
                 countryNameList.add(countryNameComposite);
             }
         }
-        Log.d(TAG, ">>>>> number of country map " + countryNameCodeMap.size());
-        Log.d(TAG, ">>>>> number of country names: " + countryNameList.size());
+        ////Log.d(TAG, ">>>>> number of country map " + countryNameCodeMap.size());
+        ////Log.d(TAG, ">>>>> number of country names: " + countryNameList.size());
 
         Collections.sort(countryNameList, String.CASE_INSENSITIVE_ORDER);
 
@@ -97,7 +97,7 @@ public class SpinnerPreferenceDialogFragmentCompat extends PreferenceDialogFragm
                 //selectedCountryCode = countryNameCodeMap.get(selectedCountryNameNative);
                 selectedCountryNameComposite = adapterView.getItemAtPosition(position).toString();
                 selectedCountryCode = countryNameCodeMap.get(selectedCountryNameComposite);
-                //Log.d(TAG, ">>>>> selected: " + selectedCountryNameNative + ", " + selectedCountryCode);
+                //////Log.d(TAG, ">>>>> selected: " + selectedCountryNameNative + ", " + selectedCountryCode);
             }
 
             @Override
@@ -121,7 +121,7 @@ public class SpinnerPreferenceDialogFragmentCompat extends PreferenceDialogFragm
 
     @Override
     public void onDialogClosed(boolean positiveResult) {
-        Log.d(TAG, ">>>>> onDialogClosed with: positiveResult = " + positiveResult);
+        ////Log.d(TAG, ">>>>> onDialogClosed with: positiveResult = " + positiveResult);
         if(positiveResult) {
 
             SpinnerPreference spinnerPreference = getSpinnerPreference();

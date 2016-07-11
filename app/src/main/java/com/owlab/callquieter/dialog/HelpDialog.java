@@ -96,11 +96,11 @@ public class HelpDialog extends AppCompatDialog {
         String helpText = FUNS.readRawTextFile(getContext(), R.raw.help_contents);
         helpView.loadData(helpText, "text/html; charset=utf-8", "utf-8");
         //long endTime = System.currentTimeMillis();
-        //Log.d(TAG, ">>>>> time to load: " + (endTime - startTime));
+        //////Log.d(TAG, ">>>>> time to load: " + (endTime - startTime));
 
         //// No effect
         //TextView titleTV = (TextView) findViewById(android.R.id.title);
-        //Log.d(TAG, ">>>>> titleTV: " + titleTV);
+        //////Log.d(TAG, ">>>>> titleTV: " + titleTV);
 
         //if(titleTV != null) {
         //    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) titleTV.getLayoutParams();

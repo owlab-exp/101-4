@@ -147,12 +147,12 @@ public class FUNS {
                 //}
 
                 if (requiredPermissionList.size() == 0) {
-                    Log.d(TAG, "sending quieter on request");
+                    ////Log.d(TAG, "sending quieter on request");
                     //turn blocking on here
                     CallQuieterIntentService.startActionQuieterOn(activity, new ResultReceiver(new Handler()) {
                         @Override
                         protected void onReceiveResult(int resultCode, Bundle result) {
-                            Log.d(TAG, ">>>>> quieter on reuslt received");
+                            ////Log.d(TAG, ">>>>> quieter on reuslt received");
                             Toast.makeText(activity, "Call quieter service " + (resultCode == CONS.RESULT_SUCCESS ? " started" : " not started"), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -160,7 +160,7 @@ public class FUNS {
                     //that is greater than zero
                     final String[] requiredPermissions = new String[requiredPermissionList.size()];
                     requiredPermissionList.toArray(requiredPermissions);
-                    Log.d(TAG, ">>>>> number of permissions asked: " + requiredPermissions.length);
+                    ////Log.d(TAG, ">>>>> number of permissions asked: " + requiredPermissions.length);
 
                     if (needExplanation) {
                         showMessageWithOKCancel(activity, "This app needs few permissions in the following dialog. Denying may cause not to function as intended.", new DialogInterface.OnClickListener() {
@@ -179,7 +179,7 @@ public class FUNS {
 
                 //TODO think about the right places of this code
             } else {
-                Log.d(TAG, "sending quieter off request");
+                ////Log.d(TAG, "sending quieter off request");
                 CallQuieterIntentService.startActionQuieterOff(activity, new ResultReceiver(new Handler()) {
                     @Override
                     protected void onReceiveResult(int resultCode, Bundle result) {
@@ -214,7 +214,7 @@ public class FUNS {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
+            ////Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
             if (checked) {
@@ -241,7 +241,7 @@ public class FUNS {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
+            ////Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
             if (checked) {
@@ -280,7 +280,7 @@ public class FUNS {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
+            ////Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
             if (checked) {
@@ -361,7 +361,7 @@ public class FUNS {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
+            ////Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
             if (checked) {
@@ -394,7 +394,7 @@ public class FUNS {
      private static final String TAG = SuppressCallNotificationPrefChangeListener.class.getSimpleName();
 
      @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
-     Log.d(TAG, ">>> changed to " + newValue.toString());
+     ////Log.d(TAG, ">>> changed to " + newValue.toString());
 
      //returning true means changing the checkbox finally
      return true;
@@ -416,7 +416,7 @@ public class FUNS {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
+            ////Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
             if (checked) {
@@ -457,7 +457,7 @@ public class FUNS {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Log.d(TAG, ">>> changed to " + newValue.toString());
+            ////Log.d(TAG, ">>> changed to " + newValue.toString());
 
             boolean checked = (Boolean) newValue;
             if (checked) {

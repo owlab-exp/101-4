@@ -17,14 +17,14 @@ public class MoveUpwardBehavior extends CoordinatorLayout.Behavior<View> {
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
         boolean result = SNACKBAR_BEHAVIOR_ENABLED && dependency instanceof Snackbar.SnackbarLayout;
-        Log.d(TAG, ">>>>> layoutDependsOn: " + result);
+        ////Log.d(TAG, ">>>>> layoutDependsOn: " + result);
         return result;
     }
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
         float translationY = Math.min(0, dependency.getTranslationY() - dependency.getHeight());
-        Log.d(TAG, ">>>>> translationY: " + translationY);
+        ////Log.d(TAG, ">>>>> translationY: " + translationY);
         child.setTranslationY(translationY);
         return true;
     }

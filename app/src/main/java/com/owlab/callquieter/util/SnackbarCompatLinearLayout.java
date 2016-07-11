@@ -15,16 +15,16 @@ public class SnackbarCompatLinearLayout extends LinearLayout {
 
     public SnackbarCompatLinearLayout(Context context) {
         super(context);
-        Log.d(TAG, ">>>>> call with context");
+        ////Log.d(TAG, ">>>>> call with context");
     }
 
     public SnackbarCompatLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.d(TAG, ">>>>> call with context and attrs");
+        ////Log.d(TAG, ">>>>> call with context and attrs");
     }
 
     public SnackbarCompatLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs,  defStyleAttr);
-        Log.d(TAG, ">>>>> call with context, attrs, and defstyleattr");
+        ////Log.d(TAG, ">>>>> call with context, attrs, and defstyleattr");
     }
 }

@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.owlab.callquieter">
+    package="com.owlab.callquieter"
+    android:installLocation="auto"
+    >
+    <!-- //Following necessary elements will be writed automatically by gradle, by using values in build.gradle
+    android:versionCode="1"
+    android:versionName="3.1"
+    -->
 
     <!-- for AdMob -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- to remove permission preventing sleeping -->
+    <!-- to remove permission preventing sleeping
+    , implicitly derived from the permissions - INTERNET, ACCESS_NETWORK_STATE
+    -->
     <uses-permission android:name="android.permission.WAKE_LOCK" tools:node="remove"/>
 
 

@@ -72,7 +72,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     private boolean mIsRingerChanged;
 
     public CallQuieterPhoneStateListener(Context ctx) {
-        Log.d(TAG, "instance created");
+        ////Log.d(TAG, "instance created");
         this.ctx = ctx;
         //
         try {
@@ -101,7 +101,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
         //super.onCallStateChanged(state, incomingNumber);
         switch (state) {
             case TelephonyManager.CALL_STATE_IDLE:
-                Log.d(TAG, "onCallStateChanged: CALL_STATE_IDLE");
+                ////Log.d(TAG, "onCallStateChanged: CALL_STATE_IDLE");
                 switch(LAST_CALL_STATE) {
                     case TelephonyManager.CALL_STATE_RINGING:
                         //Incoming call missed or dismissed
@@ -120,11 +120,11 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
                 }
                 break;
             case TelephonyManager.CALL_STATE_RINGING:
-                Log.d(TAG, "onCallStateChanged: CALL_STATE_RINGING");
+                ////Log.d(TAG, "onCallStateChanged: CALL_STATE_RINGING");
                 onIncomingCallArrived(phoneNumber, System.currentTimeMillis());
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
-                Log.d(TAG, "onCallStateChanged: CALL_STATE_OFFHOOK");
+                ////Log.d(TAG, "onCallStateChanged: CALL_STATE_OFFHOOK");
                 switch(LAST_CALL_STATE) {
                     case TelephonyManager.CALL_STATE_IDLE:
                         //Outgoing call
@@ -140,7 +140,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
                 }
                 break;
             default:
-                Log.d(TAG, "onCallStateChanged: UNKNOWN_STATE: " + state);
+                ////Log.d(TAG, "onCallStateChanged: UNKNOWN_STATE: " + state);
                 break;
         }
 
@@ -148,7 +148,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     }
 
     private void onIncomingCallArrived(String phoneNumber, long timeArrived) {
-        Log.d(TAG, ">>>>> onIncomingCallArrived: (" + phoneNumber + ")");
+        ////Log.d(TAG, ">>>>> onIncomingCallArrived: (" + phoneNumber + ")");
         if(!sharedPreferences.getBoolean(CONS.PREF_KEY_BLOCKING_ON, false)) {
             //If call quieter not on
             return;
@@ -178,35 +178,35 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     }
 
     private void onIncomingCallMissed(String phoneNumber, long timeMissed) {
-        Log.d(TAG, ">>>>> onIncomingCallMissed");
+        ////Log.d(TAG, ">>>>> onIncomingCallMissed");
 
         recoverRinggerMode();
     }
 
     private void onIncomingCallAnswered(String phoneNumber, long timeAnswered) {
-        Log.d(TAG, ">>>>> onIncomingCallAnswered");
+        ////Log.d(TAG, ">>>>> onIncomingCallAnswered");
 
     }
 
     private void onIncomingCallEnded(String phoneNumber, long timeEnded) {
-        Log.d(TAG, ">>>>> onIncomingCallEnded");
+        ////Log.d(TAG, ">>>>> onIncomingCallEnded");
 
         recoverRinggerMode();
     }
 
     private void onOutgoingCallStarted(String phoneNumber, long timeOutgoingStarted) {
-        Log.d(TAG, ">>>>> onOutgoingCallStarted");
+        ////Log.d(TAG, ">>>>> onOutgoingCallStarted");
 
     }
 
     private void onOutgoingCallEnded(String phoneNumber, long timeOutgoingEnded) {
-        Log.d(TAG, ">>>>> onOutgoingCallEnded");
+        ////Log.d(TAG, ">>>>> onOutgoingCallEnded");
 
     }
 
     @Override
     public void onContentChanged() {
-        Log.d(TAG, ">>>>> updating match pattern");
+        ////Log.d(TAG, ">>>>> updating match pattern");
         matchPattern = callQuieterDbHelper.getMatchPattern();
     }
 
@@ -237,7 +237,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
 
     private void suppressRinging() {
         mLastRinggerMode = audioManager.getRingerMode();
-        Log.d(TAG, ">>>>> last ringger: " + mLastRinggerMode);
+        ////Log.d(TAG, ">>>>> last ringger: " + mLastRinggerMode);
         audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         mIsRingerChanged = true;
 
@@ -246,7 +246,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
 
     private void recoverRinggerMode() {
         if(mIsRingerChanged) {
-            Log.d(TAG, ">>>>> last ringger: " + mLastRinggerMode);
+            ////Log.d(TAG, ">>>>> last ringger: " + mLastRinggerMode);
             audioManager.setRingerMode(mLastRinggerMode);
             mIsRingerChanged = false;
             Toast.makeText(ctx, "Ringger restored", Toast.LENGTH_SHORT).show();
@@ -267,7 +267,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
                 && ActivityCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
 
 
-        Log.d(TAG, ">>>>> starting content observer start service");
+        ////Log.d(TAG, ">>>>> starting content observer start service");
         Intent intent = new Intent(ctx, CallLogObserverStartService.class);
         intent.putExtra(CONS.INTENT_KEY_PHONE_NUMBER, phoneNumber);
         intent.putExtra(CONS.INTENT_KEY_TIME_FROM, fromTime - (3 * 1000));
@@ -285,7 +285,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     @Override
     public void onCellInfoChanged(List<CellInfo> cellInfoList) {
         super.onCellInfoChanged(cellInfoList);
-        Log.d(TAG, "onCellInfoChanged: " + cellInfoList);
+        ////Log.d(TAG, "onCellInfoChanged: " + cellInfoList);
     }
 
     @Override
@@ -294,19 +294,19 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
 
         switch(direction) {
             case TelephonyManager.DATA_ACTIVITY_NONE:
-                Log.d(TAG, "onDataActivity: DATA_ACTIVITY_NONE");
+                ////Log.d(TAG, "onDataActivity: DATA_ACTIVITY_NONE");
                 break;
             case TelephonyManager.DATA_ACTIVITY_IN:
-                Log.d(TAG, "onDataActivity: DATA_ACTIVITY_IN");
+                ////Log.d(TAG, "onDataActivity: DATA_ACTIVITY_IN");
                 break;
             case TelephonyManager.DATA_ACTIVITY_OUT:
-                Log.d(TAG, "onDataActivity: DATA_ACTIVITY_OUT");
+                ////Log.d(TAG, "onDataActivity: DATA_ACTIVITY_OUT");
                 break;
             case TelephonyManager.DATA_ACTIVITY_INOUT:
-                Log.d(TAG, "onDataActivity: DATA_ACTIVITY_INOUT");
+                ////Log.d(TAG, "onDataActivity: DATA_ACTIVITY_INOUT");
                 break;
             case TelephonyManager.DATA_ACTIVITY_DORMANT:
-                Log.d(TAG, "onDataActivity: DATA_ACTIVITY_DORMANT");
+                ////Log.d(TAG, "onDataActivity: DATA_ACTIVITY_DORMANT");
                 break;
             default:
                 Log.w(TAG, "onDataActivity: UNKNOWN " + direction);
@@ -317,20 +317,20 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     @Override
     public void onServiceStateChanged(ServiceState serviceState) {
         super.onServiceStateChanged(serviceState);
-        Log.d(TAG, "onServiceStateChanged: " + serviceState.toString());
+        ////Log.d(TAG, "onServiceStateChanged: " + serviceState.toString());
 
         switch (serviceState.getState()) {
             case ServiceState.STATE_IN_SERVICE:
-                Log.d(TAG, "onServiceStateChanged: STATE_IN_SERVICE");
+                ////Log.d(TAG, "onServiceStateChanged: STATE_IN_SERVICE");
                 break;
             case ServiceState.STATE_OUT_OF_SERVICE:
-                Log.d(TAG, "onServiceStateChanged: STATE_OUT_OF_SERVICE");
+                ////Log.d(TAG, "onServiceStateChanged: STATE_OUT_OF_SERVICE");
                 break;
             case ServiceState.STATE_EMERGENCY_ONLY:
-                Log.d(TAG, "onServiceStateChanged: STATE_EMERGENCY_ONLY");
+                ////Log.d(TAG, "onServiceStateChanged: STATE_EMERGENCY_ONLY");
                 break;
             case ServiceState.STATE_POWER_OFF:
-                Log.d(TAG, "onServiceStateChanged: STATE_POWER_OFF");
+                ////Log.d(TAG, "onServiceStateChanged: STATE_POWER_OFF");
                 break;
         }
     }
@@ -342,50 +342,50 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
         super.onCellLocationChanged(location);
         if (location instanceof GsmCellLocation) {
             GsmCellLocation gcLoc = (GsmCellLocation) location;
-            Log.d(TAG,
+            ////Log.d(TAG,
                     "onCellLocationChanged: GsmCellLocation "
                             + gcLoc.toString());
-            Log.d(TAG, "onCellLocationChanged: GsmCellLocation getCid "
+            ////Log.d(TAG, "onCellLocationChanged: GsmCellLocation getCid "
                     + gcLoc.getCid());
-            Log.d(TAG, "onCellLocationChanged: GsmCellLocation getLac "
+            ////Log.d(TAG, "onCellLocationChanged: GsmCellLocation getLac "
                     + gcLoc.getLac());
-            Log.d(TAG, "onCellLocationChanged: GsmCellLocation getPsc"
+            ////Log.d(TAG, "onCellLocationChanged: GsmCellLocation getPsc"
                     + gcLoc.getPsc()); // Requires min API 9
         } else if (location instanceof CdmaCellLocation) {
             CdmaCellLocation ccLoc = (CdmaCellLocation) location;
-            Log.d(TAG,
+            ////Log.d(TAG,
                     "onCellLocationChanged: CdmaCellLocation "
                             + ccLoc.toString());
-            Log.d(TAG,
+            ////Log.d(TAG,
                     "onCellLocationChanged: CdmaCellLocation getBaseStationId "
                             + ccLoc.getBaseStationId());
-            Log.d(TAG,
+            ////Log.d(TAG,
                     "onCellLocationChanged: CdmaCellLocation getBaseStationLatitude "
                             + ccLoc.getBaseStationLatitude());
-            Log.d(TAG,
+            ////Log.d(TAG,
                     "onCellLocationChanged: CdmaCellLocation getBaseStationLongitude"
                             + ccLoc.getBaseStationLongitude());
-            Log.d(TAG,
+            ////Log.d(TAG,
                     "onCellLocationChanged: CdmaCellLocation getNetworkId "
                             + ccLoc.getNetworkId());
-            Log.d(TAG,
+            ////Log.d(TAG,
                     "onCellLocationChanged: CdmaCellLocation getSystemId "
                             + ccLoc.getSystemId());
         } else {
-            Log.d(TAG, "onCellLocationChanged: " + location.toString());
+            ////Log.d(TAG, "onCellLocationChanged: " + location.toString());
         }
     }
 
     @Override
     public void onCallForwardingIndicatorChanged(boolean cfi) {
         super.onCallForwardingIndicatorChanged(cfi);
-        Log.d(TAG, "onCallForwardingIndicatorChanged: " + cfi);
+        ////Log.d(TAG, "onCallForwardingIndicatorChanged: " + cfi);
     }
 
     @Override
     public void onMessageWaitingIndicatorChanged(boolean mwi) {
         super.onMessageWaitingIndicatorChanged(mwi);
-        Log.d(TAG, "onMessageWaitingIndicatorChanged: " + mwi);
+        ////Log.d(TAG, "onMessageWaitingIndicatorChanged: " + mwi);
     }
     */
 }

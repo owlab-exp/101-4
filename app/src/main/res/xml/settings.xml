@@ -34,7 +34,7 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/settings_key_suppress_ringing"
-            android:summary="Suppress ringing for the registered numbers"
+            android:summary="Disable ringing of calls from the registered numbers"
             android:title="Suppress ringing" />
         <!--
         <CheckBoxPreference
@@ -46,12 +46,12 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/settings_key_dismiss_call"
-            android:summary="Dismiss calls immediately from the registered numbers"
+            android:summary="Dismiss immediately calls from the registered numbers"
             android:title="Dismiss calls" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/settings_key_delete_call_log"
-            android:summary="Delete call log of the quieted calls"
+            android:summary="Delete call log of the quieted calls from the phone"
             android:title="Delete call log" />
         <!--
         <CheckBoxPreference

@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + savedInstanceState);
+        ////Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + savedInstanceState);
 
         boolean recovered = false;
         if (savedInstanceState != null) {
@@ -159,12 +159,12 @@ public class MainActivity extends AppCompatActivity {
         //getSupportFragmentManager().putFragment(outState, "nextFragmentTag", fragment);
         super.onSaveInstanceState(outState);
 
-        //Log.d(TAG, ">>>>> onSaveInstanceState called");
+        //////Log.d(TAG, ">>>>> onSaveInstanceState called");
     }
 
     @Override
     protected void onPause() {
-        //Log.d(TAG, ">>>>> onPause");
+        //////Log.d(TAG, ">>>>> onPause");
         adView.pause();
 
         super.onPause();
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Log.d(TAG, ">>>>> onResume");
+        //////Log.d(TAG, ">>>>> onResume");
         adView.resume();
 
 
@@ -189,9 +189,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPostResume() {
         super.onPostResume();
-        //Log.d(TAG, ">>>>> onPostResume");
-        //Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
-        //Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
+        //////Log.d(TAG, ">>>>> onPostResume");
+        //////Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
+        //////Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
 
 
         if (onActivityResultCalled) {
@@ -207,27 +207,27 @@ public class MainActivity extends AppCompatActivity {
         if (newIntentArrived) {
             newIntentArrived = false;
             Intent intent = getIntent();
-            Log.d(TAG, ">>>>> intent: " + intent.toString());
+            ////Log.d(TAG, ">>>>> intent: " + intent.toString());
             if (intent != null && "OPEN_QUIETED_CALL_LOG".equals(intent.getAction())) {
                 int pageNo = intent.getIntExtra("pageNo", 0);
-                Log.d(TAG, ">>>>> pageNo: " + pageNo);
+                ////Log.d(TAG, ">>>>> pageNo: " + pageNo);
 
                 ViewPagerContainerFragment viewPagerContainerFragment = (ViewPagerContainerFragment) getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
-                Log.d(TAG, ">>>>> pager fragment visible? " + (viewPagerContainerFragment != null ? viewPagerContainerFragment.isVisible() : null));
+                ////Log.d(TAG, ">>>>> pager fragment visible? " + (viewPagerContainerFragment != null ? viewPagerContainerFragment.isVisible() : null));
                 if (viewPagerContainerFragment == null) {
-                    Log.d(TAG, ">>>>> pager fragment is null");
+                    ////Log.d(TAG, ">>>>> pager fragment is null");
 
                     //This is not possible
                     // 1. the notification action - origin of this action
                     // 2. the view pager container fragment is the default fragment in the MainActivity, thus it is always not null, if this App started, even just before.
                 }
                 if (viewPagerContainerFragment != null) {
-                    Log.d(TAG, ">>>>> pager fragment is not null");
+                    ////Log.d(TAG, ">>>>> pager fragment is not null");
                     if (viewPagerContainerFragment.isVisible()) {
-                        Log.d(TAG, ">>>>> pager fragment is visible");
+                        ////Log.d(TAG, ">>>>> pager fragment is visible");
                         viewPagerContainerFragment.setPage(pageNo);
                     } else {
-                        Log.d(TAG, ">>>>> pager fragment is invisible");
+                        ////Log.d(TAG, ">>>>> pager fragment is invisible");
                         //Need to back to the view pager fragment
                         getSupportFragmentManager().popBackStack(ViewPagerContainerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         viewPagerContainerFragment.setPage(pageNo);
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onNewIntent(Intent intent) {
-        //Log.d(TAG, ">>>>> new intent: " + intent.toString());
+        //////Log.d(TAG, ">>>>> new intent: " + intent.toString());
         //forward for further processing in onPostResume
         setIntent(intent);
         newIntentArrived = true;
@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.d(TAG, ">>>>> back pressed");
+        ////Log.d(TAG, ">>>>> back pressed");
 
     }
 
@@ -350,20 +350,20 @@ public class MainActivity extends AppCompatActivity {
         onActivityResultCalled = true;
         if (requestCode == CONS.REQUEST_CODE_ADD_SOURCE_SELECTION) {
             if (resultCode == RESULT_OK) {
-                Log.d(TAG, ">>>>> result ok received from add source selection activity");
+                ////Log.d(TAG, ">>>>> result ok received from add source selection activity");
                 nextFragmentTag = data.getStringExtra(CONS.INTENT_KEY_TARGET_FRAGMENT);
             } else if (resultCode == RESULT_CANCELED) {
-                Log.d(TAG, ">>>>> result canceled received");
+                ////Log.d(TAG, ">>>>> result canceled received");
                 nextFragmentTag = ViewPagerContainerFragment.TAG;
             } else if (resultCode == RESULT_FIRST_USER) {
-                Log.d(TAG, ">>>>> result_first_user received");
+                ////Log.d(TAG, ">>>>> result_first_user received");
                 //TODO what is this?
             }
         }
     }
 
     private void showFragmentAfterOnActivityResult(String tag) {
-        Log.d(TAG, ">>>>> tag: " + tag);
+        ////Log.d(TAG, ">>>>> tag: " + tag);
         if (tag == null) {
             return;
         }
@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
             //Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
             //Fragment currentPageFragment = ((ViewPagerContainerFragment) viewPagerContainerFragment).getCurrentPageFragment();
-            //Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
+            //////Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
             //DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
             ////addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
             //addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment : viewPagerContainerFragment, 0);
@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         //delegate
         //FUNS.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
-        Log.d(TAG, ">>>>> called");
+        ////Log.d(TAG, ">>>>> called");
 
         //Because request of multiple permissions may not result in the same number of permissions granted!
         boolean permissionReadPhoneStateGranted = PermissionChecker.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_BLOCKING:
-                //Log.d(TAG, ">>>>> result of asking remaining " + permissions.length + " permission(s)");
+                //////Log.d(TAG, ">>>>> result of asking remaining " + permissions.length + " permission(s)");
 
                 boolean canStart = true;
 
@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
                     CallQuieterIntentService.startActionQuieterOn(this, new ResultReceiver(new Handler()) {
                         @Override
                         protected void onReceiveResult(int resultCode, Bundle reuslt) {
-                            Log.d(TAG, ">>>>> result received");
+                            ////Log.d(TAG, ">>>>> result received");
                             Toast.makeText(getBaseContext(), "Blocking " + (resultCode == CONS.RESULT_SUCCESS ? " ON" : " OFF"), Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                //Log.d(TAG, ">>>>> failed to load, errorCode: " + errorCode);
+                //////Log.d(TAG, ">>>>> failed to load, errorCode: " + errorCode);
                 //To minimize adview height when laod failed
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) adView.getLayoutParams();
                 layoutParams.height = 0;

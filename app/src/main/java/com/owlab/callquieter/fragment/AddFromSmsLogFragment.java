@@ -118,7 +118,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                     expandedGroupIdSet.add(bela.getGroupId(i));
                 }
             }
-            Log.d(TAG, ">>>>> expandedGroupIdSet size: " + expandedGroupIdSet.size());
+            ////Log.d(TAG, ">>>>> expandedGroupIdSet size: " + expandedGroupIdSet.size());
             outState.putSerializable(KEY_EXPANDED_GROUP_ID_SET, expandedGroupIdSet);
         }
 
@@ -128,7 +128,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, ">>>>> onCreateView called with: " + Objects.toString(savedInstanceState));
+        ////Log.d(TAG, ">>>>> onCreateView called with: " + Objects.toString(savedInstanceState));
         View view = inflater.inflate(R.layout.add_from_sms_log_layout, container, false);
 
         doneFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
@@ -288,7 +288,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
             @Override
             public boolean setViewValue(View view, Cursor cursor, int idIdx) {
-                //Log.d(TAG, ">>>>> view: " + view.toString());
+                //////Log.d(TAG, ">>>>> view: " + view.toString());
 
                 if(view.getId() == R.id.add_from_sms_log_row_holder) {
                     String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.ADDRESS));
@@ -307,8 +307,8 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                         }
                     }
 
-                    //Log.d(TAG, ">>>>> seen: " + cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.SEEN)));
-                    //Log.d(TAG, ">>>>> read: " + cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.READ)));
+                    //////Log.d(TAG, ">>>>> seen: " + cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.SEEN)));
+                    //////Log.d(TAG, ">>>>> read: " + cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.READ)));
 
                     ImageView photoView = (ImageView) view.findViewById(R.id.add_from_sms_log_row_photo);
                     TextView numberView = (TextView) view.findViewById(R.id.add_from_sms_log_row_number);
@@ -322,9 +322,9 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                         String displayName = null;
                         String photoUriStr = null;
                         //long contactId = -1l;
-                        //Log.d(TAG, ">>>>> looking for: " + phoneNumber);
+                        //////Log.d(TAG, ">>>>> looking for: " + phoneNumber);
                         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumberStripped));
-                        //Log.d(TAG, ">>>>> uri: " + uri.toString());
+                        //////Log.d(TAG, ">>>>> uri: " + uri.toString());
                         Cursor contactsCursor = contentResolver.query(uri, CONTACTS_PROJECTION, null, null, null);
                         if (contactsCursor != null) {
                             if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
@@ -344,7 +344,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
                         if (displayName != null) {
                             nameView.setText(displayName);
-                            //Log.d(TAG, ">>>>> set nameView: " + displayName);
+                            //////Log.d(TAG, ">>>>> set nameView: " + displayName);
                         } else {
                             nameView.setText("");
                         }
@@ -438,7 +438,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
         getActivity().getContentResolver().registerContentObserver(Telephony.Sms.CONTENT_URI, false, new ContentObserver(null) {
             @Override
             public void onChange(boolean selfChange) {
-                Log.d(TAG, ">>>>> content observer: changed by self? " + selfChange);
+                ////Log.d(TAG, ">>>>> content observer: changed by self? " + selfChange);
                 //super.onChange(selfChange);
             }
         });
@@ -448,13 +448,13 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-        //Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
+        //////Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
 
         CursorLoader cursorLoader = null;
         switch (loaderId) {
             case SMS_LOG_LOADER:
                 //default sort order: date desc
-                //Log.d(TAG, ">>>>> content uri: " + Telephony.Sms.CONTENT_URI);
+                //////Log.d(TAG, ">>>>> content uri: " + Telephony.Sms.CONTENT_URI);
                 String mainSelection = Telephony.Sms.TYPE + " IN (?, ?, ?)";
                 String[] mainSelectionArgs = new String[]{
                         Integer.toString(Telephony.Sms.MESSAGE_TYPE_INBOX),
@@ -473,7 +473,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                         Integer.toString(loaderId)
                 };
                 cursorLoader = new CursorLoader(getActivity(), Telephony.Sms.CONTENT_URI, null, childSelection, childSelectionArgs, Telephony.Sms.DEFAULT_SORT_ORDER);
-                Log.d(TAG, ">>>>> child loader created: loaderId: " + loaderId);
+                ////Log.d(TAG, ">>>>> child loader created: loaderId: " + loaderId);
         }
         return cursorLoader;
     }
@@ -481,21 +481,21 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         int loaderId = loader.getId();
-        Log.d(TAG, ">>>>> onLoaderFinished: loaderId: " + loaderId);
+        ////Log.d(TAG, ">>>>> onLoaderFinished: loaderId: " + loaderId);
         switch (loaderId) {
             case SMS_LOG_LOADER:
                 cursorTreeAdapter.setGroupCursor(cursor);
 
                 //Now expand groups if needed, that is after onSaveInstanceState.
-                //Log.d(TAG, ">>>>> groupSize: " + cursorTreeAdapter.getGroupCount());
+                //////Log.d(TAG, ">>>>> groupSize: " + cursorTreeAdapter.getGroupCount());
                 if(recoveredExpandedGroupIdSet != null) {
                     int groupSize = cursorTreeAdapter.getGroupCount();
-                    //Log.d(TAG, ">>>>> groupSize: " + groupSize);
+                    //////Log.d(TAG, ">>>>> groupSize: " + groupSize);
                     for (int i = 0; i < groupSize; i++) {
-                        //Log.d(TAG, "groupPosition: " + i);
+                        //////Log.d(TAG, "groupPosition: " + i);
                         long groupId = cursorTreeAdapter.getGroupId(i);
                         if (recoveredExpandedGroupIdSet.contains(groupId)) {
-                            //Log.d(TAG, "expanding");
+                            //////Log.d(TAG, "expanding");
                             expandableListView.expandGroup(i);
                         }
                     }
@@ -524,14 +524,14 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                 break;
             default:
                 //TODO Is this sufficient?
-                //Log.d(TAG, ">>>>> onLoaderReset: loaderId: " + loaderId);
+                //////Log.d(TAG, ">>>>> onLoaderReset: loaderId: " + loaderId);
                 //try {
                 //    //if(cursorTreeAdapter != null && cursorTreeAdapter.getC) {
                 //    SparseArray<Integer> groupIdPositionMap = cursorTreeAdapter.getGroupIdPositionMap();
                 //    int groupPosition = groupIdPositionMap.get(loaderId);
 
                 //    Cursor childCursor = cursorTreeAdapter.getChild(groupPosition, 0);
-                //    Log.d(TAG, "child cursor: " + (childCursor != null? childCursor.toString():null));
+                //    ////Log.d(TAG, "child cursor: " + (childCursor != null? childCursor.toString():null));
 
 
                 //    cursorTreeAdapter.setChildrenCursor(groupPosition, null);
@@ -546,7 +546,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long rowId) {
-        Log.d(TAG, ">>>>> group click fired: position=" + position + ", rowId=" + rowId);
+        ////Log.d(TAG, ">>>>> group click fired: position=" + position + ", rowId=" + rowId);
         doOnRowClick(view, position, rowId);
         return true;
     }
@@ -554,7 +554,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
     private void doOnRowClick(View view, int position, long rowId) {
         //public void onListItemClick(ListView listView, View view, int position, long rowId) {
         //super.onListItemClick(listView, view, position, rowId);
-        Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
+        ////Log.d(TAG, ">>>>> a list item clicked: position = " + position + ", rowId = " + rowId);
         TextView numberView = (TextView) view.findViewById(R.id.add_from_sms_log_row_number);
         TextView nameView = (TextView) view.findViewById(R.id.add_from_sms_log_row_name);
         //String displayName = infoView.getText().toString();
@@ -564,7 +564,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
         String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
         String displayName = nameView.getText().toString();
 
-        Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
+        ////Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);
 
         if (callQuieterDbHelper.isBlockedNumber(phoneNumber)) {
             //Toast.makeText(getActivity(), phoneNumber + " already in the block list", Toast.LENGTH_SHORT).show();
@@ -585,7 +585,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
             } else {
                 selectedPhoneMap.remove(phoneNumber);
                 selectedPhoneRowIdMap.remove(phoneNumber);
-                Log.d(TAG, ">>>>> removed");
+                ////Log.d(TAG, ">>>>> removed");
                 view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_UNSELECTED));
                 //Toast.makeText(getActivity(), phoneNumber + " removed from the bucket", Toast.LENGTH_SHORT).show();
                 Snackbar.make(getView(), phoneNumber + " removed from the bucket", Snackbar.LENGTH_SHORT).show();
@@ -593,7 +593,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
         } else {
             selectedPhoneMap.put(phoneNumber, displayName);
             selectedPhoneRowIdMap.put(phoneNumber, rowId);
-            Log.d(TAG, ">>>>> added");
+            ////Log.d(TAG, ">>>>> added");
             view.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
             //Toast.makeText(getActivity(), phoneNumber + " added to the bucket", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), phoneNumber + " added to the bucket", Snackbar.LENGTH_SHORT).show();
@@ -603,15 +603,15 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int flatPosition, long rowId) {
-        Log.d(TAG, ">>>>> long click fired: flatPosition =" + flatPosition + ", rowId=" + rowId);
-        //Log.d(TAG, ">>>>> adapterView: " + adapterView.toString());
-        //Log.d(TAG, ">>>>> view: " + view.toString());
+        ////Log.d(TAG, ">>>>> long click fired: flatPosition =" + flatPosition + ", rowId=" + rowId);
+        //////Log.d(TAG, ">>>>> adapterView: " + adapterView.toString());
+        //////Log.d(TAG, ">>>>> view: " + view.toString());
 
         ExpandableListView localExpandableListView = (ExpandableListView) adapterView;
         long packedGroupPosition = localExpandableListView.getExpandableListPosition(flatPosition);
-        Log.d(TAG, ">>>>> packed position: " + packedGroupPosition);
+        ////Log.d(TAG, ">>>>> packed position: " + packedGroupPosition);
         int groupPosition = ExpandableListView.getPackedPositionGroup(localExpandableListView.getExpandableListPosition(flatPosition));
-        Log.d(TAG, ">>>>> group position: " + groupPosition);
+        ////Log.d(TAG, ">>>>> group position: " + groupPosition);
         if(localExpandableListView.isGroupExpanded(groupPosition)) {
             localExpandableListView.collapseGroup(groupPosition);
             //expandedGroupIdSet.remove(rowId);
@@ -646,7 +646,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
         @Override
         protected Cursor getChildrenCursor(Cursor groupCursor) {
-            Log.d(TAG, ">>>>> getting child cursor...");
+            ////Log.d(TAG, ">>>>> getting child cursor...");
             int groupPosition = groupCursor.getPosition();
             int smsId = groupCursor.getInt(groupCursor.getColumnIndexOrThrow(Telephony.Sms._ID));
 
@@ -662,7 +662,7 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
                 }
                 CursorLoader cursorLoader = (CursorLoader) renewedLoader;
             } else {
-                Log.d(TAG, ">>>>> Not attached in the parent activity");
+                ////Log.d(TAG, ">>>>> Not attached in the parent activity");
             }
 
 

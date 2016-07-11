@@ -45,7 +45,7 @@ public class EditDisplayNameDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Log.d(TAG, ">>> target fragment: " + getTargetFragment());
+        ////Log.d(TAG, ">>> target fragment: " + getTargetFragment());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();

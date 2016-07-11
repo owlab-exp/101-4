@@ -64,19 +64,19 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
     private final static String KEY_SELECTED_ROW_ID_SET = "selectedRowIdSet";
 
     public QuietedCallLogFragment() {
-        //Log.d(TAG, ">>>>> instantiated");
+        //////Log.d(TAG, ">>>>> instantiated");
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + Objects.toString(savedInstanceState));
+        ////Log.d(TAG, ">>>>> onCreate called with savedInstanceState: " + Objects.toString(savedInstanceState));
 
         if (savedInstanceState != null) {
 
             HashSet<Long> selectedRowIdSetSaved = (HashSet<Long>) savedInstanceState.getSerializable(KEY_SELECTED_ROW_ID_SET);
             if (selectedRowIdSetSaved != null) {
-                //Log.d(TAG, ">>>>> restore selectedRowIdSet");
+                //////Log.d(TAG, ">>>>> restore selectedRowIdSet");
                 selectedRowIdSet = selectedRowIdSetSaved;
             }
         }
@@ -87,7 +87,7 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public void onSaveInstanceState(final Bundle outState) {
         outState.putSerializable(KEY_SELECTED_ROW_ID_SET, selectedRowIdSet);
-        Log.d(TAG, ">>>>> onSaveInstanceState called");
+        ////Log.d(TAG, ">>>>> onSaveInstanceState called");
 
         super.onSaveInstanceState(outState);
     }
@@ -95,7 +95,7 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //Log.d(TAG, ">>>>> onCreateView called");
+        //////Log.d(TAG, ">>>>> onCreateView called");
         View view = inflater.inflate(R.layout.quieted_call_log_layout, container, false);
 
         doneFab = (FloatingActionButton) view.findViewById(R.id.fab_done);
@@ -175,7 +175,7 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
     public void onResume() {
         super.onResume();
 
-        Log.d(TAG, ">>>>> onResume called");
+        ////Log.d(TAG, ">>>>> onResume called");
 
         getListView().setOnItemClickListener(this);
         getListView().setOnItemLongClickListener(this);
@@ -185,7 +185,7 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
     public void onPause() {
         super.onPause();
 
-        Log.d(TAG, ">>>>> onPause called");
+        ////Log.d(TAG, ">>>>> onPause called");
         //doneFab.startAnimation(rotateBackwardDisappear);
         getListView().setOnItemClickListener(null);
         getListView().setOnItemLongClickListener(null);
@@ -236,9 +236,9 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
                     String displayName = null;
                     String photoUriStr = null;
                     //long contactId = -1l;
-                    //Log.d(TAG, ">>>>> looking for: " + phoneNumber);
+                    //////Log.d(TAG, ">>>>> looking for: " + phoneNumber);
                     Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumberStripped));
-                    //Log.d(TAG, ">>>>> uri: " + uri.toString());
+                    //////Log.d(TAG, ">>>>> uri: " + uri.toString());
                     Cursor contactsCursor = contentResolver.query(uri, projection, null, null, null);
                     if (contactsCursor != null) {
                         if (contactsCursor.getCount() > 0 && contactsCursor.moveToFirst()) {
@@ -304,7 +304,7 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
-        Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
+        ////Log.d(TAG, ">>> onCreateLoader: laoderId: " + loaderId);
 
         CursorLoader cursorLoader = null;
         switch (loaderId) {

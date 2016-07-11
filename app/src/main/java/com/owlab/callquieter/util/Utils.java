@@ -19,7 +19,7 @@ public class Utils {
         String formattedPhoneNumber = null;
         //To support different builds
         //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        //`Log.d(TAG, ">>>>> defafultCountryCode: " + Locale.getDefault().getCountry());
+        //`////Log.d(TAG, ">>>>> defafultCountryCode: " + Locale.getDefault().getCountry());
         String countryAndCode = PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.settings_key_country_and_code), "");
         if(countryAndCode.isEmpty()) {
 
