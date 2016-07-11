@@ -9,7 +9,7 @@
         >
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ic_materialdesign_callquieter"
+            android:src="@drawable/ic_callquieter"
             />
     </item>
 </layer-list>
