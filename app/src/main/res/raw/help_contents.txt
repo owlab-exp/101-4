@@ -13,7 +13,7 @@ h3 {
 }
 
 h4 {
-    color: blue;
+    color: #FF9333;
     margin-top: 0.4em;
     margin-bottom: 0em;
 }
@@ -23,13 +23,13 @@ h4 {
 <h3>Tips on screens</h3>
 
 <h4>Registered numbers</h4>
-<p>Each display name can be changed by <u>clicking the display name</u></p>
+<p>Edit display name by clicking on the name part of a row</p>
 
 <h4>Quieted calls</h4>
-<p><u>Long click</u> on a number will call back to the number</p>
+<p>A long click on a number will make a call to the number</p>
 
 <h4>Add from SMS log</h4>
-<p><u>Long click</u> on a message will show its full message body</p>
+<p>A long click on a message will show its full message body</p>
 
 <h3>Feedback</h3>
 <p>Any comments, feedback, suggestions on Call Quieter, please write to us using the address below.</p>

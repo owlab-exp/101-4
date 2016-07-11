@@ -51,7 +51,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/settings_key_delete_call_log"
-            android:summary="Delete call log of the quieted calls from the phone"
+            android:summary="Delete the original call log of the quieted calls, from the default call log vew app"
             android:title="Delete call log" />
         <!--
         <CheckBoxPreference
