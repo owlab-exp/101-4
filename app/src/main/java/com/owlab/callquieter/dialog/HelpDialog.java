@@ -23,10 +23,9 @@ public class HelpDialog extends AppCompatDialog {
     private Context context;
     //private int layoutId;
     public HelpDialog(Context context) {
-        //This is critical!
         //super(context, android.R.style.Theme_DeviceDefault_Dialog);
-        //super(context, android.R.style.Theme_Material_Dialog);
-        super(context);
+        super(context, android.R.style.Theme_Material_Dialog);
+        //super(context);
         this.context = context;
     }
 
