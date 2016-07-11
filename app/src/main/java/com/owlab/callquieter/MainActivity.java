@@ -159,13 +159,13 @@ public class MainActivity extends AppCompatActivity {
         //getSupportFragmentManager().putFragment(outState, "nextFragmentTag", fragment);
         super.onSaveInstanceState(outState);
 
-        //////Log.d(TAG, ">>>>> onSaveInstanceState called");
+        //Log.d(TAG, ">>>>> onSaveInstanceState called");
     }
 
     @Override
     protected void onPause() {
-        //////Log.d(TAG, ">>>>> onPause");
-        adView.pause();
+        //Log.d(TAG, ">>>>> onPause");
+        if(adView != null) adView.pause();
 
         super.onPause();
     }
@@ -173,15 +173,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //////Log.d(TAG, ">>>>> onResume");
-        adView.resume();
+       //Log.d(TAG, ">>>>> onResume");
+        if(adView != null) adView.resume();
 
 
     }
 
     @Override
     public void onDestroy() {
-        adView.destroy();
+        if(adView != null) adView.destroy();
 
         super.onDestroy();
     }
@@ -189,9 +189,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPostResume() {
         super.onPostResume();
-        //////Log.d(TAG, ">>>>> onPostResume");
-        //////Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
-        //////Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
+        //Log.d(TAG, ">>>>> onPostResume");
+        //Log.d(TAG, ">>>>> onActivityResultCalled = " + onActivityResultCalled);
+        //Log.d(TAG, ">>>>> onRequestPermissionsResultCalled = " + onRequestPermissionsResultCalled);
 
 
         if (onActivityResultCalled) {
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onNewIntent(Intent intent) {
-        //////Log.d(TAG, ">>>>> new intent: " + intent.toString());
+        //Log.d(TAG, ">>>>> new intent: " + intent.toString());
         //forward for further processing in onPostResume
         setIntent(intent);
         newIntentArrived = true;
@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
             //Fragment viewPagerContainerFragment = getSupportFragmentManager().findFragmentByTag(ViewPagerContainerFragment.TAG);
             //Fragment currentPageFragment = ((ViewPagerContainerFragment) viewPagerContainerFragment).getCurrentPageFragment();
-            //////Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
+            //Log.d(TAG, ">>> fragment found: " + Objects.toString(viewPagerContainerFragment));
             //DialogFragment addByManualDialogFragment = new AddByManualDialogFragment();
             ////addByManualDialogFragment.setTargetFragment(viewPagerContainer, 0);
             //addByManualDialogFragment.setTargetFragment(currentPageFragment != null ? currentPageFragment : viewPagerContainerFragment, 0);
@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case CONS.REQUEST_CODE_ASK_PERMISSION_FOR_BLOCKING:
-                //////Log.d(TAG, ">>>>> result of asking remaining " + permissions.length + " permission(s)");
+                //Log.d(TAG, ">>>>> result of asking remaining " + permissions.length + " permission(s)");
 
                 boolean canStart = true;
 
@@ -559,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                //////Log.d(TAG, ">>>>> failed to load, errorCode: " + errorCode);
+                //Log.d(TAG, ">>>>> failed to load, errorCode: " + errorCode);
                 //To minimize adview height when laod failed
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) adView.getLayoutParams();
                 layoutParams.height = 0;
