@@ -82,9 +82,6 @@ public class RegisteredNumberListFragment extends ListFragment implements Loader
             }
         });
 
-
-
-
         //Animation fabOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         //fab.startAnimation(fabOpen);
 
