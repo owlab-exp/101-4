@@ -76,7 +76,9 @@
                     android:layout_height="wrap_content"
                     android:layout_column="1"
                     android:inputType="phone"
-                    android:singleLine="true">
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    >
 
                     <requestFocus />
                 </EditText>
@@ -101,7 +103,8 @@
                     android:layout_height="wrap_content"
                     android:layout_column="1"
                     android:inputType="text"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                android:imeOptions="actionDone"/>
 
             </TableRow>
 
