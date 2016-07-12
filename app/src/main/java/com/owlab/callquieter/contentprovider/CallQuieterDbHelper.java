@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.owlab.callquieter.CONS;
 import com.owlab.callquieter.util.Utils;
@@ -212,7 +211,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
         db.close();
 
         String patternStr = sb.toString();
-        Log.d(TAG, ">>>>> patternStr: " + patternStr);
+        //Log.d(TAG, ">>>>> patternStr: " + patternStr);
         if(!patternStr.isEmpty()) {
             return Pattern.compile(patternStr);
         }
