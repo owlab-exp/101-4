@@ -12,7 +12,6 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,6 +102,12 @@ public class RegisteredNumberListFragment extends ListFragment implements Loader
     @Override
     public void onResume() {
         super.onResume();
+
+        //delete records marked as deleted, for rationale please refer to the DeleteDialogFragment's snackbar section
+        int deleteCount = getActivity().getContentResolver().delete(CallQuieterContentProvider.REGISTERED_NUMBER_URI, CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED + " > 0", null);
+        //Log.d(TAG, ">>>>> cleaned records: " + deleteCount);
+
+
 
         if (isFabRotated) {
             final FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_add);

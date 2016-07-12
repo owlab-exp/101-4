@@ -73,12 +73,13 @@ public class DeleteDialogFragment extends DialogFragment {
 
                                     //Log.d(TAG, ">>>>> event: " + event);
                                     if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                                        //This can be null if window closed before snackbar dismissed by manual or timeout
+                                        //Then it will be safe delete all deleted marked when the registered number appear, or main activity resume
                                         if(getTargetFragment().getActivity() != null) {
                                             int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(CallQuieterContentProvider.REGISTERED_NUMBER_URI, CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED + " > 0", null);
                                             if (deleteCount > 0) {
                                             }
                                         }
-
                                     }
                                 }
                             });
