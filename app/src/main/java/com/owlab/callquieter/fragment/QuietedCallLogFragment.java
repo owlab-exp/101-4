@@ -36,6 +36,7 @@ import com.owlab.callquieter.R;
 import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
 import com.owlab.callquieter.contentprovider.CallQuieterDb;
 import com.owlab.callquieter.contentprovider.CallQuieterDbHelper;
+import com.owlab.callquieter.service.CallQuieterIntentService;
 import com.owlab.callquieter.util.FabMoveOnListScroll;
 import com.owlab.callquieter.util.Utils;
 
@@ -183,6 +184,16 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
 
         getListView().setOnItemClickListener(this);
         getListView().setOnItemLongClickListener(this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if(isVisibleToUser) {
+            //Notification count to zero
+            CallQuieterIntentService.startActionStatusbarNotificationCounterClear(getActivity());
+        }
     }
 
     @Override

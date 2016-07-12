@@ -15,6 +15,8 @@ import com.owlab.callquieter.CONS;
 import com.owlab.callquieter.MainActivity;
 import com.owlab.callquieter.R;
 
+import java.text.SimpleDateFormat;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -229,12 +231,19 @@ public class CallQuieterIntentService extends IntentService {
         openMainActivityIntent.putExtra("pageNo", 1);
 
         int count = sharedPreferences.getInt(getString(R.string.status_key_notification_count), 0);
+        long since = sharedPreferences.getLong(getString(R.string.status_key_notification_count_since), 0l);
+        if(since == 0l) {
+            since = System.currentTimeMillis();
+            sharedPreferences.edit().putLong(getString(R.string.status_key_notification_count_since), since).commit();
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        String sinceDate = sdf.format(since);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_callquieter))
                 .setSmallIcon(R.drawable.ic_callquieter)
                 .setContentTitle(getString(R.string.app_name) + " running")
-                .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " quieted")
+                .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " quieted since " + sinceDate)
                 .addAction(R.drawable.ic_clear_24, "Clear count", clearCountPendingIntent)
                 .setOngoing(true)
                 .setContentIntent(PendingIntent.getActivity(getApplication(), 0, openMainActivityIntent, 0));
@@ -268,6 +277,9 @@ public class CallQuieterIntentService extends IntentService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         sharedPreferences.edit().putInt(getString(R.string.status_key_notification_count), 0).commit();
+
+        //Also initialize since date
+        sharedPreferences.edit().putLong(getString(R.string.status_key_notification_count_since), System.currentTimeMillis()).commit();
 
         handleActionStatusbarNotificationOn();
     }
