@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.owlab.callquieter.contentobserver.CallLogObserver;
 
@@ -36,7 +34,7 @@ public class CallLogObserverStartService extends Service {
         callLogObserver = new CallLogObserver(new Handler(), this, intent.getExtras());
         ////Log.d(TAG, ">>>>> Uri to be registered: " + CallLog.Calls.CONTENT_URI);
         getBaseContext().getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, callLogObserver);
-        Toast.makeText(getBaseContext(), "Call log cleansing service started", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getBaseContext(), "Call log cleansing service started", Toast.LENGTH_SHORT).show();
 
         return START_STICKY;
     }
@@ -47,7 +45,7 @@ public class CallLogObserverStartService extends Service {
 
         getBaseContext().getContentResolver().unregisterContentObserver(callLogObserver);
         callLogObserver = null;
-        Toast.makeText(getBaseContext(), "Call log cleansing service finished", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getBaseContext(), "Call log cleansing service finished", Toast.LENGTH_SHORT).show();
     }
 
     @Nullable

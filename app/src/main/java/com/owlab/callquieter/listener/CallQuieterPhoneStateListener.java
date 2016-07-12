@@ -266,7 +266,8 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
         audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
         mIsRingerChanged = true;
 
-        Toast.makeText(ctx, "Ringger mode replaced to silence", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(ctx, "Ringger mode replaced to silence", Toast.LENGTH_SHORT).show();
+        Toast.makeText(ctx, "Incoming call quieted", Toast.LENGTH_SHORT).show();
     }
 
     private void recoverRinggerMode() {
@@ -274,7 +275,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
             ////Log.d(TAG, ">>>>> last ringger: " + mLastRinggerMode);
             audioManager.setRingerMode(mLastRinggerMode);
             mIsRingerChanged = false;
-            Toast.makeText(ctx, "Ringger restored", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ctx, "Ringger restored", Toast.LENGTH_SHORT).show();
         }
     }
 
