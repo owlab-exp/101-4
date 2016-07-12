@@ -30,6 +30,13 @@ public class Utils {
         return formattedPhoneNumber;
     }
 
+    public static boolean isValidPhoneNumber(Context context, String phoneNumber) {
+        //if(formatPhoneNumber(context, phoneNumber) == null) {
+        //    return false;
+        //}
+        return formatPhoneNumber(context, phoneNumber) == null ? false : true;
+    }
+
     public static int convertDip2Pixels(Context context, int dip) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }

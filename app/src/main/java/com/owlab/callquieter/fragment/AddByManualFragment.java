@@ -80,8 +80,8 @@ public class AddByManualFragment extends Fragment {
                 }
                 ////Log.d(TAG, ">>>>> data: (" + phoneNumber + ", " + displayName + ", " + matchMethodInt + ")");
 
-                if(phoneNumber.isEmpty()) {
-                    Toast.makeText(getActivity(), "Empty number", Toast.LENGTH_SHORT).show();
+                if(phoneNumber.isEmpty() || !Utils.isValidPhoneNumber(getContext(), phoneNumber)) {
+                    Toast.makeText(getActivity(), "Empty or invalid phone number", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 CallQuieterDbHelper callQuieterDbHelper = new CallQuieterDbHelper(getActivity());
