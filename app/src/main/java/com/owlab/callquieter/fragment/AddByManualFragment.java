@@ -107,7 +107,7 @@ public class AddByManualFragment extends Fragment {
 
                     Uri rowUri = getActivity().getContentResolver().insert(CallQuieterContentProvider.REGISTERED_NUMBER_URI, values);
 
-                    if(Long.parseLong(rowUri.getLastPathSegment()) > 0) {
+                    if(rowUri != null && Long.parseLong(rowUri.getLastPathSegment()) > 0) {
                         Toast.makeText(getActivity(), phoneNumber + " added", Toast.LENGTH_SHORT).show();
                         getFragmentManager().popBackStack(ViewPagerContainerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     } else {

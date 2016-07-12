@@ -12,9 +12,9 @@ import android.view.View;
 
 import com.owlab.callquieter.CONS;
 import com.owlab.callquieter.R;
+import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
 import com.owlab.callquieter.contentprovider.CallQuieterDb;
 import com.owlab.callquieter.util.Utils;
-import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
 
 /**
  * Created by ernest on 5/15/16.
@@ -70,9 +70,13 @@ public class DeleteDialogFragment extends DialogFragment {
                                 @Override
                                 public void onDismissed(Snackbar snackbar, int event) {
                                     super.onDismissed(snackbar, event);
+
+                                    //Log.d(TAG, ">>>>> event: " + event);
                                     if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                                        int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(CallQuieterContentProvider.REGISTERED_NUMBER_URI, CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED + " > 0", null);
-                                        if(deleteCount > 0) {
+                                        if(getTargetFragment().getActivity() != null) {
+                                            int deleteCount = getTargetFragment().getActivity().getContentResolver().delete(CallQuieterContentProvider.REGISTERED_NUMBER_URI, CallQuieterDb.COLS_REGISTERED_NUMBER.MARK_DELETED + " > 0", null);
+                                            if (deleteCount > 0) {
+                                            }
                                         }
 
                                     }
