@@ -128,8 +128,10 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
                             public void onDismissed(Snackbar snackbar, int event) {
                                 super.onDismissed(snackbar, event);
                                 if(event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                                    getActivity().getContentResolver().delete(CallQuieterContentProvider.QUIETED_CALL_URI, CallQuieterDb.COLS_QUIETED_CALL.MARK_DELETED + " > 1", null);
-                                    selectedRowIdSet.clear();
+                                    if(getContext() != null) {
+                                        getContext().getContentResolver().delete(CallQuieterContentProvider.QUIETED_CALL_URI, CallQuieterDb.COLS_QUIETED_CALL.MARK_DELETED + " > 0", null);
+                                        selectedRowIdSet.clear();
+                                    }
                                 }
                             }
                         });
@@ -173,6 +175,9 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
     @Override
     public void onResume() {
         super.onResume();
+
+        //Delete marked delete if any exists
+        getContext().getContentResolver().delete(CallQuieterContentProvider.QUIETED_CALL_URI, CallQuieterDb.COLS_QUIETED_CALL.MARK_DELETED + " > 0", null);
 
         ////Log.d(TAG, ">>>>> onResume called");
 
