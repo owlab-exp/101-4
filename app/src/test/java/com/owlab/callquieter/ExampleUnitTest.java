@@ -22,6 +22,7 @@ public class ExampleUnitTest {
         String ph0 = "0312854150";
         String ph1 = "07082532775";
         String ph2 = "01092532775";
+        String ph3 = "\\+123";
 
         String pp0 = "0158";
         String pp1 = "1588";
@@ -31,6 +32,7 @@ public class ExampleUnitTest {
                 .append(ph0).append("|")
                 .append(ph1).append("|")
                 .append(ph2).append("|")
+                .append(ph3).append("|")
                 .append(pp0).append(".*").append("|")
                 .append(pp1).append(".*")
         ;
@@ -51,5 +53,8 @@ public class ExampleUnitTest {
 
         matcher = pattern.matcher("9253");
         assertEquals(false, matcher.matches());
+
+        matcher = pattern.matcher("+123");
+        assertEquals(true, matcher.matches());
     }
 }

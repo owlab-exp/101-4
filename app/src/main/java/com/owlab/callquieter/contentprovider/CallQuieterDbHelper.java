@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.owlab.callquieter.CONS;
+import com.owlab.callquieter.util.Utils;
 
 import java.util.regex.Pattern;
 
@@ -53,7 +54,8 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
             return result;
         }
 
-        String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+        //String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+        String purePhoneNumber = Utils.purePhoneNumber(phoneNumber);
 
         //////Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
         SQLiteDatabase db = this.getReadableDatabase();
@@ -92,7 +94,8 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
             return result;
         }
 
-        String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+        //String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+        String purePhoneNumber = Utils.purePhoneNumber(phoneNumber);
 
         //////Log.d(TAG, ">>> purePoneNumber: " + purePhoneNumber);
         SQLiteDatabase db = this.getReadableDatabase();
@@ -134,7 +137,8 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
             return result;
         }
 
-        String pureNumber = phoneNumber.replaceAll("[^\\d]", "");
+        //String pureNumber = phoneNumber.replaceAll("[^\\d]", "");
+        String pureNumber = Utils.purePhoneNumber(phoneNumber);
 
         if(pureNumber.isEmpty()) {
             return result;
@@ -190,7 +194,10 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
                         sb.append("|");
                     }
                     String number = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.PHONE_NUMBER));
-                    sb.append(number);
+                    //sb.append(number);
+                    //Number can include plus (+) sign
+                    String enhancedNumber = number.replaceAll("\\+", "\\\\+");
+                    sb.append(enhancedNumber);
                     int matchMathod = cursor.getInt(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_REGISTERED_NUMBER.MATCH_METHOD));
                     if(matchMathod == CONS.MATCH_METHOD_EXACT) {
 
@@ -205,6 +212,7 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
         db.close();
 
         String patternStr = sb.toString();
+        Log.d(TAG, ">>>>> patternStr: " + patternStr);
         if(!patternStr.isEmpty()) {
             return Pattern.compile(patternStr);
         }
@@ -218,7 +226,8 @@ public class CallQuieterDbHelper extends SQLiteOpenHelper {
             return result;
         }
 
-        String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+        //String purePhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+        String purePhoneNumber = Utils.purePhoneNumber(phoneNumber);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(CallQuieterDb.TBL_QUIETED_CALL,

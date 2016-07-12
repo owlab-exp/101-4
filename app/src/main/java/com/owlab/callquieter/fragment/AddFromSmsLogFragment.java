@@ -47,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  */
@@ -292,7 +291,8 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
 
                 if(view.getId() == R.id.add_from_sms_log_row_holder) {
                     String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(Telephony.TextBasedSmsColumns.ADDRESS));
-                    String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+                    //String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+                    String phoneNumberStripped = Utils.purePhoneNumber(phoneNumberRead);
                     LinearLayout rowView = (LinearLayout) view.getParent();
 
                     if (callQuieterDbHelper.isBlockedNumber(phoneNumberStripped)) {
@@ -561,7 +561,8 @@ public class AddFromSmsLogFragment extends Fragment implements LoaderManager.Loa
         //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
         //String detail = detailView.getText().toString();
         String phoneNumberFormatted = numberView.getText().toString();
-        String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
+        //String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
+        String phoneNumber = Utils.purePhoneNumber(phoneNumberFormatted);
         String displayName = nameView.getText().toString();
 
         ////Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);

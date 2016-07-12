@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.preference.PreferenceManager;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +22,10 @@ import android.widget.Toast;
 import com.owlab.callquieter.CONS;
 import com.owlab.callquieter.MainActivity;
 import com.owlab.callquieter.R;
+import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
 import com.owlab.callquieter.contentprovider.CallQuieterDb;
 import com.owlab.callquieter.contentprovider.CallQuieterDbHelper;
-import com.owlab.callquieter.contentprovider.CallQuieterContentProvider;
+import com.owlab.callquieter.util.Utils;
 
 /**
  * Created by ernest on 6/26/16.
@@ -65,7 +65,8 @@ public class AddByManualFragment extends Fragment {
         doneFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phoneNumber = phoneNumberET.getText().toString().replaceAll("[^\\d]", "");
+                //String phoneNumber = phoneNumberET.getText().toString().replaceAll("[^\\d]", "");
+                String phoneNumber = Utils.purePhoneNumber(phoneNumberET.getText().toString());
                 String displayName = displayNameET.getText().toString();
                 int matchMethodInt = 0;
                 switch (matchMethodRG.getCheckedRadioButtonId()) {

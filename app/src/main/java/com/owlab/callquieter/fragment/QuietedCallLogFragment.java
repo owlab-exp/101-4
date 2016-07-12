@@ -41,7 +41,6 @@ import com.owlab.callquieter.util.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
-import java.util.Objects;
 
 /**
  * List up blocked call log
@@ -214,7 +213,8 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
 
                 Long rowId = cursor.getLong(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_QUIETED_CALL._ID));
                 String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(CallQuieterDb.COLS_QUIETED_CALL.NUMBER));
-                String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+                //String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+                String phoneNumberStripped = Utils.purePhoneNumber(phoneNumberRead);
 
                 LinearLayout rowView = (LinearLayout) view.getParent();
 
@@ -350,7 +350,8 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long rowId) {
         TextView numberView = (TextView) view.findViewById(R.id.quieted_call_log_row_number);
         String phoneNumberRead = numberView.getText().toString();
-        String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+        //String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+        String phoneNumberStripped = Utils.purePhoneNumber(phoneNumberRead);
         if(phoneNumberStripped.isEmpty()) {
             Toast.makeText(getActivity(), "Empty number", Toast.LENGTH_SHORT).show();
         } else {

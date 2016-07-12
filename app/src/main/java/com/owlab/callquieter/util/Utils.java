@@ -33,4 +33,12 @@ public class Utils {
     public static int convertDip2Pixels(Context context, int dip) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
+
+    public static String purePhoneNumber(String s) {
+        if(s == null) {
+            return s;
+        }
+
+        return s.replaceAll("[^\\d\\+]", "");
+    }
 }

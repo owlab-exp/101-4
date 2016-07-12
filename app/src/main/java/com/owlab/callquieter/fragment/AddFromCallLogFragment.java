@@ -214,7 +214,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
             @Override
             public boolean setViewValue(final View view, final Cursor cursor, int idIdx) {
                 String phoneNumberRead = cursor.getString(cursor.getColumnIndexOrThrow(CallLog.Calls.NUMBER));
-                String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+                //String phoneNumberStripped = phoneNumberRead.replaceAll("[^\\d]", "");
+                String phoneNumberStripped = Utils.purePhoneNumber(phoneNumberRead);
                 LinearLayout rowView = (LinearLayout) view.getParent();
 
                 if (callQuieterDbHelper.isBlockedNumber(phoneNumberStripped)) {
@@ -344,7 +345,8 @@ public class AddFromCallLogFragment extends ListFragment implements LoaderManage
         //TextView detailView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_detail);
         //String detail = detailView.getText().toString();
         String phoneNumberFormatted = numberView.getText().toString();
-        String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
+        //String phoneNumber = phoneNumberFormatted.replaceAll("[^\\d]", "");
+        String phoneNumber = Utils.purePhoneNumber(phoneNumberFormatted);
         String displayName = nameView.getText().toString();
 
         ////Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber);

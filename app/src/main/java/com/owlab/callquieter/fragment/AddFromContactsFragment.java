@@ -221,7 +221,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     hideListRow = true;
                 } else {
                     //This is needed because the layout is reused for other rows
-                    if(selectedPhoneMap.containsKey(phoneNumberR.replaceAll("[^\\d]", ""))) {
+                    if(selectedPhoneMap.containsKey(Utils.purePhoneNumber(phoneNumberR))) {
                         rowView.setBackgroundColor(Color.parseColor(CONS.ROW_COLOR_SELECTED));
 
                     } else {
@@ -311,7 +311,8 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
         String displayName = infoView.getText().toString();
         TextView numberView = (TextView) view.findViewById(R.id.add_from_contacts_row_contact_number);
         String phoneNumberFormatted = numberView.getText().toString();
-        String phoneNumber = phoneNumberFormatted.split("\n")[0].replaceAll("[^\\d]", "");
+        //String phoneNumber = phoneNumberFormatted.split("\n")[0].replaceAll("[^\\d]", "");
+        String phoneNumber = Utils.purePhoneNumber(phoneNumberFormatted.split("\n")[0]);
         ////Log.d(TAG, ">>>>> phoneNumber: " + phoneNumber + ", displayName: " + displayName);
 
         if(callQuieterDbHelper.isBlockedNumber(phoneNumber)) {
