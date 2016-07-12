@@ -14,7 +14,6 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.owlab.callquieter.CONS;
@@ -25,6 +24,7 @@ import com.owlab.callquieter.service.CallLogObserverStartService;
 import com.owlab.callquieter.service.CallQuieterIntentService;
 
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -64,7 +64,9 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     private Method endCallMethod;
     private CallQuieterDbHelper callQuieterDbHelper;
     //This should be updated whenever the phone number list changes
-    private Pattern matchPattern;
+    //private Pattern matchPattern;
+    private static Matcher emptyMatcher = Pattern.compile("^$").matcher("");
+    private Matcher phoneNumberMatcher = emptyMatcher;
 
     private static final String[] contactsProjection = new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME};
 
@@ -92,8 +94,18 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
         iTelephonyObject = getITelephonyMethod.invoke(telephonyManager);
         endCallMethod = iTelephonyObject.getClass().getDeclaredMethod("endCall");
         callQuieterDbHelper = new CallQuieterDbHelper(ctx);
-        //matchPattern can be null, if no registered number available
-        matchPattern = callQuieterDbHelper.getMatchPattern();
+        refreshPhoneNumberMatcher();
+    }
+
+    private void refreshPhoneNumberMatcher() {
+        synchronized (phoneNumberMatcher) {
+            Pattern matchPattern = callQuieterDbHelper.getMatchPattern();
+            if(matchPattern != null) {
+                phoneNumberMatcher = matchPattern.matcher("");
+            } else {
+                phoneNumberMatcher = emptyMatcher;
+            }
+        }
     }
 
     @Override
@@ -154,6 +166,7 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
             return;
         }
 
+        //If Phone number is empty
         if(phoneNumber == null || phoneNumber.isEmpty()) {
             if(sharedPreferences.getBoolean(ctx.getString(R.string.settings_key_block_hidden_number), false)) {
                 //If make hidden number quiet
@@ -171,7 +184,11 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
             }
         }
 
-        if(matchPattern != null && matchPattern.matcher(phoneNumber).matches()) {
+        //Phone number already not empty here
+        //if(phoneNumberMatcher.reset(phoneNumber).matches()) {
+        //Defensive coding
+        if(!phoneNumberMatcher.equals(emptyMatcher) && phoneNumberMatcher.reset(phoneNumber).matches()) {
+        //if(phoneNumberMatcher != null && phoneNumberMatcher.reset(phoneNumber).matches()) {
             quietCall(phoneNumber, timeArrived);
             //return;
         }
@@ -207,7 +224,15 @@ public class CallQuieterPhoneStateListener extends PhoneStateListener implements
     @Override
     public void onContentChanged() {
         ////Log.d(TAG, ">>>>> updating match pattern");
-        matchPattern = callQuieterDbHelper.getMatchPattern();
+        refreshPhoneNumberMatcher();
+        //synchronized (phoneNumberMatcher) {
+        //    Pattern matchPattern = callQuieterDbHelper.getMatchPattern();
+        //    if(matchPattern != null) {
+        //        phoneNumberMatcher = matchPattern.matcher("");
+        //    } else {
+        //        phoneNumberMatcher = null;
+        //    }
+        //}
     }
 
     private boolean isInContacts(String phoneNumber) {
