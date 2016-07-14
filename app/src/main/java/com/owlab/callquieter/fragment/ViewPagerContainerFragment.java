@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.owlab.callquieter.R;
 import com.owlab.callquieter.util.Utils;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Created by ernest on 6/20/16.
@@ -27,7 +25,7 @@ public class ViewPagerContainerFragment extends Fragment {
     public static final String TAG = ViewPagerContainerFragment.class.getSimpleName();
 
     private final int pageCount = 2;
-    private final int pageMarginDp = 20;
+    private final int pageMarginDp = 2;
 
     ViewPager viewPager;
     MyFragmentPagerAdapter myFragmentPagerAdapter;
@@ -43,7 +41,7 @@ public class ViewPagerContainerFragment extends Fragment {
         viewPager = (ViewPager) root.findViewById(R.id.pager);
         //
         viewPager.setPageMargin(Utils.convertDip2Pixels(getActivity(), pageMarginDp));
-        viewPager.setPageMarginDrawable(R.color.colorPrimarylight);
+        viewPager.setPageMarginDrawable(R.color.colorPrimary);
 
         FragmentManager fragmentManager = getChildFragmentManager();
 
