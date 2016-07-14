@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -241,8 +240,8 @@ public class CallQuieterIntentService extends IntentService {
         String sinceDate = sdf.format(since);
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_callquieter))
-                .setSmallIcon(R.drawable.ic_callquieter)
+                //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_statusbar))
+                .setSmallIcon(R.drawable.ic_statusbar)
                 .setContentTitle(getString(R.string.app_name) + " running")
                 .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " quieted since " + sinceDate)
                 .addAction(R.drawable.ic_clear_24, "Clear count", clearCountPendingIntent)
