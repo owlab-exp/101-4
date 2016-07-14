@@ -247,7 +247,7 @@ public class AddFromContactsFragment extends ListFragment implements LoaderManag
                     if(photoThumbnailUri != null) {
                         photoView.setImageURI(Uri.parse(photoThumbnailUri));
                     } else {
-                        photoView.setImageResource(R.drawable.ic_contact_28);
+                        photoView.setImageResource(R.drawable.ic_contact);
                     }
                     return true;
                 }

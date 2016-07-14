@@ -18,9 +18,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/fab_add_48"
+        android:src="@drawable/ic_add_white_48dp"
         app:fabSize="normal" />
 </android.support.design.widget.CoordinatorLayout><!-- // reserve
+        android:src="@drawable/fab_add_48"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTint="@android:color/holo_purple"
         app:backgroundTint="@color/colorAccent"

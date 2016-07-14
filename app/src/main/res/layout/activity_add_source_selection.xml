@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
                     android:layout_marginBottom="15dp"
-                    android:src="@drawable/fab_add_by_manual_48"
+                    android:src="@drawable/ic_create_white_48dp"
                     android:visibility="invisible"
                     app:backgroundTint="@color/colorAccentGrey"
                     app:fabSize="mini" />
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
                     android:layout_marginBottom="15dp"
-                    android:src="@drawable/fab_add_from_contacts_48"
+                    android:src="@drawable/ic_people_white_48dp"
                     android:visibility="invisible"
                     app:backgroundTint="@color/colorAccentGrey"
                     app:fabSize="mini" />
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
                     android:layout_marginBottom="15dp"
-                    android:src="@drawable/fab_add_from_sms_log_48"
+                    android:src="@drawable/ic_textsms_white_48dp"
                     android:visibility="invisible"
                     app:backgroundTint="@color/colorAccentGrey"
                     app:fabSize="mini" />
@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|center"
                     android:elevation="3dp"
-                    android:src="@drawable/fab_add_from_call_log_48"
+                    android:src="@drawable/ic_phone_white_48dp"
                     app:fabSize="normal"
                     app:pressedTranslationZ="12dp" />
             </GridLayout>

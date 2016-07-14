@@ -244,7 +244,8 @@ public class CallQuieterIntentService extends IntentService {
                 .setSmallIcon(R.drawable.ic_statusbar)
                 .setContentTitle(getString(R.string.app_name) + " running")
                 .setContentText(String.valueOf(count) + (count == 0 || count == 1 ? " call" : " calls")  + " quieted since " + sinceDate)
-                .addAction(R.drawable.ic_clear_24, "Clear count", clearCountPendingIntent)
+                //.addAction(R.drawable.ic_clear_24, "Clear count", clearCountPendingIntent)
+                .addAction(R.drawable.ic_refresh_white_24dp, "RESET COUNT", clearCountPendingIntent)
                 .setOngoing(true)
                 .setContentIntent(PendingIntent.getActivity(getApplication(), 0, openMainActivityIntent, 0));
 

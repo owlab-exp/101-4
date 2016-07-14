@@ -29,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_tag_14" />
+                    android:src="@drawable/ic_tag_14dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,16 +79,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="7dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="7dp"
-            android:adjustViewBounds="true"
             android:clickable="true"
             android:contentDescription="Delete"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_eraser_28" />
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_eraser_28dp"
+            />
     </LinearLayout>
 </LinearLayout><!-- //garage
+            android:scaleType="fitCenter"
+            android:background="@color/colorAccentGrey"
+            android:background="@drawable/background_remove_registered_number"
         android:src="@android:drawable/ic_delete"
+            android:src="@drawable/ic_eraser_28"
         android:maxLength="14"
         android:inputType="phone"
             android:theme="@style/OnOffSwitch" />

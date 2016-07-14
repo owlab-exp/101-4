@@ -246,7 +246,7 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
 
 
                 if (phoneNumberStripped.equals("")) {
-                    photoView.setImageResource(R.drawable.ic_contact_28);
+                    photoView.setImageResource(R.drawable.ic_contact);
                     nameView.setText("Private number");
                 } else {
                     String displayName = null;
@@ -267,7 +267,7 @@ public class QuietedCallLogFragment extends ListFragment implements LoaderManage
                     if (photoUriStr != null) {
                         photoView.setImageURI(Uri.parse(photoUriStr));
                     } else {
-                        photoView.setImageResource(R.drawable.ic_contact_28);
+                        photoView.setImageResource(R.drawable.ic_contact);
                     }
 
                     if (displayName != null) {

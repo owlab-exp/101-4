@@ -37,7 +37,7 @@
                 android:adjustViewBounds="true"
                 android:contentDescription="Caller"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_contact_48" />
+                android:src="@drawable/ic_contact" />
             <!--//
             phone number, and contact name if possible
             -->
