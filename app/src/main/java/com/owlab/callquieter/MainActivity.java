@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -554,18 +555,41 @@ public class MainActivity extends AppCompatActivity {
         //Initialize AdMob
         MobileAds.initialize(getApplicationContext(), getString(R.string.banner_ad_app_id));
         adView = (AdView) findViewById(R.id.adView);
+        //Initially
+        adView.setVisibility(View.GONE);
         adView.setAdListener(new AdListener() {
             private final String TAG = AdListener.class.getSimpleName();
 
             @Override
+            public void onAdLoaded() {
+                //Log.d(TAG, ">>>>> Ad loaded");
+                adView.setVisibility(View.VISIBLE);
+
+            }
+
+            @Override
             public void onAdFailedToLoad(int errorCode) {
                 //Log.d(TAG, ">>>>> failed to load, errorCode: " + errorCode);
+                //adView.setVisibility(View.GONE);
+
                 //To minimize adview height when laod failed
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) adView.getLayoutParams();
-                layoutParams.height = 0;
-                adView.setLayoutParams(layoutParams);
+                //RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) adView.getLayoutParams();
+                //layoutParams.height = 0;
+                //adView.setLayoutParams(layoutParams);
 
                 super.onAdFailedToLoad(errorCode);
+
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                //Log.d(TAG, ">>>>> Ad left");
+
+            }
+
+            @Override
+            public void onAdClosed() {
+                //Log.d(TAG, ">>>>> Ad closed");
 
             }
         });
