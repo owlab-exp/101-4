@@ -29,10 +29,10 @@ android {
     }
     productFlavors {
         lite {
-            versionName "1.0-lite"
+            versionName "1.01-lite"
         }
         pro {
-            versionName "1.0-pro"
+            versionName "1.01-pro"
         }
     }
 }
